@@ -28,7 +28,7 @@ body, html {
 /* Styling the typewriter container */
 #typewriter-container {
     font-size: 30px;
-    color: Atharv; /* Making the text color red */
+    color: white; /* Making the text color red */
 }
 
 /* Styling the blinking cursor */
