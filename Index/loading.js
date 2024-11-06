@@ -1,26 +1,43 @@
-
+// script.js
 document.addEventListener("DOMContentLoaded", function () {
-    let progressBar = document.querySelector('.progress-bar');
-    let prompt = document.getElementById('prompt');
-    let initializing = document.getElementById('initializing');
-
-    // Simulate loading progress
-    let width = 0;
-    let progress = setInterval(function () {
-        if (width >= 100) {
-            clearInterval(progress);
-            initializing.style.display = "block";
-            prompt.style.display = "block";
-
-            // Wait for user to press Enter key
-            document.addEventListener("keypress", function (e) {
-                if (e.key === 'Enter') {
-                    window.location.href = 'main.html';
-                }
-            });
+    const text = "Initializing...";
+    const typewriterTextElement = document.getElementById("typewriter-text");
+    const mainPageURL = "https://atharvmandlavdiya.netlify.app/main.html";  // Main page URL
+    
+    let i = 0; // for typing the text
+    let deleteIndex = text.length; // for deleting the text
+    let isDeleting = false;
+    
+    function typeWriter() {
+        if (isDeleting) {
+            // Remove one character at a time
+            typewriterTextElement.textContent = text.substring(0, deleteIndex);
+            deleteIndex--;
         } else {
-            width++;
-            progressBar.style.width = width + '%';
+            // Add one character at a time
+            typewriterTextElement.textContent = text.substring(0, i);
+            i++;
         }
-    }, 50);
+        
+        // Continue typing or deleting with a delay
+        let speed = isDeleting ? 50 : 150;
+        
+        if (!isDeleting && i === text.length) {
+            // When typing is complete, start deleting after a delay
+            setTimeout(function () {
+                isDeleting = true;
+                typeWriter();
+            }, 1000);
+        } else if (isDeleting && deleteIndex === 0) {
+            // When deletion is complete, redirect to main page
+            setTimeout(function () {
+                window.location.href = mainPageURL;
+            }, 500);
+        } else {
+            setTimeout(typeWriter, speed);
+        }
+    }
+    
+    // Start typing when the page loads
+    typeWriter();
 });
