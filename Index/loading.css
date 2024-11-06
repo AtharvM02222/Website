@@ -27,7 +27,7 @@ body, html {
 
 /* Styling the typewriter container */
 #typewriter-container {
-    font-size: 50px;
+    font-size: 30px;
     color: red; /* Making the text color red */
 }
 
