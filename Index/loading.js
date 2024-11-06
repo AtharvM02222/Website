@@ -12,29 +12,29 @@ document.addEventListener("DOMContentLoaded", function () {
         if (isDeleting) {
             // Remove one character at a time
             typewriterTextElement.textContent = text.substring(0, deleteIndex);
-            deleteIndex--;
+            deleteIndex--; // Decrease deleteIndex to remove one character
         } else {
             // Add one character at a time
             typewriterTextElement.textContent = text.substring(0, i);
-            i++;
+            i++; // Increase i to add one more character
         }
         
-        // Continue typing or deleting with a delay
+        // Set the typing speed and deleting speed
         let speed = isDeleting ? 50 : 150;
         
         if (!isDeleting && i === text.length) {
-            // When typing is complete, wait 500ms, then start deleting
+            // When typing is complete, wait 500ms before starting to delete
             setTimeout(function () {
-                isDeleting = true;
-                typeWriter();
+                isDeleting = true; // Start deleting
+                typeWriter(); // Recursively call typeWriter for deletion
             }, 500);  // 500ms delay before starting to delete
         } else if (isDeleting && deleteIndex === 0) {
-            // When deletion is complete, redirect to main page
+            // When deletion is complete, redirect to the main page
             setTimeout(function () {
                 window.location.href = mainPageURL;
             }, 500); // Optional delay before redirecting
         } else {
-            setTimeout(typeWriter, speed);
+            setTimeout(typeWriter, speed); // Continue typing or deleting
         }
     }
     
