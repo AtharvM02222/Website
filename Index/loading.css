@@ -22,13 +22,19 @@ body, html {
     color: #fff;
 }
 
-.progress-bar {
-    width: 0;
-    height: 20px;
-    background-color: #fff;
-    transition: width 2s ease-in-out;
+#typewriter-container {
+    font-size: 30px;
+    color: white;
 }
 
-#prompt {
-    margin-top: 20px;
+#typewriter-text {
+    border-right: 2px solid white;
+    padding-right: 5px;
+    animation: blink 0.75s step-end infinite;
+}
+
+@keyframes blink {
+    50% {
+        border-color: transparent;
+    }
 }
