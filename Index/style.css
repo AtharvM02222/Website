@@ -185,7 +185,7 @@ input:-webkit-autofill {
   margin: 8px 0;
   color: #ff0000;
   display: block; /* Change display to block for full width */
-  background-color: #FF4500;
+  background-color: #000000;
   border: 1px solid #fff; /* Add a 1px solid border with black color */
   box-sizing: border-box;
   width: calc(100% - 40px); /* Adjust width to account for padding */
