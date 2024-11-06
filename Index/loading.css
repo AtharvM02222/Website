@@ -8,7 +8,7 @@ body, html {
     align-items: center;
     font-family: Arial, sans-serif;
     background-color: #000;
-    font-family: "Jacquard 12", system-ui;
+    font-family: 'Rowdies', sans-serif; /* Apply the Rowdies font */
 }
 
 #loading-screen {
