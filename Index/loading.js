@@ -1,6 +1,6 @@
 // script.js
 document.addEventListener("DOMContentLoaded", function () {
-    const text = "Initializing...";
+    const text = " Initializing...";
     const typewriterTextElement = document.getElementById("typewriter-text");
     const mainPageURL = "https://atharvmandlavdiya.netlify.app/main.html";  // Main page URL
     
