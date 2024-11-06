@@ -23,16 +23,16 @@ document.addEventListener("DOMContentLoaded", function () {
         let speed = isDeleting ? 50 : 150;
         
         if (!isDeleting && i === text.length) {
-            // When typing is complete, start deleting after a delay
+            // When typing is complete, wait 500ms, then start deleting
             setTimeout(function () {
                 isDeleting = true;
                 typeWriter();
-            }, 1000);
+            }, 500);  // 500ms delay before starting to delete
         } else if (isDeleting && deleteIndex === 0) {
             // When deletion is complete, redirect to main page
             setTimeout(function () {
                 window.location.href = mainPageURL;
-            }, 500);
+            }, 500); // Optional delay before redirecting
         } else {
             setTimeout(typeWriter, speed);
         }
