@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const mainPageURL = "https://atharvmandlavdiya.netlify.app/main.html";  // Main page URL
     
     let i = 0; // for typing the text
-    let deleteIndex = text.length; // for deleting the text
+    let deleteIndex = text.length; // for deleting the text, starting at the end
     let isDeleting = false;
     
     function typeWriter() {
