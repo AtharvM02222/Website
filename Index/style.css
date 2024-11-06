@@ -163,7 +163,7 @@ nav ul {
 /* Target autofill input */
 input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0px 1000px #1e1e1e inset !important;
-  -webkit-text-fill-color: #ff0000 !important;
+  -webkit-text-fill-color: orangered !important;
 }
 
 .abouttitle {
