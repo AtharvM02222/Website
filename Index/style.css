@@ -250,14 +250,25 @@ input:-webkit-autofill {
   padding-bottom: 50px;
 }
 
-.github {
-  margin-top: auto;
-  margin-bottom: 0px;
+.icon {
   width: 2%;
   margin: 20px;
   filter: brightness(50%);
 }
-
+.icon:hover {
+  animation: tada 1s;
+}
+.bottomDesign {
+  margin-top: auto;
+  margin-bottom: 0px;
+}
+.pbicon {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  font-size: 2rem;
+  color: #c0a062;
+}
 
 
 @keyframes appear {
