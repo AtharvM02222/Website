@@ -81,6 +81,7 @@ body {
   justify-content: space-between;
   align-items: center;
   text-decoration: none; /* Remove underline */
+  display: inline-block;
 }
 
 .brandingg {
@@ -89,6 +90,7 @@ body {
   justify-content: space-between;
   align-items: center;
   text-decoration: none; /* Remove underline */
+  display: inline-block;
 }
 
 /* Define the keyframes for the bounceInLeft animation */
