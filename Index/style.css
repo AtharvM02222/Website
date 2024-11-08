@@ -250,6 +250,11 @@ input:-webkit-autofill {
   padding-bottom: 50px;
 }
 
+.github {
+  margin-top: auto;
+  margin-bottom: 0px;
+}
+
 @keyframes appear {
   0% {
     opacity: 0; /* Start with opacity 0 */
