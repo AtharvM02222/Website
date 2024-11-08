@@ -42,6 +42,7 @@ body {
 }
 
 .tooltip img:hover{
+    transition: 1sec;
     transform: scale(1.2); 
     filter: grayscale(0%); 
 }
