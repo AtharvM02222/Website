@@ -253,7 +253,12 @@ input:-webkit-autofill {
 .github {
   margin-top: auto;
   margin-bottom: 0px;
+  width: 2%;
+  margin: 20px;
+  filter: brightness(50%);
 }
+}
+
 
 @keyframes appear {
   0% {
