@@ -42,9 +42,8 @@ body {
 }
 
 .tooltip img:hover{
-    transition: 2sec;
-    transform: scale(1.2); 
-    filter: grayscale(0%); 
+  cursor: pointer;
+  transform:scale(1.2);
 }
 
 body {
