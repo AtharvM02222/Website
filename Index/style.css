@@ -23,10 +23,6 @@ body {
   height: 100vh;
 }
 
-.skillicons:hover{
-    transform: scale(1.2); 
-    filter: grayscale(0%); 
-}
   
 .row {
   display: flex;
@@ -43,6 +39,11 @@ body {
 .tooltip img {
   margin: 0; /* Reset margin */
   
+}
+
+.tooltip img:hover{
+    transform: scale(1.2); 
+    filter: grayscale(0%); 
 }
 
 body {
