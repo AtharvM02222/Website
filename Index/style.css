@@ -258,8 +258,14 @@ input:-webkit-autofill {
 }
 
 .icon {
-    width: 40px; /* Adjust size as needed */
+    width: 40px; 
+    transition: transform 0.3s ease; 
     filter: grayscale(100%);
+}
+
+.icon:hover {
+    transform: scale(1.2); 
+    filter: grayscale(0%); 
 }
 
 
