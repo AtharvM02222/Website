@@ -65,6 +65,29 @@
     </a>
 </header>
 
+        <audio id="bg-music" loop>
+        <source src="path_to_your_song.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        // Retrieve the last played time from localStorage
+        window.onload = function() {
+            const audio = document.getElementById('bg-music');
+            const lastTime = localStorage.getItem('lastPlayedTime');
+            if (lastTime) {
+                audio.currentTime = lastTime; // Start from where it left off
+            }
+            audio.play(); // Play the song
+        };
+
+        // Save the current time of the song before the user navigates away
+        window.onbeforeunload = function() {
+            const audio = document.getElementById('bg-music');
+            localStorage.setItem('lastPlayedTime', audio.currentTime);
+        };
+    </script>
+
     <div class="centered-container">
     <div class="centered-content">
   <h7>Coming Soon!!!!!!</h7>
