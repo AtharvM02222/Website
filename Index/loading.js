@@ -41,3 +41,25 @@ document.addEventListener("DOMContentLoaded", function () {
     // Start typing when the page loads
     typeWriter();
 });
+
+
+// Retrieve the last played time from localStorage
+        window.onload = function() {
+            const audio = document.getElementById('bg-music');
+            const lastTime = localStorage.getItem('lastPlayedTime');
+            if (lastTime) {
+                audio.currentTime = lastTime; // Start from where it left off
+            }
+            audio.play(); // Play the song
+        };
+
+        // Save the current time of the song before the user navigates away
+        window.onbeforeunload = function() {
+            const audio = document.getElementById('bg-music');
+            localStorage.setItem('lastPlayedTime', audio.currentTime);
+        };
+
+        // After loading is complete, navigate to the main page
+        setTimeout(() => {
+            window.location.href = "main.html"; // Main page URL
+        }, 3000); // Example: 3 seconds loading time
