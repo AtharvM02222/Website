@@ -43,3 +43,19 @@ updateCountdown();
 // Update the countdown every second
 setInterval(updateCountdown, 1000);
 
+
+// Retrieve the last played time from localStorage
+        window.onload = function() {
+            const audio = document.getElementById('bg-music');
+            const lastTime = localStorage.getItem('lastPlayedTime');
+            if (lastTime) {
+                audio.currentTime = lastTime; // Start from where it left off
+            }
+            audio.play(); // Play the song
+        };
+
+        // Save the current time of the song before the user navigates away
+        window.onbeforeunload = function() {
+            const audio = document.getElementById('bg-music');
+            localStorage.setItem('lastPlayedTime', audio.currentTime);
+        };
