@@ -4,10 +4,112 @@
         margin: 40px 20px 20px 20px;
     }
 }
+#workhead {
+  padding-bottom: 200px;
+}
+
 .workblock {
-    display: flex;
-    margin: 50px;
-    color: black;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    background-color: #161616;
+  display: flex;
+  margin: 50px;
+  color: black;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  background-color: #161616;
+}
+.workdetails {
+  display: flex;
+  justify-content: center;
+  flex-flow: column;
+  background-color: #161616;
+  color: white;
+  padding: 80px;
+  font-family: droid;
+  position: relative;
+  flex: 50%;
+}
+.workimage {
+  background-color: #1e1e1e;
+  flex: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* padding: 80px 0px; */
+  text-align: center;
+}
+#game {
+  padding: 0px 80px;
+}
+#game hr {
+  margin-top: 4%;
+  margin-bottom: 5%;
+}
+.projectImage {
+  width: 40%;
+}
+.projectImageLs {
+  width: 100%;
+}
+#wgameimg {
+  width: 100%;
+}
+#wtitle {
+  display: block;
+  font-size: 44px;
+  margin-bottom: 20px;
+}
+#wdescription {
+  font-size: 18px;
+  font-family: droid;
+  color: #808080;
+  padding-right: 180px;
+}
+#used {
+  color: #808080;
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+hr {
+  border: 0;
+  clear: both;
+  display: block;
+  margin: 0px;
+  width: 40%;
+  background-color: #c0a062;
+  height: 2px;
+  margin-bottom: 10%;
+  margin-top: 20%;
+}
+
+#wstackused {
+  font-family: droid;
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #808080;
+}
+#wicons {
+  font-size: 40px;
+  color: #c0a062;
+  display: inline-block;
+}
+/* #wicons i {
+  margin-right: 32px;
+} */
+
+#wicons i:hover {
+  animation: tada 1s;
+}
+#wicons a {
+  color: #c0a062;
+  text-decoration: none;
+}
+.actionIcon {
+  margin-right: 24px;
+}
+.actionIcon img {
+  width: 8%;
+}
+
+.actionIcon img:hover {
+  animation: tada 1s;
 }
