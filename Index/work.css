@@ -82,3 +82,46 @@ body {
 .icons img:hover {
     transform: scale(1.2);
 }
+
+.branding {
+  padding-left: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none; /* Remove underline */
+}
+
+.brandingg {
+  padding-left: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none; /* Remove underline */
+}
+
+/* Define the keyframes for the bounceInLeft animation */
+@keyframes bounceInLeft {
+  0% {
+    transform: translateX(-3000px);
+    opacity: 0;
+  }
+  60% {
+    transform: translateX(25px);
+    opacity: 1;
+  }
+  75% {
+    transform: translateX(-10px);
+  }
+  90% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Apply the animation to the #branding div */
+#branding {
+  animation: bounceInLeft 1s;
+}
+
