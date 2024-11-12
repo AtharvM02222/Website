@@ -17,14 +17,3 @@
 
 
 
-// Select the game card element
-const gameCard = document.querySelector('.game-card');
-
-// Add a hover event listener
-gameCard.addEventListener('mouseenter', () => {
-    console.log("Hovered over the game card!");
-});
-
-gameCard.addEventListener('mouseleave', () => {
-    console.log("Stopped hovering over the game card!");
-});
