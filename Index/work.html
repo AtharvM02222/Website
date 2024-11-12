@@ -73,18 +73,118 @@
     </audio>
 
 
-           <div class="game-card">
+            <style>
+        /* Basic reset and background */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #8B0000;
+            font-family: Arial, sans-serif;
+            color: #fff;
+        }
+
+        /* Name at the top */
+        .name {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffcc00;
+        }
+
+        /* Game card container */
+        .game-card {
+            display: flex;
+            align-items: flex-start;
+            padding: 20px;
+            width: 600px;
+            max-width: 90%;
+            background-color: #292929;
+            color: #ffffff;
+            border-radius: 10px;
+            margin: 50px auto;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        /* Enlarge on hover */
+        .game-card:hover {
+            transform: scale(1.05);
+        }
+
+        /* Image container */
+        .game-image {
+            width: 50%;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-right: 20px;
+        }
+
+        .game-image img {
+            width: 100%;
+            height: auto;
+        }
+
+        /* Game content */
+        .game-content {
+            flex: 1;
+        }
+
+        .game-content h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .game-content p {
+            font-size: 16px;
+            color: #bbb;
+            margin-bottom: 20px;
+        }
+
+        .stack {
+            font-size: 14px;
+            color: #bbb;
+            margin-top: 10px;
+        }
+
+        .icons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .icons img {
+            width: 24px;
+            height: 24px;
+            filter: invert(100%);
+            transition: transform 0.2s;
+        }
+
+        .icons img:hover {
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Game card layout -->
+    <div class="game-card">
         <div class="game-image">
             <img src="path/to/your/image.png" alt="Two Bullets Game Screenshot">
         </div>
-        <h1>Two Bullets</h1>
-        <p>A fast-paced arcade game. Shoot, catch, and re-shoot only 2 bullets to get as many kills as possible.</p>
-        <div class="stack">Stack Used: Unity</div>
-        <div class="icons">
-            <img src="https://img.icons8.com/material-outlined/24/ffffff/computer.png" alt="Computer icon">
-            <img src="https://img.icons8.com/material-outlined/24/ffffff/github.png" alt="GitHub icon">
+        <div class="game-content">
+            <h1>Two Bullets</h1>
+            <p>A fast-paced arcade game. Shoot, catch, and re-shoot only 2 bullets to get as many kills as possible.</p>
+            <div class="stack">Stack Used: Unity</div>
+            <div class="icons">
+                <img src="https://img.icons8.com/material-outlined/24/ffffff/computer.png" alt="Computer icon">
+                <img src="https://img.icons8.com/material-outlined/24/ffffff/github.png" alt="GitHub icon">
+            </div>
         </div>
     </div>
+
 
 </body>
 </html>
