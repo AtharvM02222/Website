@@ -1,14 +1,6 @@
-@media (max-width: 1200px) {
-    .workblock {
-        flex-direction: column-reverse;
-        margin: 40px 20px 20px 20px;
-    }
-}
-#workhead {
-  padding-bottom: 200px;
-}
 
-.workblock {
+
+.box {
   display: flex;
   margin: 50px;
   color: black;
@@ -17,7 +9,7 @@
   box-radius: 25px;
 
 }
-.workdetails {
+.details {
   display: flex;
   justify-content: center;
   flex-flow: column;
