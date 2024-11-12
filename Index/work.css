@@ -1,18 +1,4 @@
 
-/* Basic reset and background */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #1c1c1c;
-    font-family: Arial, sans-serif;
-}
 
 /* Main container */
 .game-card {
