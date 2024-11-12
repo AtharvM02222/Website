@@ -81,22 +81,7 @@ hr {
   margin-bottom: 20px;
   color: #808080;
 }
-#wicons {
-  font-size: 40px;
-  color: #c0a062;
-  display: inline-block;
-}
-/* #wicons i {
-  margin-right: 32px;
-} */
 
-#wicons i:hover {
-  animation: tada 1s;
-}
-#wicons a {
-  color: #c0a062;
-  text-decoration: none;
-}
 .actionIcon {
   margin-right: 24px;
 }
@@ -104,6 +89,3 @@ hr {
   width: 8%;
 }
 
-.actionIcon img:hover {
-  animation: tada 1s;
-}
