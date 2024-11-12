@@ -1,18 +1,21 @@
-
-
-.box {
+.one {
   display: flex;
   margin: 50px;
   color: black;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   background-color: #161616;
-  box-radius: 25px;
-
+  border-radius: 15px;
+  transition: border-radius 0.3s;
 }
-.details {
+
+.one:hover {
+  border-radius: 25px;
+}
+
+.two {
   display: flex;
   justify-content: center;
-  flex-flow: column;
+  flex-direction: column;
   background-color: #161616;
   color: white;
   padding: 80px;
@@ -20,49 +23,42 @@
   position: relative;
   flex: 50%;
 }
-.workimage {
+
+.four {
   background-color: #1e1e1e;
   flex: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  /* padding: 80px 0px; */
   text-align: center;
 }
+
+.five {
+  width: 100%;
+}
+
 #game {
   padding: 0px 80px;
 }
+
 #game hr {
   margin-top: 4%;
   margin-bottom: 5%;
 }
-.projectImage {
-  width: 40%;
-}
-.projectImageLs {
-  width: 100%;
-}
-#wgameimg {
-  width: 100%;
-}
+
 #wtitle {
   display: block;
   font-size: 44px;
   margin-bottom: 20px;
 }
+
 #wdescription {
   font-size: 18px;
   font-family: droid;
   color: #808080;
   padding-right: 180px;
 }
-#used {
-  color: #808080;
-  font-family: sans-serif;
-  font-weight: bold;
-  font-size: 12px;
-  margin-bottom: 5px;
-}
+
 hr {
   border: 0;
   clear: both;
@@ -75,17 +71,22 @@ hr {
   margin-top: 20%;
 }
 
-#wstackused {
-  font-family: droid;
-  font-size: 18px;
-  margin-bottom: 20px;
-  color: #808080;
-}
-
-.actionIcon {
+.three {
   margin-right: 24px;
-}
-.actionIcon img {
-  width: 8%;
+  transition: transform 0.3s, border-radius 0.3s;
 }
 
+.three img {
+  width: 8%;
+  border-radius: 50%;
+}
+
+.three:hover img {
+  transform: scale(1.1);
+  border-radius: 25%;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+}
