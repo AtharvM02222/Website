@@ -16,6 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Jacquard+12&display=swap" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="style.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="work.css">
     
     <script src="work.js"></script>
     <style>
@@ -71,109 +72,43 @@
         <source src="Theme.mp3" type="audio/mp3">
         Your browser does not support the audio element.
     </audio>
-
-
-            <style>
-
-        /* Name at the top */
-        .name {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #ffcc00;
-        }
-
-        /* Game card container */
-        .game-card {
-            display: flex;
-            align-items: flex-start;
-            padding: 20px;
-            width: 1100px;
-            max-width: 90%;
-            background-color: #292929;
-            color: #ffffff;
-            border-radius: 10px;
-            margin: 50px auto;
-            transition: transform 0.3s ease-in-out;
-        }
-
-        /* Enlarge on hover */
-        .game-card:hover {
-            transform: scale(1.05);
-        }
-
-        /* Image container */
-        .game-image {
-            width: 50%;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-right: 20px;
-        }
-
-        .game-image img {
-            width: 100%;
-            height: auto;
-        }
-
-        /* Game content */
-        .game-content {
-            flex: 1;
-        }
-
-        .game-content h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-
-        .game-content p {
-            font-size: 16px;
-            color: #bbb;
-            margin-bottom: 20px;
-        }
-
-        .stack {
-            font-size: 14px;
-            color: #bbb;
-            margin-top: 10px;
-        }
-
-        .icons {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .icons img {
-            width: 24px;
-            height: 24px;
-            filter: invert(100%);
-            transition: transform 0.2s;
-        }
-
-        .icons img:hover {
-            transform: scale(1.2);
-        }
-    </style>
-</head>
-<body>
-    <!-- Game card layout -->
-    <div class="game-card">
-        <div class="game-image">
-            <img src="path/to/your/image.png" alt="Two Bullets Game Screenshot">
-        </div>
-        <div class="game-content">
-            <h1>Two Bullets</h1>
-            <p>A fast-paced arcade game. Shoot, catch, and re-shoot only 2 bullets to get as many kills as possible.</p>
-            <div class="stack">Stack Used: Unity</div>
-            <div class="icons">
-                <img src="https://img.icons8.com/material-outlined/24/ffffff/computer.png" alt="Computer icon">
-                <img src="https://img.icons8.com/material-outlined/24/ffffff/github.png" alt="GitHub icon">
-            </div>
-        </div>
+<div class="workblock">
+    <div class="workdetails" id="app">
+      <h1 id="wtitle">RedBrick CSS</h1>
+      <p id="wdescription">
+      A Customizable CSS Framework
+      </p>
+      <hr id="app/">
+      <p id="used">STACK USED</p>
+      <p id="wstackused">SCSS | JS | DOCASAURUS (For Documentation Site)</p>
+      <div id="wicons">
+    
+  <a href="https://redbrick.netlify.app" target="_blank" class="actionIcon">
+  <img src="./icons/actionIcons/browser.png">
+ </a>
+  
+  <a href="https://github.com/Adarsh0603/redbrick" target="_blank" class="actionIcon">
+  <img src="./icons/actionIcons/github.png">
+ </a>
+  
+      </div>
     </div>
+    <div class="workimage">
+   
+    
+      <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel" data-interval="3000">
+        <div class="carousel-inner">
+        
+    <div class="carousel-item active">
+    <img src="./projects/redbrick.webp" alt="" id="wimg" class="projectImageLs">
+</div>
+         
+        </div>
+      </div>
 
+      
+    </div>
+  </div>
 
 </body>
 </html>
