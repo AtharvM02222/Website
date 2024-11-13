@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 200vh;
+  height: 100vh;
   margin: 0;
   color: #fff;
 }
@@ -17,7 +17,7 @@
   max-width: 1200px; /* Limit max width */
   padding: 30px;
   background-color: #1a1a1a;
-  border-radius: 10px;
+  border-radius: 22px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
   transition: transform 0.2s;
 }
