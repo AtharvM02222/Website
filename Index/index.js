@@ -64,17 +64,4 @@ setInterval(updateCountdown, 1000);
 
 
 
-const scrollToTopButton = document.querySelector('.scroll-to-top');
-
-// Show the button when the user scrolls down, hide when at the top
-window.addEventListener('scroll', () => {
-  if (window.scrollY > 200) { // Show the button after scrolling 200px
-    scrollToTopButton.classList.add('show');
-    scrollToTopButton.classList.remove('hide');
-  } else {
-    scrollToTopButton.classList.remove('show');
-    scrollToTopButton.classList.add('hide');
-  }
-});
-
 
