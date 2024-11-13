@@ -4,7 +4,7 @@ start {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  margin: 0;
+  margin: 22px;
   background-color: #000; /* Black background */
   color: #fff; /* White text color for readability */
 }
