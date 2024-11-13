@@ -1,5 +1,5 @@
 /* Centering container */
-body {
+start {
   display: flex;
   align-items: center;
   justify-content: center;
