@@ -1,1 +1,67 @@
+/* General reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body styling */
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f5f5f5;
+  font-family: Arial, sans-serif;
+}
+
+/* Project box styling */
+.project-box {
+  width: 300px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+/* Hover effect */
+.project-box:hover {
+  transform: translateY(-5px);
+}
+
+/* Header styling */
+.project-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.project-header h3 {
+  font-size: 1.2em;
+  color: #333;
+}
+
+.trophy-icon {
+  font-size: 1.5em;
+  color: #ffcd3c;
+}
+
+/* Description styling */
+.project-description {
+  margin: 10px 0;
+  color: #666;
+  font-size: 0.9em;
+}
+
+/* Icons styling */
+.project-icons {
+  display: flex;
+  gap: 10px;
+  font-size: 1.5em;
+}
+
+.project-icons i {
+  color: #4CAF50;
+}
 
