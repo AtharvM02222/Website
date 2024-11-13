@@ -61,7 +61,6 @@ setInterval(updateCountdown, 1000);
         };
 
 
-
 const scrollTopBtn = document.getElementById('scrollTopBtn');
 
 // Function to show the button when user scrolls down a little
@@ -84,16 +83,17 @@ scrollTopBtn.addEventListener('click', function() {
     // Trigger the hide animation
     scrollTopBtn.classList.add('hide');
 
-    // After animation ends, make sure it is hidden
+    // After animation ends, hide the button permanently and ensure it doesn't reappear
     scrollTopBtn.addEventListener('animationend', function() {
         scrollTopBtn.classList.add('hidden'); // Ensure it is hidden after the animation
     });
 });
 
-// Re-enable the button visibility after scroll to top is finished
+// Re-enable the button visibility after scrolling back to top
 window.addEventListener('scroll', function() {
-    if (window.scrollY === 0) {
+    if (window.scrollY === 0) { // When at the top of the page
         scrollTopBtn.classList.remove('hidden'); // Make button reappear at the top
     }
 });
+
 
