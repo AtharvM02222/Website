@@ -62,22 +62,16 @@ setInterval(updateCountdown, 1000);
 
 
 
-// Get the button
-let scrollToTopBtn = document.getElementById('scrollToTopBtn');
+const scrollToTopButton = document.querySelector('.scroll-to-top');
 
-// When the user scrolls down 20px from the top of the document, show the button
-window.onscroll = function() {
-  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-    scrollToTopBtn.classList.add('show');
+// Show button when scrolling down
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 200) { // Adjust this value as needed
+    scrollToTopButton.classList.add('show');
+    scrollToTopButton.classList.remove('hide');
   } else {
-    scrollToTopBtn.classList.remove('show');
+    scrollToTopButton.classList.remove('show');
+    scrollToTopButton.classList.add('hide');
   }
-};
+});
 
-// When the button is clicked, scroll to the top of the page
-scrollToTopBtn.onclick = function() {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-  });
-};
