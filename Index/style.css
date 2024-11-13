@@ -293,11 +293,14 @@ input:-webkit-autofill {
 
 
 
-/* Position the button on the right side */
+
+
+
+/* Position the button on the right side and ensure it moves with the screen */
 .scroll-to-top {
   position: fixed;
   bottom: 20px;
-  right: 20px; /* Change from left to right */
+  right: 20px; /* Position it on the right side */
   background: transparent;
   border: none;
   padding: 10px;
@@ -305,7 +308,7 @@ input:-webkit-autofill {
   z-index: 1000;
   display: none; /* Initially hidden */
   opacity: 0; /* Initially invisible */
-  transition: opacity 0.3s ease, right 0.3s ease; /* Add transition for opacity and position */
+  transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transition for opacity and movement */
 }
 
 /* Style the image inside the button */
@@ -314,17 +317,17 @@ input:-webkit-autofill {
   height: 50px;
 }
 
-/* Hover effect - move button slightly when hovered */
+/* Hover effect - scale and move slightly when hovered */
 .scroll-to-top:hover {
-  right: 25px; /* Slightly move to the right on hover */
   opacity: 1; /* Make the button visible */
+  transform: scale(1.1); /* Slightly scale up */
 }
 
-/* Show button when scrolled down (via JavaScript toggle) */
+/* Show button when scrolled down */
 .show {
   display: block;
-  opacity: 1; /* Ensure it becomes visible */
-  right: 20px; /* Reset to the original position */
+  opacity: 1; /* Make the button visible */
+  transform: translateY(0); /* Ensure it's at the correct position */
 }
 
 /* Animation for the button appearing */
@@ -360,5 +363,8 @@ input:-webkit-autofill {
 .scroll-to-top.hide {
   animation: disappear 0.5s ease-in forwards; /* Apply the disappear animation */
 }
+
+
+
 
 
