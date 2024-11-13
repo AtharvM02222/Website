@@ -63,60 +63,35 @@ setInterval(updateCountdown, 1000);
 
 
 // Get the button
-let scrollTopBtn = document.getElementById("scrollTopBtn");
+const scrollTopBtn = document.getElementById("scrollTopBtn");
 
-// When the user scrolls down 100px from the top of the document, show the button
-window.onscroll = function() {
-  if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+// Show the button when the user scrolls down
+window.onscroll = function () {
+  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
     scrollTopBtn.classList.add("show");
   } else {
     scrollTopBtn.classList.remove("show");
   }
 };
 
-// When the user clicks on the button, scroll to the top of the document
-scrollTopBtn.onclick = function() {
-  window.scrollTo({ top: 0, behavior: "smooth" });
+// Scroll to the top when the button is clicked
+scrollTopBtn.onclick = function () {
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+
+  // Apply the bounce-out animation to hide the button
+  scrollTopBtn.classList.add("leave");
+
+  // After the animation ends, hide the button completely
+  setTimeout(() => {
+    scrollTopBtn.style.display = 'none';
+  }, 600); // Match the duration of the bounce-out animation
 };
 
-// Add class to handle hover effect when leaving hover
-scrollTopBtn.addEventListener("mouseenter", function() {
-  let img = scrollTopBtn.querySelector("img");
-  img.classList.remove("leave-hover");
-});
-
-scrollTopBtn.addEventListener("mouseleave", function() {
-  let img = scrollTopBtn.querySelector("img");
-  img.classList.add("leave-hover");
-});
-
-
-// Get the button
-let scrollTopBtn = document.getElementById("scrollTopBtn");
-
-// Check if the button is in view on page scroll
-window.onscroll = function() {
-  if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
-    scrollTopBtn.classList.add("show");
-  } else {
-    scrollTopBtn.classList.remove("show");
+// Reset the button visibility after the animation finishes
+scrollTopBtn.onanimationend = function () {
+  if (scrollTopBtn.classList.contains('leave')) {
+    scrollTopBtn.style.display = 'none';
   }
 };
-
-// When the user clicks on the button, scroll to the top of the document
-scrollTopBtn.onclick = function() {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-};
-
-// Add class to handle hover effect when leaving hover
-scrollTopBtn.addEventListener("mouseenter", function() {
-  let img = scrollTopBtn.querySelector("img");
-  img.classList.remove("leave-hover");
-});
-
-scrollTopBtn.addEventListener("mouseleave", function() {
-  let img = scrollTopBtn.querySelector("img");
-  img.classList.add("leave-hover");
-});
-
 
