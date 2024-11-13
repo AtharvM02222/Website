@@ -290,3 +290,26 @@ input:-webkit-autofill {
     max-width: 100%; /* Adjust to full width on smaller screens */
   }
 }
+
+
+
+
+/* Scroll-to-Top Button Styling */
+#scrollToTopBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px; /* Adjust based on your image size */
+  height: 50px;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 1000;
+}
+
+/* Show the button when the user scrolls down */
+#scrollToTopBtn.show {
+  opacity: 1;
+  visibility: visible;
+}
