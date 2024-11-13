@@ -29,7 +29,7 @@ const scrollToTopBtn = document.getElementById('scrollToTopBtn');
 
 // Show button when user scrolls down
 window.addEventListener('scroll', () => {
-  if (window.scrollY > 300) { // Show button when scrolled 300px down
+  if (window.scrollY > 100) { // Show button when scrolled 300px down
     scrollToTopBtn.classList.add('show');
   } else {
     scrollToTopBtn.classList.remove('show');
