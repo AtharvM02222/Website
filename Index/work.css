@@ -4,14 +4,18 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
-  margin: 0; /* Removing extra margin */
+  margin: 0;
   color: #fff;
 }
 
 /* Project box styling */
 .project-box {
-  width: 800px; /* Large width for more content */
-  padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 80%; /* Large width for more content */
+  max-width: 1200px; /* Limit max width */
+  padding: 30px;
   background-color: #1a1a1a;
   border-radius: 10px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
@@ -23,15 +27,14 @@
   transform: translateY(-8px);
 }
 
-/* Header styling */
-.project-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+/* Text content styling */
+.project-content {
+  flex: 1; /* Take up available space */
+  padding-right: 20px;
 }
 
 .project-header h3 {
-  font-size: 2.5em; /* Larger title */
+  font-size: 2.5em;
   color: #ffffff;
 }
 
@@ -60,10 +63,10 @@
   height: auto;
 }
 
-/* Large image styling */
+/* Image styling */
 .project-image {
-  width: 100%; /* Full width within box */
+  width: 40%; /* Occupy 40% of the container width */
+  max-width: 300px; /* Max width for image */
   height: auto;
-  margin-top: 20px;
   border-radius: 8px;
 }
