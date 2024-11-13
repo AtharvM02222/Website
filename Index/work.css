@@ -1,16 +1,27 @@
+/* Centering container */
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #000; /* Black background */
+  color: #fff; /* White text color for readability */
+}
+
 /* Project box styling */
 .project-box {
-  width: 300px;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 500px; /* Adjusted width for more content */
+  padding: 40px; /* Increased padding for spacing */
+  background-color: #1a1a1a; /* Dark grey box color */
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7); /* Strong shadow for black background */
   transition: transform 0.2s;
 }
 
 /* Hover effect */
 .project-box:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
 }
 
 /* Header styling */
@@ -21,29 +32,30 @@
 }
 
 .project-header h3 {
-  font-size: 1.2em;
-  color: #333;
+  font-size: 1.8em;
+  color: #ffffff;
 }
 
 .trophy-icon {
-  font-size: 1.5em;
+  font-size: 2em;
   color: #ffcd3c;
 }
 
 /* Description styling */
 .project-description {
-  margin: 10px 0;
-  color: #666;
-  font-size: 0.9em;
+  margin: 20px 0;
+  color: #ccc; /* Light grey text for readability */
+  font-size: 1.1em;
 }
 
 /* Icons styling */
 .project-icons {
   display: flex;
-  gap: 10px;
-  font-size: 1.5em;
+  gap: 20px;
+  font-size: 2em; /* Larger icon size */
 }
 
-.project-icons i {
-  color: #4CAF50;
+.project-icons img {
+  width: 40px; /* Adjust size for real icons */
+  height: auto;
 }
