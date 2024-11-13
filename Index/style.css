@@ -292,31 +292,48 @@ input:-webkit-autofill {
 }
 
 
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+.content {
+  text-align: center;
+  padding-top: 50px;
+}
+
 .scroll-top-btn {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 30px; /* Adjust for spacing */
+  right: 30px;
   background-color: transparent;
   border: none;
   cursor: pointer;
   display: none; /* Initially hidden */
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.scroll-top-btn img {
-  width: 50px;
-  height: 50px;
-  opacity: 0.8;
+  z-index: 9999; /* Ensure button is on top of other content */
+  transition: transform 0.4s ease, opacity 0.4s ease, box-shadow 0.3s ease;
 }
 
 .scroll-top-btn.show {
   display: block;
   opacity: 1;
   transform: scale(1);
+  animation: bounce 0.6s ease-out; /* Bounce effect on appearance */
+}
+
+.scroll-top-btn img {
+  width: 60px; /* Adjust image size */
+  height: 60px;
+  opacity: 0.8;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .scroll-top-btn:hover img {
   opacity: 1;
+  transform: scale(1.1); /* Slight scale when hovered */
 }
 
 .scroll-top-btn:focus {
@@ -328,6 +345,14 @@ input:-webkit-autofill {
 }
 
 .scroll-top-btn img.leave-hover:hover {
-  transform: scale(1.1); /* Slight enlargement when hovering */
+  transform: scale(1.2); /* Slight enlargement when hovering */
 }
+
+/* Bounce effect for the button */
+@keyframes bounce {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
 
