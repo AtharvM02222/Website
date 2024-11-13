@@ -1,21 +1,21 @@
 /* Centering container */
-start {
+.start {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  margin: 22px;
+  margin: 0; /* Removing extra margin */
   background-color: #000; /* Black background */
-  color: #fff; /* White text color for readability */
+  color: #fff;
 }
 
 /* Project box styling */
 .project-box {
-  width: 500px; /* Adjusted width for more content */
-  padding: 40px; /* Increased padding for spacing */
-  background-color: #1a1a1a; /* Dark grey box color */
+  width: 800px; /* Large width for more content */
+  padding: 40px;
+  background-color: #1a1a1a;
   border-radius: 10px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7); /* Strong shadow for black background */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
   transition: transform 0.2s;
 }
 
@@ -32,7 +32,7 @@ start {
 }
 
 .project-header h3 {
-  font-size: 1.8em;
+  font-size: 2.5em; /* Larger title */
   color: #ffffff;
 }
 
@@ -44,18 +44,27 @@ start {
 /* Description styling */
 .project-description {
   margin: 20px 0;
-  color: #ccc; /* Light grey text for readability */
-  font-size: 1.1em;
+  color: #ccc;
+  font-size: 1.3em;
 }
 
 /* Icons styling */
 .project-icons {
   display: flex;
   gap: 20px;
-  font-size: 2em; /* Larger icon size */
+  font-size: 2em;
+  margin-top: 20px;
 }
 
 .project-icons img {
-  width: 40px; /* Adjust size for real icons */
+  width: 50px;
   height: auto;
+}
+
+/* Large image styling */
+.project-image {
+  width: 100%; /* Full width within box */
+  height: auto;
+  margin-top: 20px;
+  border-radius: 8px;
 }
