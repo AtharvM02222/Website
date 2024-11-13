@@ -59,3 +59,24 @@ setInterval(updateCountdown, 1000);
             const audio = document.getElementById('bg-music');
             localStorage.setItem('lastPlayedTime', audio.currentTime);
         };
+
+
+
+const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+
+// Show button when user scrolls down
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 100) { // Show button when scrolled 300px down
+    scrollToTopBtn.classList.add('show');
+  } else {
+    scrollToTopBtn.classList.remove('show');
+  }
+});
+
+// Smooth scroll to top when button is clicked
+scrollToTopBtn.addEventListener('click', () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+});
