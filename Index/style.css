@@ -292,67 +292,38 @@ input:-webkit-autofill {
 }
 
 
-.scroll-top-btn {
-    position: fixed;
-    bottom: 30px; /* Adjust for spacing */
-    right: 30px;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    display: none; /* Initially hidden */
-    z-index: 9999; /* Ensure button is on top of other content */
-    transition: transform 0.4s ease, opacity 0.4s ease, box-shadow 0.3s ease;
-}
+const scrollTopBtn = document.getElementById('scrollTopBtn');
 
-.scroll-top-btn.show {
-    display: block;
-    opacity: 1;
-    transform: scale(1);
-    animation: bounce 0.6s ease-out; /* Bounce effect on appearance */
-}
+// Function to show the button when user scrolls down a little
+window.addEventListener('scroll', function() {
+    if (window.scrollY > 100) { // Show button after scrolling 100px down
+        scrollTopBtn.classList.add('show');
+    } else {
+        scrollTopBtn.classList.remove('show');
+    }
+});
 
-.scroll-top-btn img {
-    width: 60px; /* Adjust image size */
-    height: 60px;
-    opacity: 0.8;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-}
+// When clicking the button, scroll to the top and hide it
+scrollTopBtn.addEventListener('click', function() {
+    // Scroll to the top of the page
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth' // Smooth scroll effect
+    });
 
-.scroll-top-btn:hover img {
-    opacity: 1;
-    transform: scale(1.1); /* Slight scale when hovered */
-}
+    // Trigger the hide animation
+    scrollTopBtn.classList.add('hide');
 
-.scroll-top-btn:focus {
-    outline: none;
-}
+    // After animation ends, make sure it is hidden
+    scrollTopBtn.addEventListener('animationend', function() {
+        scrollTopBtn.classList.add('hidden'); // Ensure it is hidden after the animation
+    });
+});
 
-.scroll-top-btn img.leave-hover {
-    transition: transform 0.3s ease;
-}
+// Re-enable the button visibility after scroll to top is finished
+window.addEventListener('scroll', function() {
+    if (window.scrollY === 0) {
+        scrollTopBtn.classList.remove('hidden'); // Make button reappear at the top
+    }
+});
 
-.scroll-top-btn img.leave-hover:hover {
-    transform: scale(1.2); /* Slight enlargement when hovering */
-}
-
-/* Smooth exit animation for button */
-@keyframes exitAnimation {
-  0% { transform: scale(1) translateX(0); opacity: 1; }
-  100% { transform: scale(0) translateX(200%); opacity: 0; }
-}
-
-.scroll-top-btn.hide {
-    animation: exitAnimation 0.5s forwards;
-}
-
-/* Bounce effect for the button */
-@keyframes bounce {
-  0% { transform: scale(0); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
-}
-
-/* Hide the button permanently after click */
-.hidden {
-    display: none !important;
-}
