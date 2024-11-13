@@ -292,66 +292,67 @@ input:-webkit-autofill {
 }
 
 
-
 .scroll-top-btn {
-  position: fixed;
-  bottom: 30px; /* Adjust for spacing */
-  right: 30px;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  display: none; /* Initially hidden */
-  z-index: 9999; /* Ensure button is on top of other content */
-  transition: transform 0.4s ease, opacity 0.4s ease, box-shadow 0.3s ease;
-  animation: bounceIn 1s ease-out; /* Apply bounce-in effect when button appears */
+    position: fixed;
+    bottom: 30px; /* Adjust for spacing */
+    right: 30px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    display: none; /* Initially hidden */
+    z-index: 9999; /* Ensure button is on top of other content */
+    transition: transform 0.4s ease, opacity 0.4s ease, box-shadow 0.3s ease;
 }
 
 .scroll-top-btn.show {
-  display: block;
-  opacity: 1;
-  transform: scale(1);
-  animation: bounceIn 0.6s ease-out; /* Bounce effect on appearance */
+    display: block;
+    opacity: 1;
+    transform: scale(1);
+    animation: bounce 0.6s ease-out; /* Bounce effect on appearance */
 }
 
 .scroll-top-btn img {
-  width: 60px; /* Adjust image size */
-  height: 60px;
-  opacity: 0.8;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+    width: 60px; /* Adjust image size */
+    height: 60px;
+    opacity: 0.8;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .scroll-top-btn:hover img {
-  opacity: 1;
-  transform: scale(1.2); /* Slight scale when hovered */
+    opacity: 1;
+    transform: scale(1.1); /* Slight scale when hovered */
 }
 
 .scroll-top-btn:focus {
-  outline: none;
+    outline: none;
 }
 
 .scroll-top-btn img.leave-hover {
-  transition: transform 0.3s ease;
+    transition: transform 0.3s ease;
 }
 
 .scroll-top-btn img.leave-hover:hover {
-  transform: scale(1.2); /* Slight enlargement when hovering */
+    transform: scale(1.2); /* Slight enlargement when hovering */
 }
 
-/* Bounce-in effect */
-@keyframes bounceIn {
+/* Smooth exit animation for button */
+@keyframes exitAnimation {
+  0% { transform: scale(1) translateX(0); opacity: 1; }
+  100% { transform: scale(0) translateX(200%); opacity: 0; }
+}
+
+.scroll-top-btn.hide {
+    animation: exitAnimation 0.5s forwards;
+}
+
+/* Bounce effect for the button */
+@keyframes bounce {
   0% { transform: scale(0); }
   50% { transform: scale(1.1); }
   100% { transform: scale(1); }
 }
 
-/* Bounce-out effect */
-@keyframes bounceOut {
-  0% { transform: scale(1); }
-  50% { transform: scale(0.8); }
-  100% { transform: scale(0); opacity: 0; }
+/* Hide the button permanently after click */
+.hidden {
+    display: none !important;
 }
-
-.scroll-top-btn.leave {
-  animation: bounceOut 0.6s forwards; /* Add bounce-out effect on click */
-}
-
