@@ -62,7 +62,6 @@ setInterval(updateCountdown, 1000);
 
 
 
-// Get the button element
 const scrollTopBtn = document.getElementById('scrollTopBtn');
 
 // Function to show the button on page load
@@ -72,14 +71,20 @@ window.addEventListener('load', function() {
     }, 500); // Delay the appearance slightly
 });
 
-// When clicking the button, hide it permanently
+// When clicking the button, scroll to the top and hide it
 scrollTopBtn.addEventListener('click', function() {
-    scrollTopBtn.classList.add('hide'); // Trigger the exit animation
+    // Scroll to the top of the page
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth' // Smooth scroll effect
+    });
+
+    // Trigger the hide animation
+    scrollTopBtn.classList.add('hide');
 
     // After animation ends, hide the button permanently
     scrollTopBtn.addEventListener('animationend', function() {
         scrollTopBtn.classList.add('hidden'); // Ensure it is hidden after the animation
     });
 });
-
 
