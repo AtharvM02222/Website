@@ -62,6 +62,33 @@ setInterval(updateCountdown, 1000);
 
 
 
+// Get the button
+let scrollTopBtn = document.getElementById("scrollTopBtn");
+
+// When the user scrolls down 100px from the top of the document, show the button
+window.onscroll = function() {
+  if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+    scrollTopBtn.classList.add("show");
+  } else {
+    scrollTopBtn.classList.remove("show");
+  }
+};
+
+// When the user clicks on the button, scroll to the top of the document
+scrollTopBtn.onclick = function() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+// Add class to handle hover effect when leaving hover
+scrollTopBtn.addEventListener("mouseenter", function() {
+  let img = scrollTopBtn.querySelector("img");
+  img.classList.remove("leave-hover");
+});
+
+scrollTopBtn.addEventListener("mouseleave", function() {
+  let img = scrollTopBtn.querySelector("img");
+  img.classList.add("leave-hover");
+});
 
 
 
