@@ -62,36 +62,24 @@ setInterval(updateCountdown, 1000);
 
 
 
-// Get the button
-const scrollTopBtn = document.getElementById("scrollTopBtn");
+// Get the button element
+const scrollTopBtn = document.getElementById('scrollTopBtn');
 
-// Show the button when the user scrolls down
-window.onscroll = function () {
-  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-    scrollTopBtn.classList.add("show");
-  } else {
-    scrollTopBtn.classList.remove("show");
-  }
-};
+// Function to show the button on page load
+window.addEventListener('load', function() {
+    setTimeout(() => {
+        scrollTopBtn.classList.add('show');
+    }, 500); // Delay the appearance slightly
+});
 
-// Scroll to the top when the button is clicked
-scrollTopBtn.onclick = function () {
-  document.body.scrollTop = 0;
-  document.documentElement.scrollTop = 0;
+// When clicking the button, hide it permanently
+scrollTopBtn.addEventListener('click', function() {
+    scrollTopBtn.classList.add('hide'); // Trigger the exit animation
 
-  // Apply the bounce-out animation to hide the button
-  scrollTopBtn.classList.add("leave");
+    // After animation ends, hide the button permanently
+    scrollTopBtn.addEventListener('animationend', function() {
+        scrollTopBtn.classList.add('hidden'); // Ensure it is hidden after the animation
+    });
+});
 
-  // After the animation ends, hide the button completely
-  setTimeout(() => {
-    scrollTopBtn.style.display = 'none';
-  }, 600); // Match the duration of the bounce-out animation
-};
-
-// Reset the button visibility after the animation finishes
-scrollTopBtn.onanimationend = function () {
-  if (scrollTopBtn.classList.contains('leave')) {
-    scrollTopBtn.style.display = 'none';
-  }
-};
 
