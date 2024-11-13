@@ -91,4 +91,32 @@ scrollTopBtn.addEventListener("mouseleave", function() {
 });
 
 
+// Get the button
+let scrollTopBtn = document.getElementById("scrollTopBtn");
+
+// Check if the button is in view on page scroll
+window.onscroll = function() {
+  if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+    scrollTopBtn.classList.add("show");
+  } else {
+    scrollTopBtn.classList.remove("show");
+  }
+};
+
+// When the user clicks on the button, scroll to the top of the document
+scrollTopBtn.onclick = function() {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+// Add class to handle hover effect when leaving hover
+scrollTopBtn.addEventListener("mouseenter", function() {
+  let img = scrollTopBtn.querySelector("img");
+  img.classList.remove("leave-hover");
+});
+
+scrollTopBtn.addEventListener("mouseleave", function() {
+  let img = scrollTopBtn.querySelector("img");
+  img.classList.add("leave-hover");
+});
+
 
