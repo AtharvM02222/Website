@@ -17,9 +17,7 @@
 
 
 
-// script.js
-
-// Adding a simple log on hover for demonstration
+// Log a message on hover over the project box
 document.querySelector('.project-box').addEventListener('mouseover', () => {
   console.log("Hovering over the project box");
 });
