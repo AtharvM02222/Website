@@ -293,18 +293,6 @@ input:-webkit-autofill {
 
 
 
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden; /* Prevent horizontal scroll */
-}
-
-.content {
-  text-align: center;
-  padding-top: 50px;
-}
-
 .scroll-top-btn {
   position: fixed;
   bottom: 30px; /* Adjust for spacing */
@@ -315,13 +303,14 @@ body {
   display: none; /* Initially hidden */
   z-index: 9999; /* Ensure button is on top of other content */
   transition: transform 0.4s ease, opacity 0.4s ease, box-shadow 0.3s ease;
+  animation: bounceIn 1s ease-out; /* Apply bounce-in effect when button appears */
 }
 
 .scroll-top-btn.show {
   display: block;
   opacity: 1;
   transform: scale(1);
-  animation: bounce 0.6s ease-out; /* Bounce effect on appearance */
+  animation: bounceIn 0.6s ease-out; /* Bounce effect on appearance */
 }
 
 .scroll-top-btn img {
@@ -333,7 +322,7 @@ body {
 
 .scroll-top-btn:hover img {
   opacity: 1;
-  transform: scale(1.1); /* Slight scale when hovered */
+  transform: scale(1.2); /* Slight scale when hovered */
 }
 
 .scroll-top-btn:focus {
@@ -348,11 +337,21 @@ body {
   transform: scale(1.2); /* Slight enlargement when hovering */
 }
 
-/* Bounce effect for the button */
-@keyframes bounce {
+/* Bounce-in effect */
+@keyframes bounceIn {
   0% { transform: scale(0); }
   50% { transform: scale(1.1); }
   100% { transform: scale(1); }
 }
 
+/* Bounce-out effect */
+@keyframes bounceOut {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.8); }
+  100% { transform: scale(0); opacity: 0; }
+}
+
+.scroll-top-btn.leave {
+  animation: bounceOut 0.6s forwards; /* Add bounce-out effect on click */
+}
 
