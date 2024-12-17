@@ -11,6 +11,13 @@ body, html {
     font-family: 'Rowdies', sans-serif; 
 }
 
+        .favicon-container img {
+            width: 100px; /* Set desired width */
+            height: 100px;
+            border-radius: 50%; /* Circular effect */
+            object-fit: cover;
+        }
+
 #loading-screen {
     position: fixed;
     top: 0;
