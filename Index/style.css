@@ -23,6 +23,22 @@ body {
   height: 100vh;
 }
 
+.intro-text {
+    font-family: 'Rowdies', sans-serif;
+    font-size: 40px; /* Adjusted for better visibility */
+    color: rgb(255, 255, 255);
+    max-width: 600px; /* Ensures it fits within a readable width */
+    text-align: left;
+    margin-left: 50px; /* Keeps it away from the left edge */
+    white-space: normal;
+    line-height: 1.3; /* Ensures readability */
+}
+
+.highlight {
+    color: rgb(230, 207, 120); /* Matches your existing highlight color */
+}
+
+
         .favicon-container img {
             width: 100px; /* Set desired width */
             height: 100px;
