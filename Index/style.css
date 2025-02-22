@@ -23,32 +23,42 @@ body {
   height: 100vh;
 }
 
-.intro-container {
+/* Container for intro text & image */
+.intro-box {
     display: flex;
     align-items: center;
-    justify-content: flex-start; /* Aligns to the left but keeps spacing */
-    gap: 20px; /* Adds space between text and image */
-    margin-left: 50px; /* Keeps text away from the left screen */
-    max-width: 900px; /* Adjust this based on your layout */
+    justify-content: flex-start; /* Aligns everything to the left */
+    gap: 20px; /* Space between text and image */
+    margin-left: 50px; /* Keeps it away from the left edge */
+    max-width: 800px; /* Adjust width as needed */
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.8); /* Slightly transparent black */
+    border-radius: 20px; /* Rounded edges */
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6); /* Adds shadow */
 }
 
+/* Intro text */
 .intro-text {
     font-family: 'Rowdies', sans-serif;
     font-size: 40px;
     color: rgb(255, 255, 255);
     line-height: 1.3;
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5); /* Adds shadow to text */
 }
 
+/* Highlighted last name */
 .highlight {
     color: rgb(230, 207, 120);
 }
 
+/* Profile picture styling */
 .profile-pic {
-    width: 120px; /* Adjust size as needed */
-    height: 120px;
-    border-radius: 50%; /* Makes it circular */
+    width: 150px; /* Increased size */
+    height: 150px;
+    border-radius: 50%; /* Circular */
     object-fit: cover;
-    border: 3px solid rgb(255, 255, 255); /* Optional: White border */
+    border: 3px solid rgb(230, 207, 120); /* Matches highlight color */
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6); /* Adds shadow to image */
 }
 
         .favicon-container img {
