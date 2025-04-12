@@ -92,3 +92,38 @@
   visibility: visible;
 }
 
+.project-box {
+  position: relative;
+  padding: 30px;
+  border-radius: 10px;
+  background-color: #0f0f0f;
+  color: white;
+  margin: 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.tech-icons {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  gap: 12px;
+}
+
+.tech-icons img {
+  width: 32px;
+  height: auto;
+  opacity: 0.85;
+}
+
+.trophy-icon {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+.trophy-icon img {
+  width: 36px;
+  height: auto;
+  opacity: 0.9;
+}
