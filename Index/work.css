@@ -107,23 +107,26 @@
   bottom: 20px;
   left: 20px;
   display: flex;
-  gap: 12px;
+  gap: 15px;
 }
 
-.tech-icons img {
-  width: 32px;
+.tech-icons img,
+.trophy-icon img {
+  width: 40px;
   height: auto;
-  opacity: 0.85;
+  opacity: 0.9;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  cursor: pointer;
+}
+
+.tech-icons img:hover,
+.trophy-icon img:hover {
+  transform: scale(1.2);
+  opacity: 1;
 }
 
 .trophy-icon {
   position: absolute;
   bottom: 20px;
   right: 20px;
-}
-
-.trophy-icon img {
-  width: 36px;
-  height: auto;
-  opacity: 0.9;
 }
