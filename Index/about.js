@@ -1,25 +1,28 @@
 
 // ─────────────── Time-alive counter ───────────────
-const birthDate = new Date(2011, 5, 8, 21, 8, 0); // June is month 5
+const birthDate = new Date(2011, 5, 8, 21, 8, 0); // 8 June 2011, 9:08 PM
 
 function updateLifeCounter() {
-  const now  = new Date();
-  const diff = now - birthDate;           // milliseconds elapsed
+  const now = new Date();
 
-  const seconds = Math.floor(diff / 1000);
+  let diff = now - birthDate;
+  let seconds = Math.floor(diff / 1000);
+
+  const years = Math.floor(seconds / (365.25 * 24 * 3600));
+  seconds -= Math.floor(years * 365.25 * 24 * 3600);
+
+  const days = Math.floor(seconds / (24 * 3600));
+  seconds -= days * 24 * 3600;
+
+  const hours = Math.floor(seconds / 3600);
+  seconds -= hours * 3600;
+
   const minutes = Math.floor(seconds / 60);
-  const hours   = Math.floor(seconds / 3600);
-  const days    = Math.floor(seconds / 86400);
-  const years   = Math.floor(days / 365.25);  // approximate
+  seconds = seconds % 60;
 
-  document.getElementById('lifeYears'  ).textContent = years;
-  document.getElementById('lifeDays'   ).textContent = days;
-  document.getElementById('lifeHours'  ).textContent = hours;
-  document.getElementById('lifeMinutes').textContent = minutes;
-  document.getElementById('lifeSeconds').textContent = seconds;
+  document.getElementById('lifeText').textContent =
+    `${years} years, ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
 }
 
-// kick it off immediately, then every second
 updateLifeCounter();
 setInterval(updateLifeCounter, 1000);
-// ────────────────────────────────────────────────────
