@@ -6,22 +6,25 @@ function updateLifeCounter() {
   const now = new Date();
 
   let diff = now - birthDate;
-  let seconds = Math.floor(diff / 1000);
+  let totalSeconds = Math.floor(diff / 1000);
 
-  const years = Math.floor(seconds / (365.25 * 24 * 3600));
-  seconds -= Math.floor(years * 365.25 * 24 * 3600);
+  const years = Math.floor(totalSeconds / (365.25 * 24 * 60 * 60));
+  totalSeconds -= Math.floor(years * 365.25 * 24 * 60 * 60);
 
-  const days = Math.floor(seconds / (24 * 3600));
-  seconds -= days * 24 * 3600;
+  const days = Math.floor(totalSeconds / (24 * 60 * 60));
+  totalSeconds -= days * 24 * 60 * 60;
 
-  const hours = Math.floor(seconds / 3600);
-  seconds -= hours * 3600;
+  const hours = Math.floor(totalSeconds / (60 * 60));
+  totalSeconds -= hours * 60 * 60;
 
-  const minutes = Math.floor(seconds / 60);
-  seconds = seconds % 60;
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
 
-  document.getElementById('lifeText').textContent =
-    `${years} years, ${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+  document.getElementById('lifeYears').textContent = years.toString().padStart(2, '0');
+  document.getElementById('lifeDays').textContent = days.toString().padStart(2, '0');
+  document.getElementById('lifeHours').textContent = hours.toString().padStart(2, '0');
+  document.getElementById('lifeMinutes').textContent = minutes.toString().padStart(2, '0');
+  document.getElementById('lifeSeconds').textContent = seconds.toString().padStart(2, '0');
 }
 
 updateLifeCounter();
