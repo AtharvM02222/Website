@@ -291,24 +291,21 @@
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script>
   if (window.netlifyIdentity) {
-    window.netlifyIdentity.init();
-  }
+    window.netlifyIdentity.on("init", user => {
+      // No action needed at init
+    });
 
-  window.addEventListener('DOMContentLoaded', () => {
-    const secretWord = "admin"; // You will type 'admin' in console
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        const input = prompt("Enter admin code:");
-        if (input && input.toLowerCase() === secretWord) {
-          netlifyIdentity.open(); // Open the Netlify Identity widget
-          netlifyIdentity.on('login', () => {
-            sessionStorage.setItem('authorized', 'true');
-            window.location.href = '/private.html';
-          });
-        }
+    // Secret admin trigger in console
+    Object.defineProperty(window, "admin", {
+      get: function() {
+        console.log("Opening admin login...");
+        window.netlifyIdentity.open(); // Opens login/signup popup
+        window.netlifyIdentity.on("login", () => {
+          document.location.href = "/private.html"; // Redirect after login
+        });
       }
     });
-  });
+  }
 </script>
             
 
