@@ -284,8 +284,9 @@
   if (window.netlifyIdentity) {
     window.netlifyIdentity.on("init", user => {
       if (!user) {
+        window.netlifyIdentity.open(); // Automatically open login/signup popup
         window.netlifyIdentity.on("login", () => {
-          document.location.href = "/private.html"; // after login, go to private page
+          document.location.href = "/private.html";
         });
       }
     });
