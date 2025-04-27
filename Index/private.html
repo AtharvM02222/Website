@@ -2,45 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Private Page</title>
+  <style>
+    body {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome, Atharv!</h1>
-  <p>This page is private and secured.</p>
-
-
-<script>
-  // Check if the user is logged in when they access private.html
-  window.onload = function() {
-    if (sessionStorage.getItem('authorized') !== 'true') {
-      // If the user is not authorized, redirect to homepage
-      window.location.href = '/';
-    }
-  };
-</script>
-<style>
-  body { display: none; }
-</style>
-<script>
-  window.onload = function() {
-    if (sessionStorage.getItem('authorized') !== 'true') {
-      window.location.href = '/';
-    } else {
-      document.body.style.display = "block";
-    }
-  };
-</script>
+  <h1>Welcome to the Private Page!</h1>
+  <p>This page is only for authorized users.</p>
 
   <script>
-  window.onload = function() {
-    if (sessionStorage.getItem('authorized') !== 'true') {
-      window.location.href = '/'; // Go back to index.html if not logged in
-    }
-  };
-</script>
-  
-
-  
-
+    window.onload = function() {
+      if (sessionStorage.getItem('authorized') !== 'true') {
+        window.location.href = '/'; // If not authorized, go back to home
+      } else {
+        document.body.style.display = "block"; // If authorized, show the page
+      }
+    };
+  </script>
 </body>
 </html>
