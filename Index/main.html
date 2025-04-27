@@ -279,47 +279,44 @@
   <strong>2025 Atharv Mandlavdiya. All rights reserved.</strong>
 </div>
 
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-<script>
-  // Detect 'admin' in the console and show the login button
-  (function() {
-    var originalConsoleLog = console.log;
-    console.log = function(message) {
-      if (message && message.includes('admin')) {
-        // When 'admin' is typed, show the login button
-        document.getElementById('loginBtn').style.display = 'block';
-        // Automatically open the login modal when 'admin' is detected
-        netlifyIdentity.open();
-      }
-      originalConsoleLog.apply(console, arguments);
-    };
-  })();
 
-  // Create a hidden login button, which will appear when 'admin' is typed in the console
-  document.body.innerHTML += '<button id="loginBtn" style="display:none;" onclick="netlifyIdentity.open()">Login</button>';
-
-  // Listen for successful login
-  netlifyIdentity.on('login', user => {
-    sessionStorage.setItem('authorized', 'true'); // Mark as logged in
-    window.location.href = '/private.html'; // Redirect to private.html after login
-  });
-
-  // Ensure only authorized users can access private.html
-  window.onload = function() {
-    // Check if user is already authorized
-    if (sessionStorage.getItem('authorized') !== 'true') {
-      // Check if we're on the main page to avoid looping
-      if (window.location.pathname !== '/' && window.location.pathname !== '/index.html') {
-        // If user is not authorized and not on the homepage, redirect to the homepage
-        window.location.href = '/';
-      }
-    }
-  };
-</script>
             
 
       </footer>
     </center>
   </center>
+
+
+
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script>
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.init();
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const secretWord = "admin"; // You will type 'admin' in console
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const input = prompt("Enter admin code:");
+        if (input && input.toLowerCase() === secretWord) {
+          netlifyIdentity.open(); // Open the Netlify Identity widget
+          netlifyIdentity.on('login', () => {
+            sessionStorage.setItem('authorized', 'true');
+            window.location.href = '/private.html';
+          });
+        }
+      }
+    });
+  });
+</script>
+            
+
+
+
+            
+
+
+            
   </body>
   </html>
