@@ -292,25 +292,25 @@
 <script>
   if (window.netlifyIdentity) {
     window.netlifyIdentity.on("init", user => {
-      // No action needed at init
+      if (user) {
+        document.location.href = "/private.html"; // Already logged in, go to private.html
+      }
     });
 
-    // Secret admin trigger in console
+    // Secret trigger
     Object.defineProperty(window, "admin", {
       get: function() {
         console.log("Opening admin login...");
-        window.netlifyIdentity.open(); // Opens login/signup popup
-        window.netlifyIdentity.on("login", () => {
-          document.location.href = "/private.html"; // Redirect after login
-        });
+        window.netlifyIdentity.open(); // Open login popup
       }
+    });
+
+    // After login
+    window.netlifyIdentity.on("login", () => {
+      document.location.href = "/private.html"; // Redirect after successful login
     });
   }
 </script>
-            
-
-
-
             
 
 
