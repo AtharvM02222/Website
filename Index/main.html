@@ -281,12 +281,12 @@
 
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script>
-  // Function to detect 'admin' in the console and open the login
+  // Detect 'admin' in the console and show the login button
   (function() {
     var originalConsoleLog = console.log;
     console.log = function(message) {
       if (message && message.includes('admin')) {
-        // Show the login button when 'admin' is typed in the console
+        // When 'admin' is typed, show the login button
         document.getElementById('loginBtn').style.display = 'block';
         // Automatically open the login modal when 'admin' is detected
         netlifyIdentity.open();
@@ -295,20 +295,24 @@
     };
   })();
 
-  // Create a hidden login button
+  // Create a hidden login button, which will appear when 'admin' is typed in the console
   document.body.innerHTML += '<button id="loginBtn" style="display:none;" onclick="netlifyIdentity.open()">Login</button>';
 
-  // Listen for successful login and redirect
+  // Listen for successful login
   netlifyIdentity.on('login', user => {
     sessionStorage.setItem('authorized', 'true'); // Mark as logged in
-    window.location.href = '/private.html'; // Redirect to private.html
+    window.location.href = '/private.html'; // Redirect to private.html after login
   });
 
-  // Protect private.html by checking login status
+  // Ensure only authorized users can access private.html
   window.onload = function() {
+    // Check if user is already authorized
     if (sessionStorage.getItem('authorized') !== 'true') {
-      // Redirect to homepage if not logged in
-      window.location.href = '/';
+      // Check if we're on the main page to avoid looping
+      if (window.location.pathname !== '/' && window.location.pathname !== '/index.html') {
+        // If user is not authorized and not on the homepage, redirect to the homepage
+        window.location.href = '/';
+      }
     }
   };
 </script>
