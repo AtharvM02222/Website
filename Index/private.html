@@ -31,7 +31,13 @@
   };
 </script>
 
-  
+  <script>
+  window.onload = function() {
+    if (sessionStorage.getItem('authorized') !== 'true') {
+      window.location.href = '/'; // Go back to index.html if not logged in
+    }
+  };
+</script>
   
 
   
