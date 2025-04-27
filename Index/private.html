@@ -18,6 +18,19 @@
     }
   };
 </script>
+<style>
+  body { display: none; }
+</style>
+<script>
+  window.onload = function() {
+    if (sessionStorage.getItem('authorized') !== 'true') {
+      window.location.href = '/';
+    } else {
+      document.body.style.display = "block";
+    }
+  };
+</script>
+
   
   
 
