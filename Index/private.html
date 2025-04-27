@@ -7,5 +7,21 @@
 <body>
   <h1>Welcome, Atharv!</h1>
   <p>This page is private and secured.</p>
+
+
+<script>
+  // Check if the user is logged in when they access private.html
+  window.onload = function() {
+    if (sessionStorage.getItem('authorized') !== 'true') {
+      // If the user is not authorized, redirect to homepage
+      window.location.href = '/';
+    }
+  };
+</script>
+  
+  
+
+  
+
 </body>
 </html>
