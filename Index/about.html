@@ -121,7 +121,7 @@ document.addEventListener('mouseup', function() {
   const selectedText = window.getSelection().toString().trim().toLowerCase();
   if (selectedText === 'alive') {
     if (window.netlifyIdentity) {
-      window.netlifyIdentity.open(); // Open login popup when "alive" is selected
+      window.netlifyIdentity.open(); // Open Netlify login widget
     }
   }
 });
