@@ -115,7 +115,17 @@
     </div>
   </div>
   <!-- ──────────────────────────────────────────────── -->
-
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script>
+document.addEventListener('mouseup', function() {
+  const selectedText = window.getSelection().toString().trim().toLowerCase();
+  if (selectedText === 'alive') {
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.open(); // Open login popup when "alive" is selected
+    }
+  }
+});
+</script>
   <!-- Link to your external about.js file -->
   <script src="about.js"></script>
 </body>
