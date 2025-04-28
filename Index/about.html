@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width">
     <meta name="theme-color" content="#161616">
-    <title>Work |</title>
+    <title>About |</title>
     <link rel="icon" type="image/png" href="./img/aboutimage.svg">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -116,12 +116,13 @@
   </div>
   <!-- ──────────────────────────────────────────────── -->
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-<script>
-document.addEventListener('mouseup', function() {
-  const selectedText = window.getSelection().toString().trim().toLowerCase();
-  if (selectedText === 'alive') {
+
+        <script>
+document.addEventListener('selectionchange', function() {
+  const selectedText = window.getSelection().toString().trim();
+  if (selectedText === "Alive") {
     if (window.netlifyIdentity) {
-      window.netlifyIdentity.open(); // Open Netlify login widget
+      window.netlifyIdentity.open();
     }
   }
 });
