@@ -1,5 +1,5 @@
 [[redirects]]
-  from = "/private.html"
+  from = "/cloud.html"
   to = "/"
   status = 401
   force = true
