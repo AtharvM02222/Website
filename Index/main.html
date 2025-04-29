@@ -290,12 +290,7 @@
 
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script>
-  if (window.netlifyIdentity) {
-    window.netlifyIdentity.on("init", user => {
-      if (user) {
-        document.location.href = "/cloud.html"; // Redirect to cloud.html if already logged in
-      }
-    });
+  
 
     Object.defineProperty(window, "admin", {
       get: function() {
