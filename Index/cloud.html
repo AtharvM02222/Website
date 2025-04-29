@@ -1,27 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cloud</title>
   <style>
     body {
       display: none;
+      font-family: Arial, sans-serif;
+      background-color: #f3f3f3;
+      padding: 20px;
     }
   </style>
 </head>
 <body>
-  <h1>Welcome to the Private Page!</h1>
-  <p>This page is only for authorized users.</p>
+  <h1>Welcome to Your Cloud, <span id="username"></span>!</h1>
+  <p>This is your secure cloud area. You can add Gmail, WhatsApp, or custom tools here.</p>
 
+  <button onclick="logout()">Logout</button>
+
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script>
-    window.onload = function() {
-      if (sessionStorage.getItem('authorized') !== 'true') {
-        window.location.href = '/'; // If not authorized, go back to home
+    window.netlifyIdentity.on("init", user => {
+      if (!user) {
+        // Not logged in, redirect to main page
+        window.location.href = "/main.html";
       } else {
-        document.body.style.display = "block"; // If authorized, show the page
+        // Show user info and content
+        document.getElementById("username").textContent = user.user_metadata.full_name || user.email;
+        document.body.style.display = "block";
       }
-    };
+    });
+
+    // Automatically init identity
+    window.netlifyIdentity.init();
+
+    function logout() {
+      window.netlifyIdentity.logout();
+      window.location.href = "/main.html";
+    }
   </script>
 </body>
 </html>
