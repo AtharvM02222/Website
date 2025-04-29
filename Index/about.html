@@ -121,13 +121,13 @@
   if (window.netlifyIdentity) {
     document.addEventListener("mouseup", function() {
       var selectedText = window.getSelection().toString().trim();
-      if (selectedText.toLowerCase() === "alive") { // case insensitive match
+      if (selectedText.toLowerCase() === "Alive") { // case insensitive match
         window.netlifyIdentity.open();
       }
     });
 
     window.netlifyIdentity.on("login", () => {
-      window.location.href = "/private.html"; // Redirect after login
+      window.location.href = "/cloud.html"; // Redirect after login
     });
   }
 </script>
