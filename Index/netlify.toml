@@ -1,0 +1,9 @@
+[[redirects]]
+  from = "/cloud"
+  to = "/cloud.html"
+  status = 200
+
+[[redirects]]
+  from = "/cloud.html"
+  to = "/cloud.html"
+  status = 200
