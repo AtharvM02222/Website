@@ -117,13 +117,16 @@
   <!-- ──────────────────────────────────────────────── -->
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script>
-  
-
-    window.netlifyIdentity.on("login", () => {
-      document.location.href = "/cloud.html"; // Redirect after successful login
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on('init', user => {
+      console.log('Init done.');
     });
 
-    // Open login widget when "Alive" is selected
+    window.netlifyIdentity.on('login', () => {
+      console.log('Logged in!');
+      window.location.href = "/cloud.html";
+    });
+
     document.addEventListener('selectionchange', () => {
       const selection = window.getSelection().toString().trim();
       if (selection === "Alive") {
