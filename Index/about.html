@@ -116,26 +116,20 @@
   </div>
   <!-- ──────────────────────────────────────────────── -->
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
 <script>
   if (window.netlifyIdentity) {
-    window.netlifyIdentity.on("init", user => {
-      if (!user) {
-        window.netlifyIdentity.on("login", () => {
-          window.location.href = "/private.html"; // redirect after login
-        });
+    document.addEventListener("mouseup", function() {
+      var selectedText = window.getSelection().toString().trim();
+      if (selectedText.toLowerCase() === "alive") { // case insensitive match
+        window.netlifyIdentity.open();
       }
     });
-  }
 
-  // Detect text selection on "Alive"
-  document.addEventListener('mouseup', function() {
-    var selectedText = window.getSelection().toString().trim();
-    if (selectedText === 'Alive') {
-      if (window.netlifyIdentity) {
-        window.netlifyIdentity.open(); // open login widget
-      }
-    }
-  });
+    window.netlifyIdentity.on("login", () => {
+      window.location.href = "/private.html"; // Redirect after login
+    });
+  }
 </script>
   <!-- Link to your external about.js file -->
   <script src="about.js"></script>
