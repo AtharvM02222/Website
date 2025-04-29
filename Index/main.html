@@ -291,21 +291,24 @@
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script>
   if (window.netlifyIdentity) {
-    // Secret admin trigger
-    Object.defineProperty(window, "admin", {
-      get: function() {
-        console.log("Opening admin login...");
-        window.netlifyIdentity.open(); // open login widget manually
+    window.netlifyIdentity.on("init", user => {
+      if (user) {
+        document.location.href = "/cloud.html"; // Redirect to cloud.html if already logged in
       }
     });
 
-    // After login
+    Object.defineProperty(window, "admin", {
+      get: function() {
+        console.log("Opening login...");
+        window.netlifyIdentity.open();
+      }
+    });
+
     window.netlifyIdentity.on("login", () => {
-      document.location.href = "/cloud.html"; // go to cloud.html after login
+      document.location.href = "/cloud.html"; // Redirect after login
     });
   }
 </script>
-
             
   </body>
   </html>
