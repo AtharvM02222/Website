@@ -116,18 +116,24 @@
   </div>
   <!-- ──────────────────────────────────────────────── -->
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-
 <script>
   if (window.netlifyIdentity) {
-    document.addEventListener("mouseup", function() {
-      var selectedText = window.getSelection().toString().trim();
-      if (selectedText.toLowerCase() === "Alive") { // case insensitive match
-        window.netlifyIdentity.open();
+    window.netlifyIdentity.on("init", user => {
+      if (user) {
+        document.location.href = "/cloud.html"; // Redirect to cloud after login
       }
     });
 
     window.netlifyIdentity.on("login", () => {
-      window.location.href = "/cloud.html"; // Redirect after login
+      document.location.href = "/cloud.html"; // Redirect after successful login
+    });
+
+    // Open login widget when "Alive" is selected
+    document.addEventListener('selectionchange', () => {
+      const selection = window.getSelection().toString().trim();
+      if (selection === "Alive") {
+        window.netlifyIdentity.open();
+      }
     });
   }
 </script>
