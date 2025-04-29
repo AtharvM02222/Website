@@ -286,24 +286,6 @@
     </center>
   </center>
 
-
-
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-<script>
-  
-
-    Object.defineProperty(window, "admin", {
-      get: function() {
-        console.log("Opening login...");
-        window.netlifyIdentity.open();
-      }
-    });
-
-    window.netlifyIdentity.on("login", () => {
-      document.location.href = "/cloud.html"; // Redirect after login
-    });
-  }
-</script>
-            
+       
   </body>
   </html>
