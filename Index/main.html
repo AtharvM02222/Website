@@ -286,6 +286,25 @@
     </center>
   </center>
 
-       
+       <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script>
+  if (window.netlifyIdentity) {
+    window.netlifyIdentity.on('init', user => {
+      console.log('Init done.');
+    });
+
+    window.netlifyIdentity.on('login', () => {
+      console.log('Logged in!');
+      window.location.href = "/cloud.html";
+    });
+
+    Object.defineProperty(window, "admin", {
+      get: function() {
+        console.log("Opening login widget...");
+        window.netlifyIdentity.open();
+      }
+    });
+  }
+</script>
   </body>
   </html>
