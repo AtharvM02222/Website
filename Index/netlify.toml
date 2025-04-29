@@ -1,6 +1,0 @@
-[[redirects]]
-  from = "/cloud.html"
-  to = "/"
-  status = 401
-  force = true
-  conditions = {Role = ["*"]}
