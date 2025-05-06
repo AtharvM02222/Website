@@ -12,6 +12,8 @@
 </head>
 <body>
     <h1>Cloud Notes</h1>
+    <button onclick="netlifyIdentity.logout()">Logout</button>
+    <br><br>
     <input type="text" id="newNote" placeholder="Write a note...">
     <button onclick="addNote()">Add Note</button>
 
@@ -28,10 +30,14 @@
         // Initialize Netlify Identity
         netlifyIdentity.init();
 
-        // Redirect if not logged in
+        let currentUserEmail = '';
+
         netlifyIdentity.on('init', user => {
             if (!user) {
                 window.location.href = "/main.html";
+            } else {
+                currentUserEmail = user.email;
+                displayNotes();
             }
         });
 
@@ -59,11 +65,14 @@
                 notesDiv.innerHTML = '';
                 snapshot.forEach(doc => {
                     const note = doc.data();
+                    const isOwner = note.user === currentUserEmail;
                     notesDiv.innerHTML += `
                         <div class="note">
-                            <span>${note.text}</span>
-                            <button onclick="editNote('${doc.id}', '${note.text.replace(/'/g, "\\'")}')">Edit</button>
-                            <button onclick="deleteNote('${doc.id}')">Delete</button>
+                            <strong>${note.user}:</strong> ${note.text}
+                            ${isOwner ? `
+                                <button onclick="editNote('${doc.id}', '${note.text.replace(/'/g, "\\'")}')">Edit</button>
+                                <button onclick="deleteNote('${doc.id}')">Delete</button>
+                            ` : ''}
                         </div>
                     `;
                 });
@@ -75,6 +84,7 @@
             if (newNote) {
                 notesRef.add({
                     text: newNote,
+                    user: currentUserEmail,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 document.getElementById('newNote').value = '';
@@ -84,15 +94,25 @@
         function editNote(id, oldText) {
             const updatedNote = prompt('Edit your note:', oldText);
             if (updatedNote !== null && updatedNote.trim() !== '') {
-                notesRef.doc(id).update({ text: updatedNote.trim() });
+                notesRef.doc(id).get().then(doc => {
+                    if (doc.exists && doc.data().user === currentUserEmail) {
+                        notesRef.doc(id).update({ text: updatedNote.trim() });
+                    } else {
+                        alert('You can only edit your own notes.');
+                    }
+                });
             }
         }
 
         function deleteNote(id) {
-            notesRef.doc(id).delete();
+            notesRef.doc(id).get().then(doc => {
+                if (doc.exists && doc.data().user === currentUserEmail) {
+                    notesRef.doc(id).delete();
+                } else {
+                    alert('You can only delete your own notes.');
+                }
+            });
         }
-
-        window.onload = displayNotes;
     </script>
 </body>
 </html>
