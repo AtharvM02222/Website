@@ -1,49 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cloud</title>
-  <style>
-    body {
-      display: none;
-      font-family: Arial, sans-serif;
-      background-color: #f3f3f3;
-      padding: 20px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Cloud Notes</title>
+    <style>
+        body { font-family: Arial; background: #f4f4f4; padding: 20px; }
+        #notes { margin-top: 20px; }
+        .note { background: #fff; padding: 10px; margin: 10px 0; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        button { margin-left: 5px; }
+    </style>
 </head>
 <body>
-  <h1>Welcome to Your Cloud, <span id="username"></span>!</h1>
-  <h1>https://robosaki.com/product/gkfescc-rc-diy-drone-kit/</h1>
-  <h1>https://robu.in/product/fs-a6-receiver/</h1>
-  <h1>https://robu.in/product/flysky-fs-i4x-2-4ghz-4ch-afhds-r-c-transmitter-fs-a6-receiver/</h1>
-  <h1>FlySky FS-i4X 2.4GHz 4CH AFHDS R/C Transmitter + FS-A6 Receiver</h1>
-  <h1>https://robosaki.com/</h1>
-  <p>This is your secure cloud area. You can add Gmail, WhatsApp, or custom tools here.</p>
+    <h1>Cloud Notes</h1>
+    <input type="text" id="newNote" placeholder="Write a note...">
+    <button onclick="addNote()">Add Note</button>
 
-  <button onclick="logout()">Logout</button>
+    <div id="notes"></div>
 
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script>
-    window.netlifyIdentity.on("init", user => {
-      if (!user) {
-        // Not logged in, redirect to main page
-        window.location.href = "/main.html";
-      } else {
-        // Show user info and content
-        document.getElementById("username").textContent = user.user_metadata.full_name || user.email;
-        document.body.style.display = "block";
-      }
-    });
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
-    // Automatically init identity
-    window.netlifyIdentity.init();
+    <!-- Netlify Identity Widget -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
-    function logout() {
-      window.netlifyIdentity.logout();
-      window.location.href = "/main.html";
-    }
-  </script>
+    <script>
+        // Initialize Netlify Identity
+        netlifyIdentity.init();
+
+        // Redirect if not logged in
+        netlifyIdentity.on('init', user => {
+            if (!user) {
+                window.location.href = "/main.html";
+            }
+        });
+
+        netlifyIdentity.on('login', () => document.location.reload());
+        netlifyIdentity.on('logout', () => window.location.href = "/main.html");
+
+        // Firebase config (replace with your actual project values)
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const notesRef = db.collection('notes');
+
+        function displayNotes() {
+            notesRef.orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+                const notesDiv = document.getElementById('notes');
+                notesDiv.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const note = doc.data();
+                    notesDiv.innerHTML += `
+                        <div class="note">
+                            <span>${note.text}</span>
+                            <button onclick="editNote('${doc.id}', '${note.text.replace(/'/g, "\\'")}')">Edit</button>
+                            <button onclick="deleteNote('${doc.id}')">Delete</button>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        function addNote() {
+            const newNote = document.getElementById('newNote').value.trim();
+            if (newNote) {
+                notesRef.add({
+                    text: newNote,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                document.getElementById('newNote').value = '';
+            }
+        }
+
+        function editNote(id, oldText) {
+            const updatedNote = prompt('Edit your note:', oldText);
+            if (updatedNote !== null && updatedNote.trim() !== '') {
+                notesRef.doc(id).update({ text: updatedNote.trim() });
+            }
+        }
+
+        function deleteNote(id) {
+            notesRef.doc(id).delete();
+        }
+
+        window.onload = displayNotes;
+    </script>
 </body>
 </html>
