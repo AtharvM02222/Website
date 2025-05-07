@@ -2,118 +2,116 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Cloud Notes</title>
+    <title>Group Chat</title>
     <style>
-        body { font-family: Arial; background: #f4f4f4; padding: 20px; }
-        #notes { margin-top: 20px; }
-        .note { background: #fff; padding: 10px; margin: 10px 0; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        button { margin-left: 5px; }
+        body { font-family: Arial; background: #e5ddd5; margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; }
+        #chat { flex: 1; overflow-y: scroll; padding: 20px; }
+        .message { background: #fff; padding: 10px 15px; margin: 10px 0; border-radius: 10px; max-width: 60%; position: relative; }
+        .message.you { background: #dcf8c6; margin-left: auto; }
+        .meta { font-size: 0.8em; color: #555; margin-bottom: 3px; }
+        #inputArea { display: flex; padding: 10px; background: #f0f0f0; }
+        textarea { flex: 1; resize: none; padding: 10px; border-radius: 20px; border: 1px solid #ccc; }
+        button { margin-left: 10px; padding: 10px 15px; border: none; border-radius: 20px; background: #34b7f1; color: white; cursor: pointer; }
     </style>
 </head>
-<body>
-    <h1>Cloud Notes</h1>
-    <button onclick="netlifyIdentity.logout()">Logout</button>
-    <br><br>
-    <input type="text" id="newNote" placeholder="Write a note...">
-    <button onclick="addNote()">Add Note</button>
+<body style="display:none">
+    <div id="chat"></div>
+    <div id="inputArea">
+        <textarea id="newMessage" rows="1" placeholder="Type a message..."></textarea>
+        <button onclick="sendMessage()">Send</button>
+    </div>
 
-    <div id="notes"></div>
-
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-
-    <!-- Netlify Identity Widget -->
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
     <script>
-        // Initialize Netlify Identity
         netlifyIdentity.init();
-
-        let currentUserEmail = '';
+        let currentUsername = '';
 
         netlifyIdentity.on('init', user => {
             if (!user) {
-                window.location.href = "/main.html";
+                window.location.replace("/main.html");
             } else {
-                currentUserEmail = user.email;
-                displayNotes();
+                document.body.style.display = 'flex';
+                currentUsername = user.user_metadata.full_name || user.email;
+                displayMessages();
             }
         });
 
         netlifyIdentity.on('login', () => document.location.reload());
         netlifyIdentity.on('logout', () => window.location.href = "/main.html");
 
-        // Firebase config (replace with your actual project values)
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyDW9a-Dd4c44QRsjUSpNcjvn1RPzOorXw4",
-  authDomain: "protean-tooling-444907-k3.firebaseapp.com",
-  projectId: "protean-tooling-444907-k3",
-  storageBucket: "protean-tooling-444907-k3.firebasestorage.app",
-  messagingSenderId: "989275453863",
-  appId: "1:989275453863:web:f04a2937a7785c75231e82",
-  measurementId: "G-6ZE618L262"
-};
+        const firebaseConfig = {
+            apiKey: "AIzaSyDW9a-Dd4c44QRsjUSpNcjvn1RPzOorXw4",
+            authDomain: "protean-tooling-444907-k3.firebaseapp.com",
+            projectId: "protean-tooling-444907-k3",
+            storageBucket: "protean-tooling-444907-k3.firebasestorage.app",
+            messagingSenderId: "989275453863",
+            appId: "1:989275453863:web:f04a2937a7785c75231e82",
+            measurementId: "G-6ZE618L262"
+        };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const notesRef = db.collection('notes');
+        const messagesRef = db.collection('messages');
 
-        function displayNotes() {
-            notesRef.orderBy('timestamp', 'desc').onSnapshot(snapshot => {
-                const notesDiv = document.getElementById('notes');
-                notesDiv.innerHTML = '';
+        function formatTimestamp(date) {
+            const now = new Date();
+            const yesterday = new Date();
+            yesterday.setDate(now.getDate() - 1);
+
+            if (date.toDateString() === now.toDateString()) {
+                return `Today, ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+            } else if (date.toDateString() === yesterday.toDateString()) {
+                return `Yesterday, ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+            } else {
+                return `${date.toLocaleDateString()}, ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+            }
+        }
+
+        function linkify(text) {
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            return text.replace(urlRegex, url => `<a href="${url}" target="_blank">${url}</a>`);
+        }
+
+        function displayMessages() {
+            messagesRef.orderBy('timestamp').onSnapshot(snapshot => {
+                const chatDiv = document.getElementById('chat');
+                chatDiv.innerHTML = '';
                 snapshot.forEach(doc => {
-                    const note = doc.data();
-                    const isOwner = note.user === currentUserEmail;
-                    notesDiv.innerHTML += `
-                        <div class="note">
-                            <strong>${note.user}:</strong> ${note.text}
-                            ${isOwner ? `
-                                <button onclick="editNote('${doc.id}', '${note.text.replace(/'/g, "\\'")}')">Edit</button>
-                                <button onclick="deleteNote('${doc.id}')">Delete</button>
-                            ` : ''}
+                    const msg = doc.data();
+                    const isYou = msg.user === currentUsername;
+                    const timestamp = msg.timestamp ? formatTimestamp(msg.timestamp.toDate()) : '';
+                    chatDiv.innerHTML += `
+                        <div class="message ${isYou ? 'you' : ''}">
+                            <div class="meta">${msg.user} • ${timestamp}</div>
+                            <div>${linkify(msg.text)}</div>
                         </div>
                     `;
                 });
+                chatDiv.scrollTop = chatDiv.scrollHeight;
             });
         }
 
-        function addNote() {
-            const newNote = document.getElementById('newNote').value.trim();
-            if (newNote) {
-                notesRef.add({
-                    text: newNote,
-                    user: currentUserEmail,
+        document.getElementById('newMessage').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            const textArea = document.getElementById('newMessage');
+            const newText = textArea.value.trim();
+            if (newText) {
+                messagesRef.add({
+                    text: newText,
+                    user: currentUsername,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                document.getElementById('newNote').value = '';
+                textArea.value = '';
             }
-        }
-
-        function editNote(id, oldText) {
-            const updatedNote = prompt('Edit your note:', oldText);
-            if (updatedNote !== null && updatedNote.trim() !== '') {
-                notesRef.doc(id).get().then(doc => {
-                    if (doc.exists && doc.data().user === currentUserEmail) {
-                        notesRef.doc(id).update({ text: updatedNote.trim() });
-                    } else {
-                        alert('You can only edit your own notes.');
-                    }
-                });
-            }
-        }
-
-        function deleteNote(id) {
-            notesRef.doc(id).get().then(doc => {
-                if (doc.exists && doc.data().user === currentUserEmail) {
-                    notesRef.doc(id).delete();
-                } else {
-                    alert('You can only delete your own notes.');
-                }
-            });
         }
     </script>
 </body>
