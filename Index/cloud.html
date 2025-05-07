@@ -9,20 +9,23 @@
         .message { background: #fff; padding: 10px 15px; margin: 10px 0; border-radius: 10px; max-width: 60%; position: relative; }
         .message.you { background: #dcf8c6; margin-left: auto; }
         .meta { font-size: 0.8em; color: #555; margin-bottom: 3px; }
-        #inputArea { display: flex; padding: 10px; background: #f0f0f0; }
+        #inputArea { display: flex; padding: 10px; background: #f0f0f0; align-items: center; }
         textarea { flex: 1; resize: none; padding: 10px; border-radius: 20px; border: 1px solid #ccc; }
-        button { margin-left: 10px; padding: 10px 15px; border: none; border-radius: 20px; background: #34b7f1; color: white; cursor: pointer; }
+        button, input[type="file"] { margin-left: 10px; padding: 8px 12px; border: none; border-radius: 20px; background: #34b7f1; color: white; cursor: pointer; }
+        img.uploaded { max-width: 200px; border-radius: 10px; margin-top: 5px; }
     </style>
 </head>
 <body style="display:none">
     <div id="chat"></div>
     <div id="inputArea">
         <textarea id="newMessage" rows="1" placeholder="Type a message..."></textarea>
+        <input type="file" id="fileInput">
         <button onclick="sendMessage()">Send</button>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
     <script>
@@ -46,7 +49,7 @@
             apiKey: "AIzaSyDW9a-Dd4c44QRsjUSpNcjvn1RPzOorXw4",
             authDomain: "protean-tooling-444907-k3.firebaseapp.com",
             projectId: "protean-tooling-444907-k3",
-            storageBucket: "protean-tooling-444907-k3.firebasestorage.app",
+            storageBucket: "protean-tooling-444907-k3.appspot.com",
             messagingSenderId: "989275453863",
             appId: "1:989275453863:web:f04a2937a7785c75231e82",
             measurementId: "G-6ZE618L262"
@@ -54,6 +57,7 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
+        const storage = firebase.storage();
         const messagesRef = db.collection('messages');
 
         function formatTimestamp(date) {
@@ -82,11 +86,21 @@
                 snapshot.forEach(doc => {
                     const msg = doc.data();
                     const isYou = msg.user === currentUsername;
-                    const timestamp = msg.timestamp ? formatTimestamp(msg.timestamp.toDate()) : '';
+                    let contentHtml = msg.text ? linkify(msg.text) : '';
+
+                    if (msg.fileUrl) {
+                        if (msg.fileType.startsWith('image/')) {
+                            contentHtml += `<br><img src="${msg.fileUrl}" class="uploaded">`;
+                        } else {
+                            contentHtml += `<br><a href="${msg.fileUrl}" target="_blank">Download File</a>`;
+                        }
+                    }
+
+                    const time = msg.timestamp ? formatTimestamp(msg.timestamp.toDate()) : '';
                     chatDiv.innerHTML += `
                         <div class="message ${isYou ? 'you' : ''}">
-                            <div class="meta">${msg.user} • ${timestamp}</div>
-                            <div>${linkify(msg.text)}</div>
+                            <div class="meta">${msg.user} • ${time}</div>
+                            <div>${contentHtml}</div>
                         </div>
                     `;
                 });
@@ -101,16 +115,31 @@
             }
         });
 
-        function sendMessage() {
+        async function sendMessage() {
             const textArea = document.getElementById('newMessage');
             const newText = textArea.value.trim();
-            if (newText) {
+            const fileInput = document.getElementById('fileInput');
+            let fileUrl = '';
+            let fileType = '';
+
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const storageRef = storage.ref().child('uploads/' + Date.now() + '_' + file.name);
+                await storageRef.put(file);
+                fileUrl = await storageRef.getDownloadURL();
+                fileType = file.type;
+            }
+
+            if (newText || fileUrl) {
                 messagesRef.add({
                     text: newText,
                     user: currentUsername,
+                    fileUrl: fileUrl,
+                    fileType: fileType,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 textArea.value = '';
+                fileInput.value = '';
             }
         }
     </script>
