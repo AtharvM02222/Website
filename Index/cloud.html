@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Cloud Chat</title>
+    <title>Cloud Notes Chat</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -47,7 +47,7 @@
             border-radius: 20px;
             margin-right: 10px;
         }
-        #sendButton, #fileInput, #logoutButton {
+        #sendButton, #logoutButton {
             background-color: #128c7e;
             color: white;
             border: none;
@@ -59,11 +59,6 @@
             justify-content: center;
             cursor: pointer;
             margin-left: 5px;
-        }
-        img.uploaded {
-            max-width: 200px;
-            margin-top: 5px;
-            border-radius: 8px;
         }
         .actions button {
             margin-left: 5px;
@@ -81,9 +76,7 @@
     <div id="chat"></div>
 
     <div id="inputArea">
-        <input type="text" id="messageInput" placeholder="Type a message">
-        <input type="file" id="fileInput" style="display:none;">
-        <button id="fileButton">+</button>
+        <input type="text" id="messageInput" placeholder="Type a note">
         <button id="sendButton">→</button>
         <button id="logoutButton">⎋</button>
     </div>
@@ -104,19 +97,17 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        const messagesRef = db.collection('messages');
+        const notesRef = db.collection('notes');
 
         const chatDiv = document.getElementById('chat');
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
         const logoutButton = document.getElementById('logoutButton');
-        const fileInput = document.getElementById('fileInput');
-        const fileButton = document.getElementById('fileButton');
 
         netlifyIdentity.init();
 
         netlifyIdentity.on('login', user => {
-            loadMessages(user);
+            loadNotes(user);
         });
 
         logoutButton.addEventListener('click', () => {
@@ -124,57 +115,43 @@
             location.reload();
         });
 
-        fileButton.addEventListener('click', () => {
-            fileInput.click();
-        });
-
         sendButton.addEventListener('click', async () => {
             const user = netlifyIdentity.currentUser();
             const text = messageInput.value.trim();
-            const file = fileInput.files[0];
-            let fileUrl = null;
 
-            if (!text && !file) return;
+            if (!text) return;
 
             const username = user.user_metadata.username || user.user_metadata.full_name || user.email.split('@')[0];
             const userId = user.id;
             const email = user.email;
 
-            if (file) {
-                alert('File upload feature needs Firebase Storage setup.');
-                return;
-            }
-
-            await messagesRef.add({
+            await notesRef.add({
                 userId: userId,
                 username: username,
                 email: email,
                 text: text,
-                fileUrl: fileUrl,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
 
             messageInput.value = '';
-            fileInput.value = '';
         });
 
-        function loadMessages(user) {
-            messagesRef.orderBy('timestamp').onSnapshot(snapshot => {
+        function loadNotes(user) {
+            notesRef.orderBy('timestamp').onSnapshot(snapshot => {
                 chatDiv.innerHTML = '';
                 snapshot.forEach(doc => {
                     const data = doc.data();
-                    const messageDiv = document.createElement('div');
                     const isOwn = data.userId === user.id;
                     const displayName = data.username || (data.email ? data.email.split('@')[0] : 'Anonymous');
 
+                    const messageDiv = document.createElement('div');
                     messageDiv.className = 'message' + (isOwn ? ' own-message' : '');
                     messageDiv.innerHTML = `
                         <div class="meta"><strong>${displayName}</strong> • ${formatTimestamp(data.timestamp)}</div>
                         <div>${linkify(data.text)}</div>
-                        ${data.fileUrl ? `<img src="${data.fileUrl}" class="uploaded">` : ''}
                         ${isOwn ? `<div class="actions">
-                            <button onclick="editMessage('${doc.id}', '${data.text}')">Edit</button>
-                            <button onclick="deleteMessage('${doc.id}')">Delete</button>
+                            <button onclick="editNote('${doc.id}', '${data.text}')">Edit</button>
+                            <button onclick="deleteNote('${doc.id}')">Delete</button>
                         </div>` : ''}
                     `;
                     chatDiv.appendChild(messageDiv);
@@ -204,17 +181,22 @@
             return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
         }
 
-        async function editMessage(id, oldText) {
-            const newText = prompt('Edit your message:', oldText);
+        async function editNote(id, oldText) {
+            const newText = prompt('Edit your note:', oldText);
             if (newText !== null) {
-                await messagesRef.doc(id).update({ text: newText });
+                await notesRef.doc(id).update({ text: newText });
             }
         }
 
-        async function deleteMessage(id) {
-            if (confirm('Are you sure you want to delete this message?')) {
-                await messagesRef.doc(id).delete();
+        async function deleteNote(id) {
+            if (confirm('Are you sure you want to delete this note?')) {
+                await notesRef.doc(id).delete();
             }
+        }
+
+        // If user already logged in, load notes directly
+        if (netlifyIdentity.currentUser()) {
+            loadNotes(netlifyIdentity.currentUser());
         }
     </script>
 </body>
