@@ -1,203 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Cloud Notes Chat</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #ece5dd;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            margin: 0;
-        }
-        #chat {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-        }
-        .message {
-            background-color: #fff;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            position: relative;
-            max-width: 70%;
-        }
-        .own-message {
-            background-color: #dcf8c6;
-            margin-left: auto;
-        }
-        .meta {
-            font-size: 12px;
-            color: #555;
-            margin-bottom: 5px;
-        }
-        #inputArea {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            background-color: #f0f0f0;
-        }
-        #messageInput {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 20px;
-            margin-right: 10px;
-        }
-        #sendButton, #logoutButton {
-            background-color: #128c7e;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            margin-left: 5px;
-        }
-        .actions button {
-            margin-left: 5px;
-            background-color: #25d366;
-            border: none;
-            color: white;
-            padding: 3px 6px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 10px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Cloud Notes Chat</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #ece5dd;
+    }
+    #chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px;
+    }
+    .message {
+      background: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      position: relative;
+      max-width: 70%;
+      word-wrap: break-word;
+    }
+    .own-message {
+      background: #dcf8c6;
+      margin-left: auto;
+    }
+    .meta {
+      font-size: 12px;
+      color: #555;
+      margin-bottom: 5px;
+    }
+    #inputArea {
+      display: flex;
+      padding: 10px;
+      background: #f0f0f0;
+      border-top: 1px solid #ccc;
+    }
+    #messageInput {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 20px;
+      margin-right: 10px;
+    }
+    button {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      background: #128c7e;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 5px;
+    }
+    .actions button {
+      width: auto;
+      height: auto;
+      border-radius: 4px;
+      background: #25d366;
+      font-size: 10px;
+      padding: 3px 6px;
+      margin-left: 5px;
+    }
+  </style>
 </head>
-<body>
-    <div id="chat"></div>
+<body style="display:none;">
 
-    <div id="inputArea">
-        <input type="text" id="messageInput" placeholder="Type a note">
-        <button id="sendButton">→</button>
-        <button id="logoutButton">⎋</button>
-    </div>
+  <div id="chat"></div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDW9a-Dd4c44QRsjUSpNcjvn1RPzOorXw4",
-            authDomain: "protean-tooling-444907-k3.firebaseapp.com",
-            projectId: "protean-tooling-444907-k3",
-            storageBucket: "protean-tooling-444907-k3.appspot.com",
-            messagingSenderId: "989275453863",
-            appId: "1:989275453863:web:f04a2937a7785c75231e82",
-            measurementId: "G-6ZE618L262"
-        };
+  <div id="inputArea">
+    <input type="text" id="messageInput" placeholder="Type a note…">
+    <button id="sendButton">➤</button>
+    <button id="logoutButton" title="Logout">⎋</button>
+  </div>
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const notesRef = db.collection('notes');
+  <!-- Firebase + Netlify Identity -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
-        const chatDiv = document.getElementById('chat');
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
-        const logoutButton = document.getElementById('logoutButton');
+  <script>
+    // Initialize Netlify Identity
+    netlifyIdentity.init();
 
-        netlifyIdentity.init();
+    // Fast redirect if not logged in
+    netlifyIdentity.on('init', user => {
+      if (!user) {
+        window.location.replace('/main.html');
+      } else {
+        document.body.style.display = 'flex';
+        loadNotes(user);
+      }
+    });
+    netlifyIdentity.on('login', () => location.reload());
+    netlifyIdentity.on('logout', () => window.location.replace('/main.html'));
 
-        netlifyIdentity.on('login', user => {
-            loadNotes(user);
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDW9a-Dd4c44QRsjUSpNcjvn1RPzOorXw4",
+      authDomain: "protean-tooling-444907-k3.firebaseapp.com",
+      projectId: "protean-tooling-444907-k3",
+      storageBucket: "protean-tooling-444907-k3.appspot.com",
+      messagingSenderId: "989275453863",
+      appId: "1:989275453863:web:f04a2937a7785c75231e82",
+      measurementId: "G-6ZE618L262"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const notesRef = db.collection('notes');
+
+    // UI elements
+    const chatDiv = document.getElementById('chat');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    const logoutButton = document.getElementById('logoutButton');
+
+    // Send new note
+    sendButton.addEventListener('click', async () => {
+      const user = netlifyIdentity.currentUser();
+      const text = messageInput.value.trim();
+      if (!text) return;
+      const username = user.user_metadata.username
+                        || user.user_metadata.full_name
+                        || user.email.split('@')[0];
+      await notesRef.add({
+        userId: user.id,
+        username: username,
+        email: user.email,
+        text: text,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      messageInput.value = '';
+    });
+
+    // Logout
+    logoutButton.addEventListener('click', () => {
+      netlifyIdentity.logout();
+    });
+
+    // Load & render all notes
+    function loadNotes(user) {
+      notesRef.orderBy('timestamp').onSnapshot(snapshot => {
+        chatDiv.innerHTML = '';
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          const isOwn = d.userId === user.id;
+          const displayName = d.username
+                              || (d.email ? d.email.split('@')[0] : 'Anonymous');
+          const msg = document.createElement('div');
+          msg.className = 'message' + (isOwn ? ' own-message' : '');
+          msg.innerHTML = `
+            <div class="meta">
+              <strong>${displayName}</strong> • ${formatTimestamp(d.timestamp)}
+            </div>
+            <div>${linkify(d.text)}</div>
+            ${isOwn
+              ? `<div class="actions">
+                  <button data-id="${doc.id}" data-text="${encodeURIComponent(d.text)}">Edit</button>
+                  <button data-id="${doc.id}">Delete</button>
+                 </div>`
+              : ''}
+          `;
+          chatDiv.appendChild(msg);
         });
+        chatDiv.scrollTop = chatDiv.scrollHeight;
+        attachActions();
+      });
+    }
 
-        logoutButton.addEventListener('click', () => {
-            netlifyIdentity.logout();
-            location.reload();
-        });
-
-        sendButton.addEventListener('click', async () => {
-            const user = netlifyIdentity.currentUser();
-            const text = messageInput.value.trim();
-
-            if (!text) return;
-
-            const username = user.user_metadata.username || user.user_metadata.full_name || user.email.split('@')[0];
-            const userId = user.id;
-            const email = user.email;
-
-            await notesRef.add({
-                userId: userId,
-                username: username,
-                email: email,
-                text: text,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
-
-            messageInput.value = '';
-        });
-
-        function loadNotes(user) {
-            notesRef.orderBy('timestamp').onSnapshot(snapshot => {
-                chatDiv.innerHTML = '';
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    const isOwn = data.userId === user.id;
-                    const displayName = data.username || (data.email ? data.email.split('@')[0] : 'Anonymous');
-
-                    const messageDiv = document.createElement('div');
-                    messageDiv.className = 'message' + (isOwn ? ' own-message' : '');
-                    messageDiv.innerHTML = `
-                        <div class="meta"><strong>${displayName}</strong> • ${formatTimestamp(data.timestamp)}</div>
-                        <div>${linkify(data.text)}</div>
-                        ${isOwn ? `<div class="actions">
-                            <button onclick="editNote('${doc.id}', '${data.text}')">Edit</button>
-                            <button onclick="deleteNote('${doc.id}')">Delete</button>
-                        </div>` : ''}
-                    `;
-                    chatDiv.appendChild(messageDiv);
-                });
-                chatDiv.scrollTop = chatDiv.scrollHeight;
-            });
-        }
-
-        function formatTimestamp(timestamp) {
-            if (!timestamp) return '';
-            const date = timestamp.toDate();
-            const now = new Date();
-            const isToday = date.toDateString() === now.toDateString();
-            const isYesterday = date.toDateString() === new Date(now - 86400000).toDateString();
-
-            if (isToday) return `Today ${date.getHours()}:${pad(date.getMinutes())}`;
-            if (isYesterday) return `Yesterday ${date.getHours()}:${pad(date.getMinutes())}`;
-            return `${date.toDateString()} ${date.getHours()}:${pad(date.getMinutes())}`;
-        }
-
-        function pad(num) {
-            return num < 10 ? '0' + num : num;
-        }
-
-        function linkify(text) {
-            const urlRegex = /(https?:\/\/[^\s]+)/g;
-            return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>');
-        }
-
-        async function editNote(id, oldText) {
+    // Wire up edit/delete after rendering
+    function attachActions() {
+      document.querySelectorAll('.actions button').forEach(btn => {
+        const id = btn.getAttribute('data-id');
+        if (btn.innerText === 'Edit') {
+          const oldText = decodeURIComponent(btn.getAttribute('data-text'));
+          btn.onclick = async () => {
             const newText = prompt('Edit your note:', oldText);
             if (newText !== null) {
-                await notesRef.doc(id).update({ text: newText });
+              await notesRef.doc(id).update({ text: newText });
             }
-        }
-
-        async function deleteNote(id) {
-            if (confirm('Are you sure you want to delete this note?')) {
-                await notesRef.doc(id).delete();
+          };
+        } else {
+          btn.onclick = async () => {
+            if (confirm('Delete this note?')) {
+              await notesRef.doc(id).delete();
             }
+          };
         }
+      });
+    }
 
-        // If user already logged in, load notes directly
-        if (netlifyIdentity.currentUser()) {
-            loadNotes(netlifyIdentity.currentUser());
-        }
-    </script>
+    // Helpers
+    function formatTimestamp(ts) {
+      if (!ts) return '';
+      const d = ts.toDate(), now = new Date();
+      const isToday = d.toDateString() === now.toDateString();
+      const isYesterday = d.toDateString() === new Date(now - 86400000).toDateString();
+      const hh = d.getHours(), mm = String(d.getMinutes()).padStart(2,'0');
+      return isToday
+        ? `Today ${hh}:${mm}`
+        : isYesterday
+          ? `Yesterday ${hh}:${mm}`
+          : `${d.toLocaleDateString()} ${hh}:${mm}`;
+    }
+    function linkify(text) {
+      return text.replace(
+        /(https?:\/\/[^\s]+)/g,
+        url => `<a href="${url}" target="_blank">${url}</a>`
+      );
+    }
+  </script>
 </body>
 </html>
