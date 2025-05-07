@@ -3,48 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>Group Chat</title>
-    <style>
-        body { font-family: Arial; background: #e5ddd5; margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; }
-        #chat { flex: 1; overflow-y: scroll; padding: 20px; }
-        .message { background: #fff; padding: 10px 15px; margin: 10px 0; border-radius: 10px; max-width: 60%; position: relative; }
-        .message.you { background: #dcf8c6; margin-left: auto; }
-        .meta { font-size: 0.8em; color: #555; margin-bottom: 3px; }
-        #inputArea { display: flex; padding: 10px; background: #f0f0f0; align-items: center; }
-        textarea { flex: 1; resize: none; padding: 10px; border-radius: 20px; border: 1px solid #ccc; }
-        button, input[type="file"] { margin-left: 10px; padding: 8px 12px; border: none; border-radius: 20px; background: #34b7f1; color: white; cursor: pointer; }
-        img.uploaded { max-width: 200px; border-radius: 10px; margin-top: 5px; }
-    </style>
-</head>
-<body style="display:none">
-    <div id="chat"></div>
-    <div id="inputArea">
-        <textarea id="newMessage" rows="1" placeholder="Type a message..."></textarea>
-        <input type="file" id="fileInput">
-        <button onclick="sendMessage()">Send</button>
-    </div>
-
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background: #ece5dd; margin: 0; padding: 0; }
+        #chat { max-width: 600px; margin: 50px auto; background: white; padding: 10px; border-radius: 5px; }
+        .message { margin: 10px 0; padding: 8px; background: #dcf8c6; border-radius: 5px; }
+        .meta { font-size: 12px; color: gray; }
+        input, button { padding: 8px; margin: 5px; }
+        #logoutBtn { position: fixed; top: 10px; right: 10px; background: red; color: white; border: none; padding: 8px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <button id="logoutBtn" onclick="logout()">Logout</button>
+    <div id="chat">
+        <h2>Group Chat</h2>
+        <div id="messages"></div>
+        <input type="text" id="messageInput" placeholder="Type a message...">
+        <input type="file" id="fileInput">
+        <button onclick="sendMessage()">Send</button>
+    </div>
 
     <script>
-        netlifyIdentity.init();
-        let currentUsername = '';
-
-        netlifyIdentity.on('init', user => {
-            if (!user) {
-                window.location.replace("/main.html");
-            } else {
-                document.body.style.display = 'flex';
-                currentUsername = user.user_metadata.full_name || user.email;
-                displayMessages();
-            }
-        });
-
-        netlifyIdentity.on('login', () => document.location.reload());
-        netlifyIdentity.on('logout', () => window.location.href = "/main.html");
-
         const firebaseConfig = {
             apiKey: "AIzaSyDW9a-Dd4c44QRsjUSpNcjvn1RPzOorXw4",
             authDomain: "protean-tooling-444907-k3.firebaseapp.com",
@@ -58,89 +40,88 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
         const storage = firebase.storage();
-        const messagesRef = db.collection('messages');
+        const messagesRef = db.collection('notes');
 
-        function formatTimestamp(date) {
+        netlifyIdentity.init();
+
+        function logout() {
+            netlifyIdentity.logout();
+        }
+
+        function formatTimestamp(timestamp) {
+            const date = timestamp.toDate();
             const now = new Date();
-            const yesterday = new Date();
-            yesterday.setDate(now.getDate() - 1);
-
-            if (date.toDateString() === now.toDateString()) {
-                return `Today, ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-            } else if (date.toDateString() === yesterday.toDateString()) {
-                return `Yesterday, ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+            const diff = now - date;
+            if (diff < 86400000 && date.getDate() === now.getDate()) {
+                return `Today, ${date.toLocaleTimeString()}`;
+            } else if (diff < 172800000 && date.getDate() === now.getDate() - 1) {
+                return `Yesterday, ${date.toLocaleTimeString()}`;
             } else {
-                return `${date.toLocaleDateString()}, ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+                return date.toLocaleDateString() + ', ' + date.toLocaleTimeString();
             }
         }
 
         function linkify(text) {
-            const urlRegex = /(https?:\/\/[^\s]+)/g;
-            return text.replace(urlRegex, url => `<a href="${url}" target="_blank">${url}</a>`);
+            return text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank">$1</a>');
         }
 
-        function displayMessages() {
+        function loadMessages() {
             messagesRef.orderBy('timestamp').onSnapshot(snapshot => {
-                const chatDiv = document.getElementById('chat');
-                chatDiv.innerHTML = '';
+                const messagesDiv = document.getElementById('messages');
+                messagesDiv.innerHTML = '';
                 snapshot.forEach(doc => {
-                    const msg = doc.data();
-                    const isYou = msg.user === currentUsername;
-                    let contentHtml = msg.text ? linkify(msg.text) : '';
-
-                    if (msg.fileUrl) {
-                        if (msg.fileType.startsWith('image/')) {
-                            contentHtml += `<br><img src="${msg.fileUrl}" class="uploaded">`;
-                        } else {
-                            contentHtml += `<br><a href="${msg.fileUrl}" target="_blank">Download File</a>`;
-                        }
+                    const data = doc.data();
+                    const msgDiv = document.createElement('div');
+                    msgDiv.className = 'message';
+                    msgDiv.innerHTML = `<strong>${data.username}:</strong> ${linkify(data.text)}<div class="meta">${formatTimestamp(data.timestamp)}</div>`;
+                    if (data.fileUrl) {
+                        msgDiv.innerHTML += `<div><a href="${data.fileUrl}" target="_blank">[File]</a></div>`;
                     }
-
-                    const time = msg.timestamp ? formatTimestamp(msg.timestamp.toDate()) : '';
-                    chatDiv.innerHTML += `
-                        <div class="message ${isYou ? 'you' : ''}">
-                            <div class="meta">${msg.user} • ${time}</div>
-                            <div>${contentHtml}</div>
-                        </div>
-                    `;
+                    messagesDiv.appendChild(msgDiv);
                 });
-                chatDiv.scrollTop = chatDiv.scrollHeight;
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
             });
         }
 
-        document.getElementById('newMessage').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-
         async function sendMessage() {
-            const textArea = document.getElementById('newMessage');
-            const newText = textArea.value.trim();
+            const user = netlifyIdentity.currentUser();
+            const username = user.user_metadata.full_name || user.user_metadata.username || user.email.split('@')[0];
+            const text = document.getElementById('messageInput').value.trim();
             const fileInput = document.getElementById('fileInput');
             let fileUrl = '';
-            let fileType = '';
 
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
-                const storageRef = storage.ref().child('uploads/' + Date.now() + '_' + file.name);
+                const storageRef = storage.ref(`uploads/${Date.now()}_${file.name}`);
                 await storageRef.put(file);
                 fileUrl = await storageRef.getDownloadURL();
-                fileType = file.type;
             }
 
-            if (newText || fileUrl) {
-                messagesRef.add({
-                    text: newText,
-                    user: currentUsername,
+            if (text || fileUrl) {
+                await messagesRef.add({
+                    username: username,
+                    text: text,
                     fileUrl: fileUrl,
-                    fileType: fileType,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                textArea.value = '';
-                fileInput.value = '';
             }
+
+            document.getElementById('messageInput').value = '';
+            document.getElementById('fileInput').value = '';
+        }
+
+        netlifyIdentity.on('login', () => {
+            loadMessages();
+        });
+
+        netlifyIdentity.on('logout', () => {
+            window.location.href = '/';
+        });
+
+        if (netlifyIdentity.currentUser()) {
+            loadMessages();
+        } else {
+            netlifyIdentity.open();
         }
     </script>
 </body>
