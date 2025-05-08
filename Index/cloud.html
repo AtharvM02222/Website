@@ -49,6 +49,9 @@
       border-radius: 20px;
       margin-right: 10px;
     }
+    #photoInput {
+      margin-right: 10px;
+    }
     button {
       width: 40px;
       height: 40px;
@@ -85,10 +88,6 @@
       font-size: 12px;
       color: #888;
       display: none;
-      margin: 5px 10px;
-    }
-    #photoInput {
-      margin-left: 10px;
     }
   </style>
 </head>
@@ -170,36 +169,31 @@
 
       if (!text && !file) return;
 
-      if (file) {
-        const storageRef = storage.ref(`photos/${user.id}/${Date.now()}_${file.name}`);
-        const uploadTask = storageRef.put(file);
+      let photoUrl = null;
 
-        uploadTask.on('state_changed', null, (error) => {
+      if (file) {
+        try {
+          const storageRef = storage.ref(`photos/${user.id}/${Date.now()}_${file.name}`);
+          const uploadTaskSnapshot = await storageRef.put(file);
+          photoUrl = await uploadTaskSnapshot.ref.getDownloadURL();
+        } catch (error) {
           console.error('Upload failed:', error);
           alert('Failed to upload photo.');
-        }, async () => {
-          const downloadURL = await storageRef.getDownloadURL();
-          await notesRef.add({
-            userId: user.id,
-            username: username,
-            email: user.email,
-            photoUrl: downloadURL,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-          });
-          photoInput.value = '';
-        });
+          return;
+        }
       }
 
-      if (text) {
-        await notesRef.add({
-          userId: user.id,
-          username: username,
-          email: user.email,
-          text: text,
-          timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        messageInput.value = '';
-      }
+      await notesRef.add({
+        userId: user.id,
+        username: username,
+        email: user.email,
+        text: text || null,
+        photoUrl: photoUrl || null,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      messageInput.value = '';
+      photoInput.value = '';
     });
 
     messageInput.addEventListener('input', () => {
@@ -228,10 +222,8 @@
             <div class="meta">
               <strong>${displayName}</strong> • ${formatTimestamp(d.timestamp)}
             </div>
-            <div>
-              ${d.text ? linkify(d.text) : ''}
-              ${d.photoUrl ? `<div><img src="${d.photoUrl}" style="max-width:200px; max-height:200px; border-radius:8px; margin-top:5px;"></div>` : ''}
-            </div>
+            <div>${d.text ? linkify(d.text) : ''}</div>
+            ${d.photoUrl ? `<div><img src="${d.photoUrl}" alt="Photo" style="max-width: 100%; margin-top: 5px;"></div>` : ''}
             ${isOwn
               ? `<div class="actions">
                   <button data-id="${doc.id}" data-text="${encodeURIComponent(d.text || '')}">Edit</button>
