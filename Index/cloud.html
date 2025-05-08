@@ -72,9 +72,32 @@
       padding: 3px 6px;
       margin-left: 5px;
     }
+    #onlineUsers {
+      padding: 10px;
+      background: #128c7e;
+      color: white;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #typingIndicator {
+      font-size: 12px;
+      color: #888;
+      display: none;
+    }
   </style>
 </head>
 <body style="display:none;">
+
+  <div id="onlineUsers">
+    <span>Online Users: </span>
+    <span id="usersList">Loading...</span>
+  </div>
+
+  <div id="typingIndicator">
+    <span id="typingUser">User</span> is typing...
+  </div>
 
   <div id="chat"></div>
 
@@ -100,6 +123,7 @@
       } else {
         document.body.style.display = 'flex';
         loadNotes(user);
+        updateOnlineUsers();
       }
     });
     netlifyIdentity.on('login', () => location.reload());
@@ -124,6 +148,12 @@
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.getElementById('sendButton');
     const logoutButton = document.getElementById('logoutButton');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const typingUser = document.getElementById('typingUser');
+    const usersList = document.getElementById('usersList');
+
+    let typingTimeout;
+    let onlineUsers = {};
 
     // Send new note
     sendButton.addEventListener('click', async () => {
@@ -141,6 +171,16 @@
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       });
       messageInput.value = '';
+    });
+
+    // Handle input for typing indicator
+    messageInput.addEventListener('input', () => {
+      clearTimeout(typingTimeout);
+      typingIndicator.style.display = 'block';
+      typingUser.innerText = netlifyIdentity.currentUser().user_metadata.username || 'User';
+      typingTimeout = setTimeout(() => {
+        typingIndicator.style.display = 'none';
+      }, 1000);
     });
 
     // Logout
@@ -200,6 +240,12 @@
       });
     }
 
+    // Update online users
+    function updateOnlineUsers() {
+      const users = Object.values(onlineUsers);
+      usersList.innerText = users.join(', ') || 'No one';
+    }
+
     // Helpers
     function formatTimestamp(ts) {
       if (!ts) return '';
@@ -213,12 +259,24 @@
           ? `Yesterday ${hh}:${mm}`
           : `${d.toLocaleDateString()} ${hh}:${mm}`;
     }
+
     function linkify(text) {
       return text.replace(
         /(https?:\/\/[^\s]+)/g,
         url => `<a href="${url}" target="_blank">${url}</a>`
       );
     }
+
+    // Track online users
+    netlifyIdentity.on('login', user => {
+      onlineUsers[user.id] = user.user_metadata.username || user.email;
+      updateOnlineUsers();
+    });
+    netlifyIdentity.on('logout', () => {
+      delete onlineUsers[netlifyIdentity.currentUser().id];
+      updateOnlineUsers();
+    });
+
   </script>
 </body>
 </html>
