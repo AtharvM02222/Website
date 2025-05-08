@@ -85,6 +85,15 @@
       font-size: 12px;
       color: #888;
       display: none;
+      padding-left: 10px;
+    }
+    #fileInput {
+      margin-left: 5px;
+    }
+    img.uploaded-image {
+      max-width: 100%;
+      margin-top: 5px;
+      border-radius: 5px;
     }
   </style>
 </head>
@@ -103,6 +112,7 @@
 
   <div id="inputArea">
     <input type="text" id="messageInput" placeholder="Type a note…">
+    <input type="file" id="fileInput">
     <button id="sendButton">➤</button>
     <button id="logoutButton" title="Logout">⎋</button>
   </div>
@@ -110,13 +120,12 @@
   <!-- Firebase + Netlify Identity -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
   <script>
-    // Initialize Netlify Identity
     netlifyIdentity.init();
 
-    // Fast redirect if not logged in
     netlifyIdentity.on('init', user => {
       if (!user) {
         window.location.replace('/main.html');
@@ -129,7 +138,6 @@
     netlifyIdentity.on('login', () => location.reload());
     netlifyIdentity.on('logout', () => window.location.replace('/main.html'));
 
-    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyDW9a-Dd4c44QRsjUSpNcjvn1RPzOorXw4",
       authDomain: "protean-tooling-444907-k3.firebaseapp.com",
@@ -141,11 +149,12 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    const storage = firebase.storage();
     const notesRef = db.collection('notes');
 
-    // UI elements
     const chatDiv = document.getElementById('chat');
     const messageInput = document.getElementById('messageInput');
+    const fileInput = document.getElementById('fileInput');
     const sendButton = document.getElementById('sendButton');
     const logoutButton = document.getElementById('logoutButton');
     const typingIndicator = document.getElementById('typingIndicator');
@@ -155,25 +164,33 @@
     let typingTimeout;
     let onlineUsers = {};
 
-    // Send new note
     sendButton.addEventListener('click', async () => {
       const user = netlifyIdentity.currentUser();
       const text = messageInput.value.trim();
-      if (!text) return;
-      const username = user.user_metadata.username
-                        || user.user_metadata.full_name
-                        || user.email.split('@')[0];
+      const file = fileInput.files[0];
+      const username = user.user_metadata.username || user.user_metadata.full_name || user.email.split('@')[0];
+      let fileUrl = '';
+
+      if (file) {
+        const storageRef = storage.ref('uploads/' + Date.now() + '_' + file.name);
+        await storageRef.put(file);
+        fileUrl = await storageRef.getDownloadURL();
+        fileInput.value = '';
+      }
+
+      if (!text && !fileUrl) return;
+
       await notesRef.add({
         userId: user.id,
         username: username,
         email: user.email,
         text: text,
+        fileUrl: fileUrl,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       });
       messageInput.value = '';
     });
 
-    // Handle input for typing indicator
     messageInput.addEventListener('input', () => {
       clearTimeout(typingTimeout);
       typingIndicator.style.display = 'block';
@@ -183,27 +200,33 @@
       }, 1000);
     });
 
-    // Logout
     logoutButton.addEventListener('click', () => {
       netlifyIdentity.logout();
     });
 
-    // Load & render all notes
     function loadNotes(user) {
       notesRef.orderBy('timestamp').onSnapshot(snapshot => {
         chatDiv.innerHTML = '';
         snapshot.forEach(doc => {
           const d = doc.data();
           const isOwn = d.userId === user.id;
-          const displayName = d.username
-                              || (d.email ? d.email.split('@')[0] : 'Anonymous');
+          const displayName = d.username || (d.email ? d.email.split('@')[0] : 'Anonymous');
           const msg = document.createElement('div');
           msg.className = 'message' + (isOwn ? ' own-message' : '');
+          let fileContent = '';
+          if (d.fileUrl) {
+            if (d.fileUrl.match(/\.(jpeg|jpg|gif|png)$/)) {
+              fileContent = `<img src="${d.fileUrl}" class="uploaded-image">`;
+            } else {
+              fileContent = `<div><a href="${d.fileUrl}" target="_blank">Download File</a></div>`;
+            }
+          }
           msg.innerHTML = `
             <div class="meta">
               <strong>${displayName}</strong> • ${formatTimestamp(d.timestamp)}
             </div>
             <div>${linkify(d.text)}</div>
+            ${fileContent}
             ${isOwn
               ? `<div class="actions">
                   <button data-id="${doc.id}" data-text="${encodeURIComponent(d.text)}">Edit</button>
@@ -218,7 +241,6 @@
       });
     }
 
-    // Wire up edit/delete after rendering
     function attachActions() {
       document.querySelectorAll('.actions button').forEach(btn => {
         const id = btn.getAttribute('data-id');
@@ -240,19 +262,17 @@
       });
     }
 
-    // Update online users
     function updateOnlineUsers() {
       const users = Object.values(onlineUsers);
       usersList.innerText = users.join(', ') || 'No one';
     }
 
-    // Helpers
     function formatTimestamp(ts) {
       if (!ts) return '';
       const d = ts.toDate(), now = new Date();
       const isToday = d.toDateString() === now.toDateString();
       const isYesterday = d.toDateString() === new Date(now - 86400000).toDateString();
-      const hh = d.getHours(), mm = String(d.getMinutes()).padStart(2,'0');
+      const hh = d.getHours(), mm = String(d.getMinutes()).padStart(2, '0');
       return isToday
         ? `Today ${hh}:${mm}`
         : isYesterday
@@ -267,7 +287,6 @@
       );
     }
 
-    // Track online users
     netlifyIdentity.on('login', user => {
       onlineUsers[user.id] = user.user_metadata.username || user.email;
       updateOnlineUsers();
@@ -276,7 +295,6 @@
       delete onlineUsers[netlifyIdentity.currentUser().id];
       updateOnlineUsers();
     });
-
   </script>
 </body>
 </html>
