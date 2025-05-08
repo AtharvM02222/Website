@@ -38,16 +38,23 @@
     }
     #inputArea {
       display: flex;
+      align-items: center;
       padding: 10px;
       background: #f0f0f0;
       border-top: 1px solid #ccc;
+      transition: background 0.2s, border 0.2s;
+    }
+    /* highlight when dragging a file over */
+    #inputArea.dragover {
+      background: #e0f7fa;
+      border: 2px dashed #00796b;
     }
     #messageInput {
       flex: 1;
       padding: 10px;
       border: none;
       border-radius: 20px;
-      margin-right: 10px;
+      margin: 0 10px;
     }
     button {
       width: 40px;
@@ -61,7 +68,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-left: 5px;
     }
     .actions button {
       width: auto;
@@ -72,6 +78,11 @@
       padding: 3px 6px;
       margin-left: 5px;
     }
+    .uploaded-image {
+      max-width: 200px;
+      border-radius: 8px;
+      margin-top: 5px;
+    }
   </style>
 </head>
 <body style="display:none;">
@@ -79,6 +90,8 @@
   <div id="chat"></div>
 
   <div id="inputArea">
+    <input type="file" id="fileInput" accept="image/*,application/pdf,video/*" style="display:none">
+    <button id="attachButton" title="Attach file">📎</button>
     <input type="text" id="messageInput" placeholder="Type a note…">
     <button id="sendButton">➤</button>
     <button id="logoutButton" title="Logout">⎋</button>
@@ -87,13 +100,14 @@
   <!-- Firebase + Netlify Identity -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
   <script>
     // Initialize Netlify Identity
     netlifyIdentity.init();
 
-    // Fast redirect if not logged in
+    // Redirect if not logged in
     netlifyIdentity.on('init', user => {
       if (!user) {
         window.location.replace('/main.html');
@@ -105,7 +119,7 @@
     netlifyIdentity.on('login', () => location.reload());
     netlifyIdentity.on('logout', () => window.location.replace('/main.html'));
 
-    // Firebase config
+    // Firebase config & init
     const firebaseConfig = {
       apiKey: "AIzaSyDW9a-Dd4c44QRsjUSpNcjvn1RPzOorXw4",
       authDomain: "protean-tooling-444907-k3.firebaseapp.com",
@@ -116,69 +130,166 @@
       measurementId: "G-6ZE618L262"
     };
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+
+    // Firestore & Storage refs
+    const db       = firebase.firestore();
+    const storage  = firebase.storage();
     const notesRef = db.collection('notes');
 
     // UI elements
-    const chatDiv = document.getElementById('chat');
+    const chatDiv      = document.getElementById('chat');
     const messageInput = document.getElementById('messageInput');
-    const sendButton = document.getElementById('sendButton');
+    const fileInput    = document.getElementById('fileInput');
+    const attachButton = document.getElementById('attachButton');
+    const sendButton   = document.getElementById('sendButton');
     const logoutButton = document.getElementById('logoutButton');
+    const dropZone     = document.getElementById('inputArea');
 
-    // Send new note
+    let selectedFile = null;
+
+    // Open file picker when 📎 is clicked
+    attachButton.addEventListener('click', () => fileInput.click());
+
+    // Remember the chosen file
+    fileInput.addEventListener('change', e => {
+      selectedFile = e.target.files[0] || null;
+    });
+
+    // ---- Drag & Drop handlers ----
+    // Prevent default browser behavior on these events
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt =>
+      dropZone.addEventListener(evt, e => {
+        e.preventDefault();
+        e.stopPropagation();
+      })
+    );
+
+    // Highlight drop zone on dragover
+    dropZone.addEventListener('dragover', () =>
+      dropZone.classList.add('dragover')
+    );
+    dropZone.addEventListener('dragleave', () =>
+      dropZone.classList.remove('dragover')
+    );
+
+    // Handle dropped files
+    dropZone.addEventListener('drop', e => {
+      dropZone.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      if (files.length) {
+        selectedFile = files[0];
+        // Optionally give user feedback
+        messageInput.placeholder = `Attached: ${selectedFile.name}`;
+      }
+    });
+    // -------------------------------
+
+    // Send note (text + optional file)
     sendButton.addEventListener('click', async () => {
       const user = netlifyIdentity.currentUser();
       const text = messageInput.value.trim();
-      if (!text) return;
+      if (!text && !selectedFile) return;
+
       const username = user.user_metadata.username
                         || user.user_metadata.full_name
                         || user.email.split('@')[0];
-      await notesRef.add({
-        userId: user.id,
-        username: username,
-        email: user.email,
-        text: text,
+      const noteData = {
+        userId:    user.id,
+        username:  username,
+        email:     user.email,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      messageInput.value = '';
+      };
+      if (text) noteData.text = text;
+
+      // If a file is attached, upload first
+      if (selectedFile) {
+        const path = `uploads/${user.id}/${Date.now()}_${selectedFile.name}`;
+        const storageRef = storage.ref().child(path);
+        const snap = await storageRef.put(selectedFile);
+        const url  = await snap.ref.getDownloadURL();
+        noteData.fileURL  = url;
+        noteData.fileName = selectedFile.name;
+        noteData.fileType = selectedFile.type;
+      }
+
+      // Save to Firestore
+      await notesRef.add(noteData);
+
+      // Reset inputs
+      messageInput.value      = '';
+      messageInput.placeholder = 'Type a note…';
+      fileInput.value         = '';
+      selectedFile            = null;
     });
 
-    // Logout
+    // Logout handler
     logoutButton.addEventListener('click', () => {
       netlifyIdentity.logout();
     });
 
-    // Load & render all notes
+    // Load & render notes
     function loadNotes(user) {
-      notesRef.orderBy('timestamp').onSnapshot(snapshot => {
-        chatDiv.innerHTML = '';
-        snapshot.forEach(doc => {
-          const d = doc.data();
-          const isOwn = d.userId === user.id;
-          const displayName = d.username
-                              || (d.email ? d.email.split('@')[0] : 'Anonymous');
-          const msg = document.createElement('div');
-          msg.className = 'message' + (isOwn ? ' own-message' : '');
-          msg.innerHTML = `
-            <div class="meta">
-              <strong>${displayName}</strong> • ${formatTimestamp(d.timestamp)}
-            </div>
-            <div>${linkify(d.text)}</div>
-            ${isOwn
-              ? `<div class="actions">
-                  <button data-id="${doc.id}" data-text="${encodeURIComponent(d.text)}">Edit</button>
-                  <button data-id="${doc.id}">Delete</button>
-                 </div>`
-              : ''}
-          `;
-          chatDiv.appendChild(msg);
+      notesRef
+        .orderBy('timestamp')
+        .onSnapshot(snapshot => {
+          chatDiv.innerHTML = '';
+          snapshot.forEach(doc => {
+            const d     = doc.data();
+            const isOwn = d.userId === user.id;
+            const displayName = d.username
+                                || (d.email ? d.email.split('@')[0] : 'Anonymous');
+
+            // Build message content
+            let contentHTML = '';
+            if (d.text) {
+              contentHTML += `<div>${linkify(d.text)}</div>`;
+            }
+            if (d.fileURL) {
+              if (d.fileType.startsWith('image/')) {
+                contentHTML += `
+                  <div>
+                    <img src="${d.fileURL}"
+                         alt="${d.fileName}"
+                         class="uploaded-image">
+                  </div>`;
+              } else {
+                contentHTML += `
+                  <div>
+                    <a href="${d.fileURL}"
+                       download="${d.fileName}">
+                      📎 ${d.fileName}
+                    </a>
+                  </div>`;
+              }
+            }
+
+            // Combine into full message
+            const msg = document.createElement('div');
+            msg.className = 'message' + (isOwn ? ' own-message' : '');
+            msg.innerHTML = `
+              <div class="meta">
+                <strong>${displayName}</strong>
+                • ${formatTimestamp(d.timestamp)}
+              </div>
+              ${contentHTML}
+              ${isOwn
+                ? `<div class="actions">
+                     <button data-id="${doc.id}"
+                             data-text="${encodeURIComponent(d.text || '')}">
+                       Edit
+                     </button>
+                     <button data-id="${doc.id}">Delete</button>
+                   </div>`
+                : ''}`;
+
+            chatDiv.appendChild(msg);
+          });
+          chatDiv.scrollTop = chatDiv.scrollHeight;
+          attachActions();
         });
-        chatDiv.scrollTop = chatDiv.scrollHeight;
-        attachActions();
-      });
     }
 
-    // Wire up edit/delete after rendering
+    // Edit & Delete buttons
     function attachActions() {
       document.querySelectorAll('.actions button').forEach(btn => {
         const id = btn.getAttribute('data-id');
@@ -203,16 +314,19 @@
     // Helpers
     function formatTimestamp(ts) {
       if (!ts) return '';
-      const d = ts.toDate(), now = new Date();
-      const isToday = d.toDateString() === now.toDateString();
+      const d   = ts.toDate();
+      const now = new Date();
+      const isToday     = d.toDateString() === now.toDateString();
       const isYesterday = d.toDateString() === new Date(now - 86400000).toDateString();
-      const hh = d.getHours(), mm = String(d.getMinutes()).padStart(2,'0');
+      const hh = d.getHours();
+      const mm = String(d.getMinutes()).padStart(2, '0');
       return isToday
         ? `Today ${hh}:${mm}`
         : isYesterday
           ? `Yesterday ${hh}:${mm}`
           : `${d.toLocaleDateString()} ${hh}:${mm}`;
     }
+
     function linkify(text) {
       return text.replace(
         /(https?:\/\/[^\s]+)/g,
