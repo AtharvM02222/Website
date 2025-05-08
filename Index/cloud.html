@@ -85,15 +85,10 @@
       font-size: 12px;
       color: #888;
       display: none;
-      padding-left: 10px;
+      margin: 5px 10px;
     }
-    #fileInput {
-      margin-left: 5px;
-    }
-    img.uploaded-image {
-      max-width: 100%;
-      margin-top: 5px;
-      border-radius: 5px;
+    #photoInput {
+      margin-left: 10px;
     }
   </style>
 </head>
@@ -112,7 +107,7 @@
 
   <div id="inputArea">
     <input type="text" id="messageInput" placeholder="Type a note…">
-    <input type="file" id="fileInput">
+    <input type="file" id="photoInput" accept="image/*">
     <button id="sendButton">➤</button>
     <button id="logoutButton" title="Logout">⎋</button>
   </div>
@@ -154,7 +149,7 @@
 
     const chatDiv = document.getElementById('chat');
     const messageInput = document.getElementById('messageInput');
-    const fileInput = document.getElementById('fileInput');
+    const photoInput = document.getElementById('photoInput');
     const sendButton = document.getElementById('sendButton');
     const logoutButton = document.getElementById('logoutButton');
     const typingIndicator = document.getElementById('typingIndicator');
@@ -166,29 +161,45 @@
 
     sendButton.addEventListener('click', async () => {
       const user = netlifyIdentity.currentUser();
+      const username = user.user_metadata.username
+                      || user.user_metadata.full_name
+                      || user.email.split('@')[0];
+
       const text = messageInput.value.trim();
-      const file = fileInput.files[0];
-      const username = user.user_metadata.username || user.user_metadata.full_name || user.email.split('@')[0];
-      let fileUrl = '';
+      const file = photoInput.files[0];
+
+      if (!text && !file) return;
 
       if (file) {
-        const storageRef = storage.ref('uploads/' + Date.now() + '_' + file.name);
-        await storageRef.put(file);
-        fileUrl = await storageRef.getDownloadURL();
-        fileInput.value = '';
+        const storageRef = storage.ref(`photos/${user.id}/${Date.now()}_${file.name}`);
+        const uploadTask = storageRef.put(file);
+
+        uploadTask.on('state_changed', null, (error) => {
+          console.error('Upload failed:', error);
+          alert('Failed to upload photo.');
+        }, async () => {
+          const downloadURL = await storageRef.getDownloadURL();
+          await notesRef.add({
+            userId: user.id,
+            username: username,
+            email: user.email,
+            photoUrl: downloadURL,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          photoInput.value = '';
+        });
       }
 
-      if (!text && !fileUrl) return;
-
-      await notesRef.add({
-        userId: user.id,
-        username: username,
-        email: user.email,
-        text: text,
-        fileUrl: fileUrl,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      messageInput.value = '';
+      if (text) {
+        await notesRef.add({
+          userId: user.id,
+          username: username,
+          email: user.email,
+          text: text,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        messageInput.value = '';
+      }
     });
 
     messageInput.addEventListener('input', () => {
@@ -213,23 +224,17 @@
           const displayName = d.username || (d.email ? d.email.split('@')[0] : 'Anonymous');
           const msg = document.createElement('div');
           msg.className = 'message' + (isOwn ? ' own-message' : '');
-          let fileContent = '';
-          if (d.fileUrl) {
-            if (d.fileUrl.match(/\.(jpeg|jpg|gif|png)$/)) {
-              fileContent = `<img src="${d.fileUrl}" class="uploaded-image">`;
-            } else {
-              fileContent = `<div><a href="${d.fileUrl}" target="_blank">Download File</a></div>`;
-            }
-          }
           msg.innerHTML = `
             <div class="meta">
               <strong>${displayName}</strong> • ${formatTimestamp(d.timestamp)}
             </div>
-            <div>${linkify(d.text)}</div>
-            ${fileContent}
+            <div>
+              ${d.text ? linkify(d.text) : ''}
+              ${d.photoUrl ? `<div><img src="${d.photoUrl}" style="max-width:200px; max-height:200px; border-radius:8px; margin-top:5px;"></div>` : ''}
+            </div>
             ${isOwn
               ? `<div class="actions">
-                  <button data-id="${doc.id}" data-text="${encodeURIComponent(d.text)}">Edit</button>
+                  <button data-id="${doc.id}" data-text="${encodeURIComponent(d.text || '')}">Edit</button>
                   <button data-id="${doc.id}">Delete</button>
                  </div>`
               : ''}
