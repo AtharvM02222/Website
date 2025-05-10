@@ -1,57 +1,31 @@
-<!-- cloud.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Netlify identity widget (keep exactly as before) -->
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-
-  <!-- Bootstrap CSS -->
+  <title>Cloud Notes Chat</title>
+  <link rel="stylesheet" href="./cloud.css" />
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
     rel="stylesheet"
-    integrity="sha384-..."
-    crossorigin="anonymous"
   />
-
-  <!-- Linkify (for auto-linking URLs) -->
-  <script src="https://cdn.jsdelivr.net/npm/linkifyjs/dist/linkify.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/linkifyjs/dist/linkify-element.min.js"></script>
-
-  <!-- Your custom styles -->
-  <link rel="stylesheet" href="./cloud.css" />
-
-  <title>Cloud Chat</title>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
   <div class="chat-container">
-    <header class="chat-header d-flex align-items-center">
-      <h5 class="mb-0">Global Chat</h5>
-      <div id="online-list" class="ms-auto">
-        <!-- dynamically filled -->
-      </div>
+    <header class="chat-header">
+      <h5>Global Chat Room</h5>
+      <div id="online-users"></div>
     </header>
 
-    <div id="messages" class="chat-messages overflow-auto">
-      <!-- messages go here -->
-    </div>
+    <div id="messages" class="chat-messages"></div>
 
-    <div id="typing-indicator" class="typing-indicator">
-      <!-- “Alice is typing…” -->
-    </div>
+    <div id="typing-indicator" class="typing-indicator"></div>
 
-    <footer class="chat-input d-flex align-items-center">
-      <input
-        id="msg-input"
-        type="text"
-        class="form-control me-2"
-        placeholder="Type a message"
-      />
-      <input id="img-input" type="file" accept="image/*" class="me-2" />
-      <button id="send-btn" class="btn btn-primary">Send</button>
+    <footer class="chat-footer d-flex">
+      <input type="text" id="msg-input" class="form-control me-2" placeholder="Type a message..." />
+      <input type="file" id="img-input" class="form-control me-2" accept="image/*" />
+      <button id="send-btn" class="btn btn-success">Send</button>
     </footer>
   </div>
 
@@ -60,7 +34,9 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
-  <!-- Your chat logic -->
+  <script src="https://cdn.jsdelivr.net/npm/linkifyjs/dist/linkify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/linkifyjs/dist/linkify-element.min.js"></script>
+
   <script src="./cloud.js"></script>
 </body>
 </html>
