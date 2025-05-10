@@ -1,42 +1,30 @@
+<!-- cloud.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cloud Notes Chat</title>
-  <link rel="stylesheet" href="./cloud.css" />
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>My Cloud Chat</title>
+  <link rel="stylesheet" href="cloud.css" />
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
-  <div class="chat-container">
-    <header class="chat-header">
-      <h5>Global Chat Room</h5>
-      <div id="online-users"></div>
+  <div class="chat">
+    <header class="chat__header">
+      <h1>Secret Group</h1>
+      <button id="logoutBtn">Log out</button>
     </header>
-
-    <div id="messages" class="chat-messages"></div>
-
-    <div id="typing-indicator" class="typing-indicator"></div>
-
-    <footer class="chat-footer d-flex">
-      <input type="text" id="msg-input" class="form-control me-2" placeholder="Type a message..." />
-      <input type="file" id="img-input" class="form-control me-2" accept="image/*" />
-      <button id="send-btn" class="btn btn-success">Send</button>
+    <div id="msgs" class="chat__messages"></div>
+    <footer class="chat__footer">
+      <input id="inp" type="text" placeholder="Type a message…" />
+      <button id="sendBtn">Send</button>
     </footer>
   </div>
 
-  <!-- Firebase SDKs -->
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/linkifyjs/dist/linkify.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/linkifyjs/dist/linkify-element.min.js"></script>
-
-  <script src="./cloud.js"></script>
+  <script src="cloud.js"></script>
 </body>
 </html>
