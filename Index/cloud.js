@@ -1,184 +1,139 @@
-netlifyIdentity.init();
+// cloud.js
+// ====== 1) FIREBASE & NETLIFY INIT ======
+netlifyIdentity.init(); // keep exactly as before
 
-netlifyIdentity.on('init', user => {
-  if (!user) {
-    window.location.replace('/main.html');
-  } else {
-    document.body.style.display = 'flex';
-    loadNotes(user);
-    updateOnlineUsers();
-  }
-});
-netlifyIdentity.on('login', () => location.reload());
-netlifyIdentity.on('logout', () => window.location.replace('/main.html'));
-
+// Paste your existing firebaseConfig here:
 const firebaseConfig = {
-  apiKey: "AIzaSyDW9a-Dd4c44QRsjUSpNcjvn1RPzOorXw4",
-  authDomain: "protean-tooling-444907-k3.firebaseapp.com",
-  projectId: "protean-tooling-444907-k3",
-  storageBucket: "protean-tooling-444907-k3.appspot.com",
-  messagingSenderId: "989275453863",
-  appId: "1:989275453863:web:f04a2937a7785c75231e82",
-  measurementId: "G-6ZE618L262"
+  apiKey: "YOUR-API-KEY",
+  authDomain: "YOUR-PROJECT.firebaseapp.com",
+  databaseURL: "https://YOUR-PROJECT.firebaseio.com",
+  projectId: "YOUR-PROJECT",
+  storageBucket: "YOUR-PROJECT.appspot.com",
+  messagingSenderId: "…",
+  appId: "…",
 };
+
+// Initialize
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+const db = firebase.database();
 const storage = firebase.storage();
-const notesRef = db.collection('notes');
 
-const chatDiv = document.getElementById('chat');
-const messageInput = document.getElementById('messageInput');
-const photoInput = document.getElementById('photoInput');
-const sendButton = document.getElementById('sendButton');
-const logoutButton = document.getElementById('logoutButton');
-const typingIndicator = document.getElementById('typingIndicator');
-const typingUser = document.getElementById('typingUser');
-const usersList = document.getElementById('usersList');
+// Simple auth: Netlify Identity
+let currentUser = null;
+netlifyIdentity.on("init", user => {
+  if (!user) netlifyIdentity.open();
+});
+netlifyIdentity.on("login", user => {
+  currentUser = user;
+  netlifyIdentity.close();
+  setup();
+});
 
-let typingTimeout;
-let onlineUsers = {};
+// ====== 2) PRESENCE & TYPING ======
+function setupPresence() {
+  const userStatusDatabaseRef = db.ref(`/status/${currentUser.id}`);
+  const isOfflineForDatabase = {
+    state: "offline",
+    last_changed: firebase.database.ServerValue.TIMESTAMP,
+  };
+  const isOnlineForDatabase = {
+    state: "online",
+    last_changed: firebase.database.ServerValue.TIMESTAMP,
+  };
 
-sendButton.addEventListener('click', async () => {
-  const user = netlifyIdentity.currentUser();
-  const username = user.user_metadata.username || user.user_metadata.full_name || user.email.split('@')[0];
+  db.ref(".info/connected").on("value", snap => {
+    if (snap.val() === false) return;
+    userStatusDatabaseRef.onDisconnect().set(isOfflineForDatabase).then(() => {
+      userStatusDatabaseRef.set(isOnlineForDatabase);
+    });
+  });
 
-  const text = messageInput.value.trim();
-  const file = photoInput.files[0];
+  // typing
+  const typingRef = db.ref("/typing/global");
+  let typingTimer = null;
+  document.getElementById("msg-input").addEventListener("input", () => {
+    typingRef.child(currentUser.id).set(currentUser.user_metadata.full_name || currentUser.email);
+    clearTimeout(typingTimer);
+    typingTimer = setTimeout(() => {
+      typingRef.child(currentUser.id).remove();
+    }, 1500);
+  });
+}
 
-  if (!text && !file) return;
+// ====== 3) UI RENDERING ======
+const msgsDiv = document.getElementById("messages");
+function addMessage(msg, id) {
+  const div = document.createElement("div");
+  div.classList.add("message", msg.uid === currentUser.id ? "self" : "other");
+  const bubble = document.createElement("div");
+  bubble.classList.add("bubble");
+  if (msg.text) {
+    bubble.textContent = msg.text;
+    linkifyElement(bubble, { target: "_blank" });
+  }
+  if (msg.imgUrl) {
+    const img = document.createElement("img");
+    img.src = msg.imgUrl;
+    bubble.appendChild(img);
+  }
+  div.appendChild(bubble);
+  msgsDiv.appendChild(div);
+  msgsDiv.scrollTop = msgsDiv.scrollHeight;
+}
 
-  let photoUrl = null;
+// Typing indicator
+db.ref("/typing/global").on("value", snap => {
+  const typing = snap.val() || {};
+  delete typing[currentUser.id];
+  const names = Object.values(typing);
+  document.getElementById("typing-indicator").textContent =
+    names.length ? `${names.join(", ")} is typing…` : "";
+});
 
-  if (file) {
-    try {
-      const storageRef = storage.ref(`photos/${user.id}/${Date.now()}_${file.name}`);
-      const uploadTaskSnapshot = await storageRef.put(file);
-      photoUrl = await uploadTaskSnapshot.ref.getDownloadURL();
-    } catch (error) {
-      console.error('Upload failed:', error);
-      alert('Failed to upload photo.');
-      return;
-    }
+// Online list
+db.ref("/status").on("value", snap => {
+  const status = snap.val() || {};
+  const online = Object.entries(status)
+    .filter(([_, v]) => v.state === "online")
+    .map(([uid, v]) => v);
+  const list = document.getElementById("online-list");
+  list.innerHTML = "";
+  online.forEach(u => {
+    const span = document.createElement("span");
+    span.textContent = u.user_metadata?.full_name || u.email;
+    list.appendChild(span);
+  });
+});
+
+// ====== 4) LOAD & SEND MESSAGES ======
+db.ref("/messages/global")
+  .limitToLast(100)
+  .on("child_added", snap => addMessage(snap.val(), snap.key));
+
+document.getElementById("send-btn").onclick = async () => {
+  const txtInput = document.getElementById("msg-input");
+  const fileInput = document.getElementById("img-input");
+
+  let imgUrl = null;
+  if (fileInput.files[0]) {
+    const file = fileInput.files[0];
+    const storageRef = storage.ref(`images/${Date.now()}_${file.name}`);
+    await storageRef.put(file);
+    imgUrl = await storageRef.getDownloadURL();
   }
 
-  await notesRef.add({
-    userId: user.id,
-    username: username,
-    email: user.email,
-    text: text || null,
-    photoUrl: photoUrl || null,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    seenBy: []
-  });
+  const newMsg = {
+    uid: currentUser.id,
+    text: txtInput.value || null,
+    imgUrl,
+    timestamp: firebase.database.ServerValue.TIMESTAMP,
+  };
+  await db.ref("/messages/global").push(newMsg);
+  txtInput.value = "";
+  fileInput.value = "";
+};
 
-  messageInput.value = '';
-  photoInput.value = '';
-});
-
-messageInput.addEventListener('input', () => {
-  clearTimeout(typingTimeout);
-  typingIndicator.style.display = 'block';
-  typingUser.innerText = netlifyIdentity.currentUser().user_metadata.username || 'User';
-  typingTimeout = setTimeout(() => {
-    typingIndicator.style.display = 'none';
-  }, 1000);
-});
-
-logoutButton.addEventListener('click', () => {
-  netlifyIdentity.logout();
-});
-
-function loadNotes(user) {
-  notesRef.orderBy('timestamp').onSnapshot(snapshot => {
-    chatDiv.innerHTML = '';
-    snapshot.forEach(doc => {
-      const d = doc.data();
-      const isOwn = d.userId === user.id;
-      const displayName = d.username || (d.email ? d.email.split('@')[0] : 'Anonymous');
-
-      let tick = '';
-      if (isOwn) {
-        const seenCount = (d.seenBy || []).length;
-        if (seenCount > 0) {
-          tick = seenCount > 1 ? '✔✔ (blue)' : '✔✔';
-        } else {
-          tick = '✔';
-        }
-      }
-
-      const msg = document.createElement('div');
-      msg.className = 'message' + (isOwn ? ' own-message' : '');
-      msg.innerHTML = `
-        <div class="meta">
-          <strong>${displayName}</strong> • ${formatTimestamp(d.timestamp)} ${isOwn ? `<span>${tick}</span>` : ''}
-        </div>
-        <div>${d.text ? linkify(d.text) : ''}</div>
-        ${d.photoUrl ? `<div><img src="${d.photoUrl}" alt="Photo" style="max-width: 100%; margin-top: 5px;"></div>` : ''}
-        ${isOwn
-          ? `<div class="actions">
-              <button data-id="${doc.id}" data-text="${encodeURIComponent(d.text || '')}">Edit</button>
-              <button data-id="${doc.id}">Delete</button>
-             </div>`
-          : ''}
-      `;
-      chatDiv.appendChild(msg);
-
-      if (!isOwn && !(d.seenBy || []).includes(user.id)) {
-        notesRef.doc(doc.id).update({
-          seenBy: firebase.firestore.FieldValue.arrayUnion(user.id)
-        });
-      }
-    });
-    chatDiv.scrollTop = chatDiv.scrollHeight;
-    attachActions();
-  });
+// ====== 5) BOOTSTRAP EVERYTHING ======
+function setup() {
+  setupPresence();
 }
-
-function attachActions() {
-  document.querySelectorAll('.actions button').forEach(btn => {
-    const id = btn.getAttribute('data-id');
-    if (btn.innerText === 'Edit') {
-      const oldText = decodeURIComponent(btn.getAttribute('data-text'));
-      btn.onclick = async () => {
-        const newText = prompt('Edit your note:', oldText);
-        if (newText !== null) {
-          await notesRef.doc(id).update({ text: newText });
-        }
-      };
-    } else {
-      btn.onclick = async () => {
-        if (confirm('Delete this note?')) {
-          await notesRef.doc(id).delete();
-        }
-      };
-    }
-  });
-}
-
-function updateOnlineUsers() {
-  const users = Object.values(onlineUsers);
-  usersList.innerText = users.join(', ') || 'No one';
-}
-
-function formatTimestamp(ts) {
-  if (!ts) return '';
-  const d = ts.toDate(), now = new Date();
-  const isToday = d.toDateString() === now.toDateString();
-  const isYesterday = d.toDateString() === new Date(now - 86400000).toDateString();
-  const hh = d.getHours(), mm = String(d.getMinutes()).padStart(2, '0');
-  return isToday ? `Today ${hh}:${mm}` : isYesterday ? `Yesterday ${hh}:${mm}` : `${d.toLocaleDateString()} ${hh}:${mm}`;
-}
-
-function linkify(text) {
-  return text.replace(/(https?:\/\/[^\s]+)/g, url => `<a href="${url}" target="_blank">${url}</a>`);
-}
-
-netlifyIdentity.on('login', user => {
-  onlineUsers[user.id] = user.user_metadata.username || user.email;
-  updateOnlineUsers();
-});
-
-netlifyIdentity.on('logout', () => {
-  delete onlineUsers[netlifyIdentity.currentUser().id];
-  updateOnlineUsers();
-});
