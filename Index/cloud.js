@@ -1,139 +1,138 @@
-// cloud.js
-// ====== 1) FIREBASE & NETLIFY INIT ======
-netlifyIdentity.init(); // keep exactly as before
-
-// Paste your existing firebaseConfig here:
+// Firebase config (yours)
 const firebaseConfig = {
-  apiKey: "YOUR-API-KEY",
-  authDomain: "YOUR-PROJECT.firebaseapp.com",
-  databaseURL: "https://YOUR-PROJECT.firebaseio.com",
-  projectId: "YOUR-PROJECT",
-  storageBucket: "YOUR-PROJECT.appspot.com",
-  messagingSenderId: "…",
-  appId: "…",
+  apiKey: "AIzaSyDW9a-Dd4c44QRsjUSpNcjvn1RPzOorXw4",
+  authDomain: "protean-tooling-444907-k3.firebaseapp.com",
+  projectId: "protean-tooling-444907-k3",
+  storageBucket: "protean-tooling-444907-k3.appspot.com",
+  messagingSenderId: "989275453863",
+  appId: "1:989275453863:web:f04a2937a7785c75231e82",
+  measurementId: "G-6ZE618L262"
 };
 
-// Initialize
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const storage = firebase.storage();
 
-// Simple auth: Netlify Identity
+// Netlify Identity Auth
+netlifyIdentity.init();
 let currentUser = null;
+
 netlifyIdentity.on("init", user => {
   if (!user) netlifyIdentity.open();
+  else {
+    currentUser = user;
+    setupChat();
+  }
 });
+
 netlifyIdentity.on("login", user => {
   currentUser = user;
   netlifyIdentity.close();
-  setup();
+  setupChat();
 });
 
-// ====== 2) PRESENCE & TYPING ======
-function setupPresence() {
-  const userStatusDatabaseRef = db.ref(`/status/${currentUser.id}`);
-  const isOfflineForDatabase = {
-    state: "offline",
-    last_changed: firebase.database.ServerValue.TIMESTAMP,
-  };
-  const isOnlineForDatabase = {
-    state: "online",
-    last_changed: firebase.database.ServerValue.TIMESTAMP,
-  };
+// Chat Setup
+function setupChat() {
+  const uid = currentUser.id;
+  const name = currentUser.user_metadata.full_name || currentUser.email;
 
-  db.ref(".info/connected").on("value", snap => {
-    if (snap.val() === false) return;
-    userStatusDatabaseRef.onDisconnect().set(isOfflineForDatabase).then(() => {
-      userStatusDatabaseRef.set(isOnlineForDatabase);
+  // Online presence
+  const statusRef = db.ref(`/status/${uid}`);
+  const connectedRef = db.ref(".info/connected");
+  connectedRef.on("value", snap => {
+    if (snap.val()) {
+      statusRef.onDisconnect().remove();
+      statusRef.set({ name });
+    }
+  });
+
+  // Show who's online
+  db.ref("/status").on("value", snap => {
+    const users = snap.val() || {};
+    const container = document.getElementById("online-users");
+    container.innerHTML = "";
+    Object.values(users).forEach(u => {
+      const span = document.createElement("span");
+      span.textContent = u.name;
+      container.appendChild(span);
     });
   });
 
-  // typing
-  const typingRef = db.ref("/typing/global");
-  let typingTimer = null;
-  document.getElementById("msg-input").addEventListener("input", () => {
-    typingRef.child(currentUser.id).set(currentUser.user_metadata.full_name || currentUser.email);
+  // Typing
+  const typingRef = db.ref("/typing");
+  let typingTimer;
+  const input = document.getElementById("msg-input");
+
+  input.addEventListener("input", () => {
+    typingRef.child(uid).set(name);
     clearTimeout(typingTimer);
-    typingTimer = setTimeout(() => {
-      typingRef.child(currentUser.id).remove();
-    }, 1500);
+    typingTimer = setTimeout(() => typingRef.child(uid).remove(), 1500);
   });
+
+  typingRef.on("value", snap => {
+    const data = snap.val() || {};
+    delete data[uid];
+    const names = Object.values(data);
+    document.getElementById("typing-indicator").textContent = names.length
+      ? `${names.join(", ")} is typing...`
+      : "";
+  });
+
+  // Load messages
+  const msgRef = db.ref("/notes").limitToLast(100);
+  msgRef.on("child_added", snap => {
+    const msg = snap.val();
+    renderMessage(msg, msg.uid === uid);
+  });
+
+  // Send message
+  document.getElementById("send-btn").onclick = async () => {
+    const text = input.value.trim();
+    const file = document.getElementById("img-input").files[0];
+
+    let imgUrl = null;
+    if (file) {
+      const fileRef = storage.ref(`images/${Date.now()}-${file.name}`);
+      await fileRef.put(file);
+      imgUrl = await fileRef.getDownloadURL();
+    }
+
+    if (!text && !imgUrl) return;
+
+    const msgData = {
+      uid,
+      name,
+      text: text || null,
+      img: imgUrl || null,
+      time: Date.now()
+    };
+
+    await db.ref("/notes").push(msgData);
+    input.value = "";
+    document.getElementById("img-input").value = "";
+  };
 }
 
-// ====== 3) UI RENDERING ======
-const msgsDiv = document.getElementById("messages");
-function addMessage(msg, id) {
-  const div = document.createElement("div");
-  div.classList.add("message", msg.uid === currentUser.id ? "self" : "other");
+// Render a message bubble
+function renderMessage(msg, isSelf) {
+  const msgDiv = document.createElement("div");
+  msgDiv.className = "message " + (isSelf ? "self" : "other");
+
   const bubble = document.createElement("div");
-  bubble.classList.add("bubble");
+  bubble.className = "bubble";
+
   if (msg.text) {
     bubble.textContent = msg.text;
-    linkifyElement(bubble, { target: "_blank" });
+    linkifyElement(bubble);
   }
-  if (msg.imgUrl) {
+
+  if (msg.img) {
     const img = document.createElement("img");
-    img.src = msg.imgUrl;
+    img.src = msg.img;
     bubble.appendChild(img);
   }
-  div.appendChild(bubble);
-  msgsDiv.appendChild(div);
-  msgsDiv.scrollTop = msgsDiv.scrollHeight;
-}
 
-// Typing indicator
-db.ref("/typing/global").on("value", snap => {
-  const typing = snap.val() || {};
-  delete typing[currentUser.id];
-  const names = Object.values(typing);
-  document.getElementById("typing-indicator").textContent =
-    names.length ? `${names.join(", ")} is typing…` : "";
-});
-
-// Online list
-db.ref("/status").on("value", snap => {
-  const status = snap.val() || {};
-  const online = Object.entries(status)
-    .filter(([_, v]) => v.state === "online")
-    .map(([uid, v]) => v);
-  const list = document.getElementById("online-list");
-  list.innerHTML = "";
-  online.forEach(u => {
-    const span = document.createElement("span");
-    span.textContent = u.user_metadata?.full_name || u.email;
-    list.appendChild(span);
-  });
-});
-
-// ====== 4) LOAD & SEND MESSAGES ======
-db.ref("/messages/global")
-  .limitToLast(100)
-  .on("child_added", snap => addMessage(snap.val(), snap.key));
-
-document.getElementById("send-btn").onclick = async () => {
-  const txtInput = document.getElementById("msg-input");
-  const fileInput = document.getElementById("img-input");
-
-  let imgUrl = null;
-  if (fileInput.files[0]) {
-    const file = fileInput.files[0];
-    const storageRef = storage.ref(`images/${Date.now()}_${file.name}`);
-    await storageRef.put(file);
-    imgUrl = await storageRef.getDownloadURL();
-  }
-
-  const newMsg = {
-    uid: currentUser.id,
-    text: txtInput.value || null,
-    imgUrl,
-    timestamp: firebase.database.ServerValue.TIMESTAMP,
-  };
-  await db.ref("/messages/global").push(newMsg);
-  txtInput.value = "";
-  fileInput.value = "";
-};
-
-// ====== 5) BOOTSTRAP EVERYTHING ======
-function setup() {
-  setupPresence();
+  msgDiv.appendChild(bubble);
+  document.getElementById("messages").appendChild(msgDiv);
+  document.getElementById("messages").scrollTop = 999999;
 }
