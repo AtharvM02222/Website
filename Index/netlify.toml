@@ -1,9 +1,14 @@
-[[redirects]]
-  from = "/cloud"
-  to = "/cloud.html"
-  status = 200
+# netlify.toml (at your project root)
+
+[build]
+  publish = "Index"
+  command = ""  # if you have a build step, put it here
 
 [[redirects]]
-  from = "/cloud.html"
-  to = "/cloud.html"
-  status = 200
+  from = "/cloud/*"
+  to = "/main.html"
+  status = 302
+  force = true
+  conditions = { Role = ["guest"] }
+
+# (You can add any other redirects or headers below.)
