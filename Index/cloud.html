@@ -1,1 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🔒 Secret Chat</title>
+  <!-- Netlify Identity Widget -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    #chat-container { display: none; }
+    #messages { list-style: none; padding: 0; max-height: 300px; overflow-y: auto; border: 1px solid #ccc; margin-bottom: 1rem; }
+    #messages li { padding: .5rem; border-bottom: 1px solid #eee; }
+  </style>
+</head>
+<body>
+  <h1>🔒 Secret Chat Room</h1>
+
+  <p id="loginPrompt">Checking login...</p>
+
+  <div id="chat-container">
+    <ul id="messages"></ul>
+    <input id="messageInput" placeholder="Type a message..." />
+    <button id="sendBtn">Send</button>
+    <button id="logoutBtn">Logout</button>
+  </div>
+
+  <script>
+    // Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      // ...other config
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // Initialize Netlify Identity
+    netlifyIdentity.init();
+
+    // Monitor login state
+    function updateUI(user) {
+      if (user) {
+        document.getElementById('loginPrompt').style.display = 'none';
+        document.getElementById('chat-container').style.display = 'block';
+        // Sign in to Firebase with Netlify Identity token
+        user.jwt().then(token => {
+          auth.signInWithCustomToken(token);
+          loadChat();
+        });
+      } else {
+        document.getElementById('loginPrompt').textContent = 'Please log in.';
+        // Show login prompt
+        netlifyIdentity.open('login');
+      }
+    }
+
+    netlifyIdentity.on('init', user => updateUI(user));
+    netlifyIdentity.on('login', user => updateUI(user));
+    netlifyIdentity.on('logout', () => {
+      auth.signOut();
+      document.getElementById('chat-container').style.display = 'none';
+      document.getElementById('loginPrompt').textContent = 'Logged out. Please log in.';
+    });
+
+    function loadChat() {
+      const messages = document.getElementById('messages');
+      db.collection('secret-chat').orderBy('ts')
+        .onSnapshot(snapshot => {
+          messages.innerHTML = '';
+          snapshot.forEach(doc => {
+            const li = document.createElement('li');
+            const data = doc.data();
+            li.textContent = `${data.user}: ${data.text}`;
+            messages.appendChild(li);
+          });
+        });
+
+      document.getElementById('sendBtn').onclick = () => {
+        const text = document.getElementById('messageInput').value.trim();
+        if (!text) return;
+        const user = auth.currentUser;
+        db.collection('secret-chat').add({ text, ts: Date.now(), user: user.email });
+        document.getElementById('messageInput').value = '';
+      };
+
+      document.getElementById('logoutBtn').onclick = () => netlifyIdentity.logout();
+    }
+
+    // Two custom login triggers:
+    // 1) In console: type admin() and press Enter
+    window.admin = () => netlifyIdentity.open('login');
+
+    // 2) Triggered from about.html button redirect
+    //    about.html directs to /min.html, which auto-inits
+  </script>
+</body>
+</html>
 
