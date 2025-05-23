@@ -1,1 +1,6 @@
 
+# Redirect /cloud → cloud.html (Netlify will serve your static file)
+[[redirects]]
+  from = "/cloud"
+  to   = "/cloud.html"
+  status = 200
