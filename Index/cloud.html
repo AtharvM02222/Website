@@ -6,25 +6,23 @@
   <title>☁️ Cloud Chat</title>
   <link rel="stylesheet" href="cloud.css">
 
-  <!-- Netlify Identity widget -->
+  <!-- Netlify Identity -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" defer></script>
-  <!-- Firebase SDKs -->
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database-compat.js" defer></script>
-  <!-- Your chat logic -->
+  <!-- Chat logic -->
   <script src="cloud.js" defer></script>
 </head>
 <body>
-  <!-- Entire chat app hidden until auth check passes -->
+  <!-- Hidden by default -->
   <div id="chat-app" class="hidden">
     <header>
       <h1>☁️ Cloud Chat</h1>
       <div id="online-list">Online: <span id="online-count">0</span></div>
       <button id="logout-btn">Log out</button>
     </header>
-
     <div id="messages"></div>
-
     <form id="msg-form">
       <input id="msg-input" placeholder="Type your message…" autocomplete="off" />
       <button type="submit">Send</button>
