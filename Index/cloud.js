@@ -1,4 +1,4 @@
-// ————— CONFIGURE FIREBASE —————
+// ——— Your Firebase config ———
 const firebaseConfig = {
   apiKey: "AIzaSyAUPxEQKMB_b-rR4fUS21UZ2GDZBsl_fbA",
   authDomain: "cloud02222.firebaseapp.com",
@@ -11,34 +11,35 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// refs
+// Firebase refs
 const msgsRef     = db.ref("cloud_messages");
 const presRef     = db.ref("presence");
 const amOnlineRef = db.ref(".info/connected");
 
 // UI elements
-const app       = document.getElementById("chat-app");
-const msgsEl    = document.getElementById("messages");
-const form      = document.getElementById("msg-form");
-const input     = document.getElementById("msg-input");
-const logoutBtn = document.getElementById("logout");
-const onlineCnt = document.getElementById("online-count");
+const app        = document.getElementById("chat-app");
+const msgsEl     = document.getElementById("messages");
+const form       = document.getElementById("msg-form");
+const input      = document.getElementById("msg-input");
+const logoutBtn  = document.getElementById("logout-btn");
+const onlineCnt  = document.getElementById("online-count");
 
-// ————— AUTH & PRESENCE —————
-netlifyIdentity.on("login",  user => startApp(user));
-netlifyIdentity.on("logout",() => location.replace("main.html"));
-
-// if already init’d and logged in
+// Auth & Presence
+netlifyIdentity.on("login", user => startApp(user));
+netlifyIdentity.on("logout", () => location.replace("main.html"));
 netlifyIdentity.on("init", user => {
+  // If identity.init fired and user exists, start
   if (user) startApp(user);
 });
 
-// kick off init (already in HTML head)
 function startApp(user) {
+  // Show UI
   app.classList.remove("hidden");
+
+  // Logout button
   logoutBtn.onclick = () => netlifyIdentity.logout();
 
-  // presence: mark this user online
+  // Mark as online in presence
   const myPres = presRef.child(user.id);
   amOnlineRef.on("value", snap => {
     if (snap.val()) {
@@ -47,17 +48,17 @@ function startApp(user) {
     }
   });
 
-  // update online count
+  // Update online count
   presRef.on("value", snap => {
-    onlineCnt.textContent = Object.keys(snap.val()||{}).length;
+    onlineCnt.textContent = Object.keys(snap.val() || {}).length;
   });
 
-  // message events
-  msgsRef.on("child_added",   s=> renderMessage(s.key, s.val()));
-  msgsRef.on("child_changed", s=> updateMessage(s.key, s.val()));
-  msgsRef.on("child_removed", s=> removeMessage(s.key));
+  // Listen for messages
+  msgsRef.on("child_added",   s => renderMessage(s.key, s.val(), user.id));
+  msgsRef.on("child_changed", s => updateMessage(s.key, s.val(), user.id));
+  msgsRef.on("child_removed", s => removeMessage(s.key));
 
-  // send new
+  // Send new messages
   form.onsubmit = e => {
     e.preventDefault();
     const text = input.value.trim();
@@ -73,12 +74,11 @@ function startApp(user) {
   };
 }
 
-// ————— RENDER HELPERS —————
-function renderMessage(id, msg) {
-  if (!msg) return;
+// Render helpers
+function renderMessage(id, msg, currentUid) {
   const div = document.createElement("div");
   div.id = id;
-  div.className = "message" + (msg.uid === netlifyIdentity.currentUser().id ? " own" : "");
+  div.className = "message" + (msg.uid === currentUid ? " own" : "");
   const time = new Date(msg.ts).toLocaleTimeString();
   div.innerHTML = `
     <div class="meta">
@@ -87,7 +87,7 @@ function renderMessage(id, msg) {
     </div>
     <div class="text">${escape(msg.text)}</div>
   `;
-  if (msg.uid === netlifyIdentity.currentUser().id) {
+  if (msg.uid === currentUid) {
     const actions = document.createElement("div");
     actions.className = "actions";
     actions.innerHTML = `
@@ -95,9 +95,9 @@ function renderMessage(id, msg) {
       <button data-action="delete">🗑️</button>
     `;
     actions.onclick = e => {
-      const a = e.target.dataset.action;
-      if (a === "edit") return editMessage(id, msg.text);
-      if (a === "delete") return deleteMessage(id);
+      const act = e.target.dataset.action;
+      if (act === "edit") editMessage(id, msg.text);
+      if (act === "delete") deleteMessage(id);
     };
     div.appendChild(actions);
   }
@@ -105,9 +105,9 @@ function renderMessage(id, msg) {
   msgsEl.scrollTop = msgsEl.scrollHeight;
 }
 
-function updateMessage(id, msg) {
+function updateMessage(id, msg, currentUid) {
   const div = document.getElementById(id);
-  if (!div) return renderMessage(id, msg);
+  if (!div) return renderMessage(id, msg, currentUid);
   div.querySelector(".text").textContent = msg.text;
   if (msg.edited && !div.querySelector(".edited")) {
     div.querySelector(".meta")
@@ -131,7 +131,7 @@ function deleteMessage(id) {
   msgsRef.child(id).remove();
 }
 
-// prevent XSS
+// Simple XSS escape
 function escape(s) {
   return s.replace(/[&<>"']/g, c =>
     ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])
