@@ -2,16 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Secret Cloud Chat</title>
+  <!-- make it responsive -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>☁️ Cloud Chat</title>
+
+  <!-- styles + Netlify Identity widget + Firebase -->
   <link rel="stylesheet" href="cloud.css">
-  <!-- Netlify Identity -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database-compat.js"></script>
+
+  <!-- immediately init Identity and guard the page -->
+  <script>
+    netlifyIdentity.init();
+    netlifyIdentity.on('init', user => {
+      if (!user) {
+        // not logged in → bounce to main.html
+        location.replace('main.html');
+      }
+    });
+  </script>
 </head>
 <body>
-  <!-- LOGIN REDIRECT HANDLED IN chat.js -->
   <div id="chat-app" class="hidden">
     <header>
       <h1>☁️ Cloud Chat</h1>
@@ -20,10 +32,11 @@
     </header>
     <div id="messages"></div>
     <form id="msg-form">
-      <input id="msg-input" placeholder="Type a message…" autocomplete="off" />
+      <input id="msg-input" placeholder="Type your message…" autocomplete="off" />
       <button type="submit">Send</button>
     </form>
   </div>
-  <script src="clouf.js"></script>
+
+  <script src="cloud.js"></script>
 </body>
 </html>
