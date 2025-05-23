@@ -116,26 +116,23 @@
   </div>
   <!-- ──────────────────────────────────────────────── -->
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-<script>
-  if (window.netlifyIdentity) {
-    window.netlifyIdentity.on('init', user => {
-      console.log('Init done.');
-      // REMOVE any redirection logic here — do nothing even if user exists
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      netlifyIdentity.init();
+
+      // When user logs in via widget, go to cloud
+      netlifyIdentity.on("login", () => {
+        window.location.href = "cloud.html";
+      });
     });
 
-    window.netlifyIdentity.on('login', () => {
-      console.log('Logged in!');
-      window.location.href = "/cloud.html"; // Redirect ONLY after login
-    });
-
-    document.addEventListener('selectionchange', () => {
-      const selection = window.getSelection().toString().trim();
-      if (selection === "Alive") {
-        window.netlifyIdentity.open(); // Open login widget manually
+    // Open widget when "Alive" is selected
+    document.addEventListener("selectionchange", () => {
+      if (window.getSelection().toString().trim() === "Alive") {
+        netlifyIdentity.open();
       }
     });
-  }
-</script>
+  </script>
   <!-- Link to your external about.js file -->
   <script src="about.js"></script>
 </body>
