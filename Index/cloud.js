@@ -1,4 +1,4 @@
-// ——— Your Firebase config ———
+// ——— FIREBASE CONFIG ———
 const firebaseConfig = {
   apiKey: "AIzaSyAUPxEQKMB_b-rR4fUS21UZ2GDZBsl_fbA",
   authDomain: "cloud02222.firebaseapp.com",
@@ -24,22 +24,29 @@ const input      = document.getElementById("msg-input");
 const logoutBtn  = document.getElementById("logout-btn");
 const onlineCnt  = document.getElementById("online-count");
 
-// Auth & Presence
-netlifyIdentity.on("login", user => startApp(user));
-netlifyIdentity.on("logout", () => location.replace("main.html"));
+// ——— AUTH & PRESENCE ———
+netlifyIdentity.init();
+
+// Only start once identity is fully loaded
 netlifyIdentity.on("init", user => {
-  // If identity.init fired and user exists, start
-  if (user) startApp(user);
+  if (!user) return;              // fallback already handled by quick redirect
+  startApp(user);
+});
+
+netlifyIdentity.on("logout", () => {
+  // Immediately send them back and hide UI
+  app.classList.add("hidden");
+  window.location.replace("main.html");
 });
 
 function startApp(user) {
-  // Show UI
+  // Show the chat UI
   app.classList.remove("hidden");
 
   // Logout button
   logoutBtn.onclick = () => netlifyIdentity.logout();
 
-  // Mark as online in presence
+  // Presence: mark online, clean up on disconnect
   const myPres = presRef.child(user.id);
   amOnlineRef.on("value", snap => {
     if (snap.val()) {
@@ -48,17 +55,17 @@ function startApp(user) {
     }
   });
 
-  // Update online count
+  // Update online user count
   presRef.on("value", snap => {
-    onlineCnt.textContent = Object.keys(snap.val() || {}).length;
+    onlineCnt.textContent = Object.keys(snap.val()||{}).length;
   });
 
-  // Listen for messages
+  // Message listeners
   msgsRef.on("child_added",   s => renderMessage(s.key, s.val(), user.id));
   msgsRef.on("child_changed", s => updateMessage(s.key, s.val(), user.id));
   msgsRef.on("child_removed", s => removeMessage(s.key));
 
-  // Send new messages
+  // Send new message
   form.onsubmit = e => {
     e.preventDefault();
     const text = input.value.trim();
@@ -74,7 +81,7 @@ function startApp(user) {
   };
 }
 
-// Render helpers
+// ——— RENDER HELPERS ———
 function renderMessage(id, msg, currentUid) {
   const div = document.createElement("div");
   div.id = id;
@@ -83,7 +90,7 @@ function renderMessage(id, msg, currentUid) {
   div.innerHTML = `
     <div class="meta">
       ${msg.name} · <small>${time}</small>
-      ${msg.edited ? '<span class="edited">(edited)</span>' : ''}
+      ${msg.edited?'<span class="edited">(edited)</span>':''}
     </div>
     <div class="text">${escape(msg.text)}</div>
   `;
@@ -95,9 +102,9 @@ function renderMessage(id, msg, currentUid) {
       <button data-action="delete">🗑️</button>
     `;
     actions.onclick = e => {
-      const act = e.target.dataset.action;
-      if (act === "edit") editMessage(id, msg.text);
-      if (act === "delete") deleteMessage(id);
+      const a = e.target.dataset.action;
+      if (a==="edit") editMessage(id, msg.text);
+      if (a==="delete") deleteMessage(id);
     };
     div.appendChild(actions);
   }
@@ -131,9 +138,9 @@ function deleteMessage(id) {
   msgsRef.child(id).remove();
 }
 
-// Simple XSS escape
+// XSS escape
 function escape(s) {
   return s.replace(/[&<>"']/g, c =>
-    ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])
   );
 }
