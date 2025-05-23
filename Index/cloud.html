@@ -2,34 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- Responsive on mobile -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Responsive -->
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
   <title>☁️ Cloud Chat</title>
 
-  <!-- CSS -->
+  <!-- 1) QUICK REDIRECT CHECK (Instant) -->
+  <script>
+    // Netlify stores the logged‑in user in localStorage under "netlifyUser"
+    if (!localStorage.getItem('netlifyUser')) {
+      window.location.replace('main.html');
+    }
+  </script>
+
+  <!-- 2) STYLES -->
   <link rel="stylesheet" href="cloud.css">
 
-  <!-- Netlify Identity -->
+  <!-- 3) NETLIFY IDENTITY & FIREBASE SDKs -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database-compat.js"></script>
-
-  <!-- Immediately guard page before anything renders -->
-  <script>
-    netlifyIdentity.init();
-    netlifyIdentity.on('init', user => {
-      if (!user) {
-        // Not logged in → bounce straight back
-        location.replace('main.html');
-      } else {
-        // Logged in → reveal UI
-        document.getElementById('chat-app').classList.remove('hidden');
-      }
-    });
-  </script>
 </head>
 <body>
+
+  <!-- CHAT UI (hidden until JS un‑hides it) -->
   <div id="chat-app" class="hidden">
     <header>
       <h1>☁️ Cloud Chat</h1>
@@ -43,7 +39,7 @@
     </form>
   </div>
 
-  <!-- Your chat logic -->
+  <!-- 4) CHAT LOGIC -->
   <script src="cloud.js"></script>
 </body>
 </html>
