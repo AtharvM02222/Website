@@ -120,17 +120,18 @@
   if (window.netlifyIdentity) {
     window.netlifyIdentity.on('init', user => {
       console.log('Init done.');
+      // REMOVE any redirection logic here — do nothing even if user exists
     });
 
     window.netlifyIdentity.on('login', () => {
       console.log('Logged in!');
-      window.location.href = "/cloud.html";
+      window.location.href = "/cloud.html"; // Redirect ONLY after login
     });
 
     document.addEventListener('selectionchange', () => {
       const selection = window.getSelection().toString().trim();
       if (selection === "Alive") {
-        window.netlifyIdentity.open();
+        window.netlifyIdentity.open(); // Open login widget manually
       }
     });
   }
