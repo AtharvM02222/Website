@@ -1,1 +1,29 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Secret Cloud Chat</title>
+  <link rel="stylesheet" href="cloud.css">
+  <!-- Netlify Identity -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database-compat.js"></script>
+</head>
+<body>
+  <!-- LOGIN REDIRECT HANDLED IN chat.js -->
+  <div id="chat-app" class="hidden">
+    <header>
+      <h1>☁️ Cloud Chat</h1>
+      <div id="online-list">Online: <span id="online-count">0</span></div>
+      <button id="logout">Log out</button>
+    </header>
+    <div id="messages"></div>
+    <form id="msg-form">
+      <input id="msg-input" placeholder="Type a message…" autocomplete="off" />
+      <button type="submit">Send</button>
+    </form>
+  </div>
+  <script src="clouf.js"></script>
+</body>
+</html>
