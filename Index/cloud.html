@@ -2,23 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!-- make it responsive -->
+  <!-- Responsive on mobile -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>☁️ Cloud Chat</title>
 
-  <!-- styles + Netlify Identity widget + Firebase -->
+  <!-- CSS -->
   <link rel="stylesheet" href="cloud.css">
+
+  <!-- Netlify Identity -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database-compat.js"></script>
 
-  <!-- immediately init Identity and guard the page -->
+  <!-- Immediately guard page before anything renders -->
   <script>
     netlifyIdentity.init();
     netlifyIdentity.on('init', user => {
       if (!user) {
-        // not logged in → bounce to main.html
+        // Not logged in → bounce straight back
         location.replace('main.html');
+      } else {
+        // Logged in → reveal UI
+        document.getElementById('chat-app').classList.remove('hidden');
       }
     });
   </script>
@@ -28,7 +34,7 @@
     <header>
       <h1>☁️ Cloud Chat</h1>
       <div id="online-list">Online: <span id="online-count">0</span></div>
-      <button id="logout">Log out</button>
+      <button id="logout-btn">Log out</button>
     </header>
     <div id="messages"></div>
     <form id="msg-form">
@@ -37,6 +43,7 @@
     </form>
   </div>
 
+  <!-- Your chat logic -->
   <script src="cloud.js"></script>
 </body>
 </html>
