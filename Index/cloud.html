@@ -4,31 +4,31 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>☁️ Cloud Chat</title>
-
   <link rel="stylesheet" href="cloud.css">
 
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database-compat.js"></script>
-
-  <!-- REMOVE any localStorage guard. Use Netlify Identity properly: -->
-  <script>
-    netlifyIdentity.init();
-    netlifyIdentity.on('init', user => {
-      if (!user) {
-        // not logged in → redirect to main.html
-        window.location.replace('main.html');
-      } else {
-        // logged in → reveal chat
-        document.getElementById('chat-app').classList.remove('hidden');
-      }
-    });
-  </script>
+  <!-- Netlify Identity widget -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js" defer></script>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database-compat.js" defer></script>
+  <!-- Your chat logic -->
+  <script src="cloud.js" defer></script>
 </head>
 <body>
+  <!-- Entire chat app hidden until auth check passes -->
   <div id="chat-app" class="hidden">
-    <!-- ... your header, messages div, form, etc. ... -->
+    <header>
+      <h1>☁️ Cloud Chat</h1>
+      <div id="online-list">Online: <span id="online-count">0</span></div>
+      <button id="logout-btn">Log out</button>
+    </header>
+
+    <div id="messages"></div>
+
+    <form id="msg-form">
+      <input id="msg-input" placeholder="Type your message…" autocomplete="off" />
+      <button type="submit">Send</button>
+    </form>
   </div>
-  <script src="cloud.js"></script>
 </body>
 </html>
