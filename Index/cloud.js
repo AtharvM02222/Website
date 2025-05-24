@@ -2,13 +2,11 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
 import {
   getFirestore, collection, query, orderBy, onSnapshot,
-  addDoc, updateDoc, deleteDoc, serverTimestamp, doc, arrayUnion, arrayRemove
+  addDoc, updateDoc, deleteDoc, doc, arrayUnion, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-import {
-  getAuth, onAuthStateChanged, signOut
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+import netlifyIdentity from "https://identity.netlify.com/v1/netlify-identity-widget.js";
 
-// ——— Your Firebase config ———
+// ─── Initialize Firebase ─────────────────────────────────────────────────────
 const firebaseConfig = {
   apiKey: "AIzaSyAUPxEQKMB_b-rR4fUS21UZ2GDZBsl_fbA",
   authDomain: "cloud02222.firebaseapp.com",
@@ -19,61 +17,66 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
-const auth = getAuth(app);
 
-// ——— DOM References ———
-const listEl   = document.getElementById("messages");
-const inputEl  = document.getElementById("messageInput");
-const sendBtn  = document.getElementById("sendBtn");
-const logoutBtn= document.getElementById("logoutBtn");
-const typingEl = document.getElementById("typingStatus");
-const darkBtn  = document.getElementById("darkModeBtn");
+// ─── DOM ELEMENTS ─────────────────────────────────────────────────────────────
+const chatApp    = document.getElementById("chat-app");
+const listEl     = document.getElementById("messages");
+const inputEl    = document.getElementById("messageInput");
+const sendBtn    = document.getElementById("sendBtn");
+const logoutBtn  = document.getElementById("logoutBtn");
+const typingEl   = document.getElementById("typingStatus");
+const darkBtn    = document.getElementById("darkModeBtn");
+const onlineEl   = document.getElementById("online-count");
 
 let currentUser;
 
-// ——— Utility: generate a color from UID ———
+// ─── HELPER: COLOR FROM UID ───────────────────────────────────────────────────
 function colorFor(uid) {
   let hash = 0;
   for (let c of uid) hash = c.charCodeAt(0) + ((hash << 5) - hash);
   return `hsl(${hash % 360},70%,60%)`;
 }
 
-// ——— Auth state listener ———
-onAuthStateChanged(auth, user => {
-  if (user) {
-    currentUser = user;
-    startChat();
-  } else {
-    // Wait briefly before redirecting to allow identity state to load fully
-    setTimeout(() => {
-      window.location.href = "main.html";
-    }, 500);
+// ─── NETLIFY IDENTITY SETUP ──────────────────────────────────────────────────
+netlifyIdentity.init();
+
+netlifyIdentity.on("init", user => {
+  if (!user) {
+    // not logged in → redirect to main
+    return (window.location.href = "main.html");
   }
+  currentUser = user;
+  startChat();
 });
-// ——— Main chat logic ———
+
+netlifyIdentity.on("logout", () => {
+  window.location.href = "main.html";
+});
+
+// ─── MAIN CHAT FUNCTION ───────────────────────────────────────────────────────
 async function startChat() {
-  // Show the chat UI
-  document.getElementById("chat-app").classList.remove("hidden");
+  // reveal UI
+  chatApp.classList.remove("hidden");
 
-  // Logout handler
-  logoutBtn.onclick = () => signOut(auth);
+  // dark‑mode toggle
+  darkBtn?.addEventListener("click", () =>
+    document.body.classList.toggle("dark")
+  );
 
-  // Typing indicator
-  inputEl.oninput = () => {
+  // typing indicator
+  inputEl.addEventListener("input", () => {
     typingEl.textContent = inputEl.value ? "Typing…" : "";
-  };
-
-  // Dark‑mode toggle
-  darkBtn?.addEventListener("click", () => {
-    document.body.classList.toggle("dark");
   });
 
-  // Firestore collection & query
-  const msgsCol = collection(db, "cloud_messages");
-  const msgsQ   = query(msgsCol, orderBy("ts"));
+  // logout
+  logoutBtn.addEventListener("click", () => netlifyIdentity.logout());
 
-  // Real‑time listener
-  onSnapshot(msgsQ, snapshot => {
+  // Firestore collection & query
+  const col = collection(db, "cloud_messages");
+  const q   = query(col, orderBy("ts"));
+
+  // real‑time listener
+  onSnapshot(q, snapshot => {
     listEl.innerHTML = "";
     snapshot.forEach(docSnap => {
       const m = docSnap.data();
@@ -82,39 +85,39 @@ async function startChat() {
     listEl.scrollTop = listEl.scrollHeight;
   });
 
-  // Send new message
-  sendBtn.onclick = async () => {
+  // send messages
+  sendBtn.addEventListener("click", async () => {
     const text = inputEl.value.trim();
     if (!text) return;
-    await addDoc(msgsCol, {
-      uid: currentUser.uid,
-      name: currentUser.displayName || currentUser.email.split("@")[0],
+    await addDoc(col, {
+      uid:   currentUser.id,
+      name:  currentUser.user_metadata.full_name || currentUser.email,
       text,
-      ts: serverTimestamp(),
-      readBy: [currentUser.uid]
+      ts:    serverTimestamp(),
+      readBy: [currentUser.id]
     });
     inputEl.value = "";
-  };
+  });
 }
 
-// ——— Render a single message ———
+// ─── RENDERING ────────────────────────────────────────────────────────────────
 function renderMessage(id, msg) {
-  const isMine   = msg.uid === currentUser.uid;
-  const hasRead  = msg.readBy?.includes(currentUser.uid);
-  const timeStr  = new Date(msg.ts?.toDate()).toLocaleTimeString([], {
+  const isMine  = msg.uid === currentUser.id;
+  const hasRead = msg.readBy?.includes(currentUser.id);
+  const timeStr = msg.ts?.toDate().toLocaleTimeString([], {
     hour: "2-digit", minute: "2-digit"
   });
-  const status   = isMine
+  const status  = isMine
     ? (msg.readBy?.length > 1 ? "✓✓ Seen" : "✓ Sent")
     : "";
 
-  // If it’s not mine and I haven’t read it yet, mark it read
+  // mark read
   if (!isMine && !hasRead) {
     const docRef = doc(db, "cloud_messages", id);
-    updateDoc(docRef, { readBy: arrayUnion(currentUser.uid) });
+    updateDoc(docRef, { readBy: arrayUnion(currentUser.id) });
   }
 
-  // Build the element
+  // build element
   const el = document.createElement("div");
   el.id = id;
   el.className = "message" + (isMine ? " own" : "");
@@ -129,26 +132,28 @@ function renderMessage(id, msg) {
     </div>
   `;
 
-  // Edit/Delete for my messages
+  // edit/delete for own messages
   if (isMine) {
-    const actions = document.createElement("div");
-    actions.className = "actions";
-    actions.innerHTML = `
+    const act = document.createElement("div");
+    act.className = "actions";
+    act.innerHTML = `
       <button data-action="edit">✏️</button>
       <button data-action="delete">🗑️</button>
     `;
-    actions.querySelector("[data-action=edit]").onclick = async () => {
+    act.querySelector("[data-action=edit]").onclick = async () => {
       const newText = prompt("Edit message:", msg.text);
       if (newText && newText !== msg.text) {
-        await updateDoc(doc(db, "cloud_messages", id), { text: newText, edited: true });
+        const docRef = doc(db, "cloud_messages", id);
+        await updateDoc(docRef, { text: newText, edited: true });
       }
     };
-    actions.querySelector("[data-action=delete]").onclick = async () => {
+    act.querySelector("[data-action=delete]").onclick = async () => {
       if (confirm("Delete this message?")) {
-        await deleteDoc(doc(db, "cloud_messages", id));
+        const docRef = doc(db, "cloud_messages", id);
+        await deleteDoc(docRef);
       }
     };
-    el.appendChild(actions);
+    el.appendChild(act);
   }
 
   listEl.appendChild(el);
