@@ -1,147 +1,153 @@
 // cloud.js
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import {
+  getFirestore, collection, query, orderBy, onSnapshot,
+  addDoc, updateDoc, deleteDoc, serverTimestamp, doc, arrayUnion, arrayRemove
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+import {
+  getAuth, onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
-// 1) Real Firebase config
+// ——— Your Firebase config ———
 const firebaseConfig = {
   apiKey: "AIzaSyAUPxEQKMB_b-rR4fUS21UZ2GDZBsl_fbA",
   authDomain: "cloud02222.firebaseapp.com",
-  databaseURL: "https://cloud02222-default-rtdb.firebaseio.com",
   projectId: "cloud02222",
   storageBucket: "cloud02222.appspot.com",
   messagingSenderId: "866391641580",
   appId: "1:866391641580:web:069aa89ef69e77c3dd84c9"
 };
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db   = firebase.database();
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+const auth = getAuth(app);
 
-// 2) DOM references
-const messageList = document.getElementById("messageList");
-const messageInput = document.getElementById("messageInput");
-const sendBtn     = document.getElementById("sendBtn");
-const logoutBtn   = document.getElementById("logoutBtn");
-const typingStatus= document.getElementById("typingStatus");
-const darkModeBtn = document.getElementById("darkModeBtn"); // optional
+// ——— DOM References ———
+const listEl   = document.getElementById("messages");
+const inputEl  = document.getElementById("messageInput");
+const sendBtn  = document.getElementById("sendBtn");
+const logoutBtn= document.getElementById("logoutBtn");
+const typingEl = document.getElementById("typingStatus");
+const darkBtn  = document.getElementById("darkModeBtn");
 
 let currentUser;
 
-// 3) Auth listener
-auth.onAuthStateChanged(user => {
-  if (!user) return window.location.href = "main.html";
-  currentUser = user;
-  listenMessages();
-});
-
-// 4) Listen & render messages
-function listenMessages() {
-  const msgsRef = db.ref("cloud_messages");
-  msgsRef.off();
-  msgsRef.on("value", snap => {
-    messageList.innerHTML = "";
-    snap.forEach(child => {
-      const msg = child.val();
-      renderMessage(child.key, msg);
-    });
-    messageList.scrollTop = messageList.scrollHeight;
-  });
-}
-
-// 5) Render each message
-function renderMessage(id, msg) {
-  const isMine = msg.uid === currentUser.uid;
-  const hasRead = msg.readBy?.includes(currentUser.uid);
-  
-  // Mark read
-  if (!isMine && !hasRead) {
-    db.ref(`cloud_messages/${id}/readBy`)
-      .transaction(readBy => readBy ? [...new Set([...readBy, currentUser.uid])] : [currentUser.uid]);
-  }
-
-  const el = document.createElement("div");
-  el.id = id;
-  el.className = "message" + (isMine ? " mine" : "");
-  
-  const time = new Date(msg.ts).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
-  const status = isMine 
-    ? (msg.readBy?.length > 1 ? "✓✓ Seen" : "✓ Sent") 
-    : "";
-
-  el.innerHTML = `
-    <span class="sender" style="color:${colorFor(msg.uid)}">
-      ${msg.name}
-    </span>
-    <p>${escape(msg.text)}</p>
-    <div class="meta">
-      <small>${time}</small>
-      ${isMine ? `<span class="status">${status}</span>` : ""}
-    </div>
-    ${isMine ? `
-      <div class="actions">
-        <button data-action="edit">✏️</button>
-        <button data-action="delete">🗑️</button>
-      </div>` : ""}
-  `;
-  messageList.appendChild(el);
-
-  if (isMine) {
-    el.querySelector("[data-action=edit]")
-      .onclick = () => editMessage(id, msg.text);
-    el.querySelector("[data-action=delete]")
-      .onclick = () => deleteMessage(id);
-  }
-}
-
-// 6) Send message (button‑click, no form)
-sendBtn.onclick = () => {
-  const text = messageInput.value.trim();
-  if (!text) return;
-  db.ref("cloud_messages").push({
-    uid: currentUser.uid,
-    name: currentUser.displayName || currentUser.email,
-    text,
-    ts: Date.now(),
-    readBy: [currentUser.uid]
-  });
-  messageInput.value = "";
-};
-
-// 7) Edit & delete
-function editMessage(id, oldText) {
-  const newText = prompt("Edit message:", oldText);
-  if (newText && newText !== oldText) {
-    db.ref(`cloud_messages/${id}`).update({ text: newText, edited: true });
-  }
-}
-function deleteMessage(id) {
-  if (confirm("Delete this message?")) {
-    db.ref(`cloud_messages/${id}`).remove();
-  }
-}
-
-// 8) Typing indicator
-messageInput.oninput = () => {
-  typingStatus.textContent = messageInput.value ? "Typing..." : "";
-};
-
-// 9) Logout
-logoutBtn.onclick = () => {
-  auth.signOut().then(() => window.location.href = "main.html");
-};
-
-// 10) Username color generator
+// ——— Utility: generate a color from UID ———
 function colorFor(uid) {
   let hash = 0;
   for (let c of uid) hash = c.charCodeAt(0) + ((hash << 5) - hash);
   return `hsl(${hash % 360},70%,60%)`;
 }
 
-// 11) Dark mode toggle (optional)
-darkModeBtn?.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
+// ——— Auth state listener ———
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    window.location.href = "main.html";
+    return;
+  }
+  currentUser = user;
+  startChat();
 });
 
-// 12) XSS-safe escape
-function escape(str) {
-  return str.replace(/[&<>"']/g, c=>({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-  }[c]));
+// ——— Main chat logic ———
+async function startChat() {
+  // Show the chat UI
+  document.getElementById("chat-app").classList.remove("hidden");
+
+  // Logout handler
+  logoutBtn.onclick = () => signOut(auth);
+
+  // Typing indicator
+  inputEl.oninput = () => {
+    typingEl.textContent = inputEl.value ? "Typing…" : "";
+  };
+
+  // Dark‑mode toggle
+  darkBtn?.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+  });
+
+  // Firestore collection & query
+  const msgsCol = collection(db, "cloud_messages");
+  const msgsQ   = query(msgsCol, orderBy("ts"));
+
+  // Real‑time listener
+  onSnapshot(msgsQ, snapshot => {
+    listEl.innerHTML = "";
+    snapshot.forEach(docSnap => {
+      const m = docSnap.data();
+      renderMessage(docSnap.id, m);
+    });
+    listEl.scrollTop = listEl.scrollHeight;
+  });
+
+  // Send new message
+  sendBtn.onclick = async () => {
+    const text = inputEl.value.trim();
+    if (!text) return;
+    await addDoc(msgsCol, {
+      uid: currentUser.uid,
+      name: currentUser.displayName || currentUser.email.split("@")[0],
+      text,
+      ts: serverTimestamp(),
+      readBy: [currentUser.uid]
+    });
+    inputEl.value = "";
+  };
+}
+
+// ——— Render a single message ———
+function renderMessage(id, msg) {
+  const isMine   = msg.uid === currentUser.uid;
+  const hasRead  = msg.readBy?.includes(currentUser.uid);
+  const timeStr  = new Date(msg.ts?.toDate()).toLocaleTimeString([], {
+    hour: "2-digit", minute: "2-digit"
+  });
+  const status   = isMine
+    ? (msg.readBy?.length > 1 ? "✓✓ Seen" : "✓ Sent")
+    : "";
+
+  // If it’s not mine and I haven’t read it yet, mark it read
+  if (!isMine && !hasRead) {
+    const docRef = doc(db, "cloud_messages", id);
+    updateDoc(docRef, { readBy: arrayUnion(currentUser.uid) });
+  }
+
+  // Build the element
+  const el = document.createElement("div");
+  el.id = id;
+  el.className = "message" + (isMine ? " own" : "");
+  el.innerHTML = `
+    <span class="sender" style="color:${colorFor(msg.uid)}">
+      ${msg.name}
+    </span>
+    <p>${msg.text}</p>
+    <div class="meta">
+      <small>${timeStr}</small>
+      ${isMine ? `<span class="status">${status}</span>` : ""}
+    </div>
+  `;
+
+  // Edit/Delete for my messages
+  if (isMine) {
+    const actions = document.createElement("div");
+    actions.className = "actions";
+    actions.innerHTML = `
+      <button data-action="edit">✏️</button>
+      <button data-action="delete">🗑️</button>
+    `;
+    actions.querySelector("[data-action=edit]").onclick = async () => {
+      const newText = prompt("Edit message:", msg.text);
+      if (newText && newText !== msg.text) {
+        await updateDoc(doc(db, "cloud_messages", id), { text: newText, edited: true });
+      }
+    };
+    actions.querySelector("[data-action=delete]").onclick = async () => {
+      if (confirm("Delete this message?")) {
+        await deleteDoc(doc(db, "cloud_messages", id));
+      }
+    };
+    el.appendChild(actions);
+  }
+
+  listEl.appendChild(el);
 }
