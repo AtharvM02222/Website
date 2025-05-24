@@ -40,14 +40,16 @@ function colorFor(uid) {
 
 // ——— Auth state listener ———
 onAuthStateChanged(auth, user => {
-  if (!user) {
-    window.location.href = "main.html";
-    return;
+  if (user) {
+    currentUser = user;
+    startChat();
+  } else {
+    // Wait briefly before redirecting to allow identity state to load fully
+    setTimeout(() => {
+      window.location.href = "main.html";
+    }, 500);
   }
-  currentUser = user;
-  startChat();
 });
-
 // ——— Main chat logic ———
 async function startChat() {
   // Show the chat UI
