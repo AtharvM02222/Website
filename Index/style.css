@@ -1,37 +1,113 @@
-/* === Global body styling with animated background === */
+/* === Minimal reset & box-sizing === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* === Animated layered wave background (black / dark-blue / blue) === */
 html, body {
   height: 100%;
-  margin: 0;
-}
-
-body {
+  width: 100%;
   font-family: "Poppins", sans-serif;
-  color: #ffffff; /* text color */
+  color: #ffffff;
+}
+
+/* Body base color fallback for very old browsers */
+body {
+  background-color: #0b1b33; /* dark-blue fallback */
   min-height: 100vh;
-
-  /* animated gradient background */
-  background: linear-gradient(120deg, #000000 0%, #001f3f 50%, #0b3dff 100%);
-  background-size: 300% 300%;
-  animation: gradientShift 12s ease infinite;
+  position: relative;
+  z-index: 0;
+  /* ensure content sits above pseudo-layers */
 }
 
-/* keyframes for the animated gradient */
-@keyframes gradientShift {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* Two animated layered pseudo-elements create the 'air wave' effect.
+   They are placed behind the page content (z-index: -1 and -2). */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -2;
+  mix-blend-mode: screen; /* soft blend for richer colors */
+  opacity: 0.85;
 }
 
-/* Accessibility: disable animation for reduced motion users */
+/* Primary slow-moving color wave */
+body::before {
+  background: radial-gradient(60% 60% at 20% 30%, rgba(11,61,255,0.9), rgba(0,28,64,0.85) 35%, rgba(0,0,0,0.95) 75%),
+              linear-gradient(120deg, rgba(0,0,0,1) 0%, rgba(0,25,60,0.4) 40%, rgba(11,61,255,0.6) 100%);
+  background-size: 200% 200%;
+  transform: translateZ(0);
+  animation: waveMoveA 20s linear infinite;
+  filter: blur(28px) saturate(110%);
+}
+
+/* Secondary faster thin wave for detail */
+body::after {
+  background: radial-gradient(40% 40% at 80% 70%, rgba(0,8,20,0.85), rgba(1,20,50,0.6) 30%, rgba(3,44,120,0.6) 65%),
+              linear-gradient(60deg, rgba(0,0,0,0.85), rgba(0,30,80,0.35), rgba(11,61,255,0.4));
+  background-size: 250% 250%;
+  transform: translateZ(0);
+  animation: waveMoveB 12s linear infinite;
+  filter: blur(22px) saturate(120%);
+  z-index: -1;
+}
+
+/* subtle vignette overlay on top of waves (but still behind content) */
+body .bg-vignette {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(60% 60% at 50% 30%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.25) 60%, rgba(0,0,0,0.6) 100%);
+}
+
+/* Keyframes for the movement — translate background-position to simulate flowing air */
+@keyframes waveMoveA {
+  0%   { background-position: 0% 50%; transform: scale(1) rotate(0.01deg); }
+  25%  { background-position: 35% 40%; transform: scale(1.02) rotate(-0.2deg); }
+  50%  { background-position: 70% 60%; transform: scale(1) rotate(0.2deg); }
+  75%  { background-position: 35% 70%; transform: scale(1.01) rotate(-0.1deg); }
+  100% { background-position: 0% 50%; transform: scale(1) rotate(0.01deg); }
+}
+
+@keyframes waveMoveB {
+  0%   { background-position: 50% 0%; transform: scale(1) rotate(0.02deg); }
+  25%  { background-position: 30% 40%; transform: scale(1.01) rotate(0.3deg); }
+  50%  { background-position: 60% 60%; transform: scale(1) rotate(-0.15deg); }
+  75%  { background-position: 80% 30%; transform: scale(1.02) rotate(0.12deg); }
+  100% { background-position: 50% 0%; transform: scale(1) rotate(0.02deg); }
+}
+
+/* Respect users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  body {
+  body::before,
+  body::after {
     animation: none;
-    background: linear-gradient(120deg, #000000, #001f3f, #0b3dff);
+    filter: none;
+    opacity: 1;
+  }
+  body {
+    background: linear-gradient(120deg, #000000 0%, #001133 50%, #0b3dff 100%);
   }
 }
 
-/* ---------------- Existing styles ---------------- */
+/* =========================
+   === Your original CSS ==
+   (kept and integrated)
+   ========================= */
 
+/* existing body-related choices (kept for content) */
+body {
+  font-family: "Poppins", sans-serif;
+  color: #ffffff;
+}
+
+/* .aaa, .new, .skillicons, etc. — preserved */
 .aaa {
   font-family: "Raleway", sans-serif;
   color: rgb(255, 255, 255);
@@ -52,18 +128,18 @@ body {
   height: 100vh;
 }
 
-/* Container for intro text & image */
+/* Container for intro text & image — keep semi-transparent so waves show through */
 .intro-box {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 20px;
-    margin-left: 50px;
-    max-width: 800px;
+    justify-content: flex-start; /* Aligns everything to the left */
+    gap: 20px; /* Space between text and image */
+    margin-left: 50px; /* Keeps it away from the left edge */
+    max-width: 800px; /* Adjust width as needed */
     padding: 20px;
-    background: rgba(0, 0, 0, 0.8);
-    border-radius: 20px;
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.55); /* slightly more transparent to show waves */
+    border-radius: 20px; /* Rounded edges */
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6); /* Adds shadow */
 }
 
 /* Intro text */
@@ -72,7 +148,7 @@ body {
     font-size: 40px;
     color: rgb(255, 255, 255);
     line-height: 1.3;
-    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5); /* Adds shadow to text */
 }
 
 /* Highlighted last name */
@@ -82,18 +158,18 @@ body {
 
 /* Profile picture styling */
 .profile-pic {
-    width: 150px;
+    width: 150px; /* Increased size */
     height: 150px;
-    border-radius: 50%;
+    border-radius: 50%; /* Circular */
     object-fit: cover;
-    border: 3px solid rgb(230, 207, 120);
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6);
+    border: 3px solid rgb(230, 207, 120); /* Matches highlight color */
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6); /* Adds shadow to image */
 }
 
 .favicon-container img {
-    width: 100px;
+    width: 100px; /* Set desired width */
     height: 100px;
-    border-radius: 50%;
+    border-radius: 50%; /* Circular effect */
     object-fit: cover;
 }
 
@@ -101,24 +177,25 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 20px; /* Adjust spacing between rows */
 }
 
 .tooltip {
   text-align: center;
-  margin: 0 10px;
+  margin: 0 10px; /* Adjust spacing between images */
 }
 
 .tooltip img {
-  margin: 0;
-  transition: transform 0.2s ease-in;
+  margin: 0; /* Reset margin */
+  transition: transform 0.2s ease-in; /* Apply transition to non-hover state */
 }
 
 .tooltip img:hover {
   cursor: pointer;
-  transform: scale(1.2);
+  transform: scale(1.2); /* Enlarge on hover */
 }
 
+/* countdown and timer styles */
 .countdown {
   margin-top: 50px;
   color: rgb(255, 255, 255);
@@ -128,7 +205,7 @@ body {
 #timer {
   display: flex;
   justify-content: center;
-  font-size: 40px;
+  font-size: 40px; /* Adjust the font size as needed */
 }
 
 #timer div {
@@ -138,7 +215,7 @@ body {
 
 #timer div span {
   font-weight: bold;
-  font-size: 120px;
+  font-size: 120px; /* Adjust the font size of labels as needed */
 }
 
 .label {
@@ -146,35 +223,54 @@ body {
   margin-top: 5px;
   color: rgb(255, 255, 255);
 }
-
 .container {
-  padding-right: 300px;
+  padding-right: 300px; /* Adjust the value as needed */
 }
 
-.branding,
+.branding {
+  padding-left: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none; /* Remove underline */
+}
+
 .brandingg {
   padding-left: 50px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  text-decoration: none;
+  text-decoration: none; /* Remove underline */
 }
 
-/* BounceInLeft animation */
+/* Define the keyframes for the bounceInLeft animation */
 @keyframes bounceInLeft {
-  0%   { transform: translateX(-3000px); opacity: 0; }
-  60%  { transform: translateX(25px); opacity: 1; }
-  75%  { transform: translateX(-10px); }
-  90%  { transform: translateX(5px); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(-3000px);
+    opacity: 0;
+  }
+  60% {
+    transform: translateX(25px);
+    opacity: 1;
+  }
+  75% {
+    transform: translateX(-10px);
+  }
+  90% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 
+/* Apply the animation to the #branding div */
 #branding {
   animation: bounceInLeft 1s;
 }
 
 nav ul {
-  list-style: none;
+  list-style: none; /* Remove bullet points from the list */
 }
 
 .header-content {
@@ -187,18 +283,32 @@ nav {
   margin-left: auto;
   margin-right: 30px;
 }
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav ul {
+  list-style: none; /* Remove bullet points from the list */
+}
 
 .centered-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  animation: appear 8s forwards;
+  height: 100vh; /* 100% of the viewport height */
+  animation: appear 8s forwards; /* Animation named "appear" with a duration of 1 second */
 }
 
+/* single unified appear keyframes (kept) */
 @keyframes appear {
-  0%   { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0; /* Start with opacity 0 */
+  }
+  100% {
+    opacity: 1; /* End with opacity 1 */
+  }
 }
 
 .centered-content {
@@ -207,13 +317,13 @@ nav {
 
 .work-link {
   font-family: "Rowdies", sans-serif;
-  color: #ff0000;
-  font-size: 26px;
-  text-decoration: none;
+  color: #ff0000; /* Change color */
+  font-size: 26px; /* Increase font size */
+  text-decoration: none; /* Remove underline */
 }
 
 .line {
-  width: 500px;
+  width: 500px; /* Increase the width to make it longer */
   height: 100px;
   border: solid 7px #fff;
   border-color: white transparent transparent transparent;
@@ -222,7 +332,7 @@ nav {
 }
 
 .linee {
-  width: 1000px;
+  width: 1000px; /* Increase the width to make it longer */
   height: 100px;
   border: solid 7px #fff;
   border-color: white transparent transparent transparent;
@@ -230,7 +340,7 @@ nav {
   transform: rotate(180deg);
 }
 
-/* Autofill */
+/* Target autofill input */
 input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0px 1000px #1e1e1e inset !important;
   -webkit-text-fill-color: #FF4500 !important;
@@ -241,11 +351,11 @@ input:-webkit-autofill {
 }
 
 .second {
-  padding: 20px;
+  padding: 20px; /* Increase padding */
 }
 
 .formRow {
-  padding-top: 20px;
+  padding-top: 20px; /* Increase top padding */
 }
 
 .form,
@@ -254,16 +364,17 @@ input:-webkit-autofill {
   padding: 12px 20px;
   margin: 8px 0;
   color: #ff0000;
-  display: block;
+  display: block; /* Change display to block for full width */
   background-color: #161616;
-  border: 1px solid #fff;
+  border: 1px solid #fff; /* Add a 1px solid border with black color */
   box-sizing: border-box;
-  width: calc(100% - 40px);
-  outline: none;
+  width: calc(100% - 40px); /* Adjust width to account for padding */
+  outline: none; /* Remove blue outline when clicked */
 }
 
 .formmm {
   resize: none;
+  height: auto;
   min-height: 100px;
 }
 
@@ -282,8 +393,8 @@ input:-webkit-autofill {
 }
 
 .full {
-  opacity: 0;
-  animation: appear 6s forwards;
+  opacity: 0; /* Initially invisible */
+  animation: appear 6s forwards; /* Animation named "appear" with a duration of 1 second */
 }
 
 .NF {
@@ -293,51 +404,46 @@ input:-webkit-autofill {
 }
 
 .icon-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
 }
 
 .icon {
-  width: 40px;
-  transition: transform 0.3s ease;
-  filter: grayscale(100%);
+    width: 40px; 
+    transition: transform 0.3s ease; 
+    filter: grayscale(100%);
 }
 
 .icon:hover {
-  transform: scale(1.2);
-  filter: grayscale(0%);
+    transform: scale(1.2); 
+    filter: grayscale(0%); 
 }
 
-@media screen and (max-width: 600px) {
-  .full {
-    max-width: 100%;
-  }
-}
-
+/* Scroll-top button & animations */
 .scroll-top-btn {
     position: fixed;
-    bottom: 30px;
+    bottom: 30px; /* Adjust for spacing */
     right: 30px;
     background-color: transparent;
     border: none;
     cursor: pointer;
-    visibility: hidden;
-    opacity: 0;
-    z-index: 9999;
+    visibility: hidden; /* Initially hidden, allows animation */
+    opacity: 0; /* Fully transparent initially */
+    z-index: 9999; /* Ensure button is on top of other content */
     transition: transform 0.4s ease, opacity 0.4s ease, box-shadow 0.3s ease;
 }
 
 .scroll-top-btn.show {
-    visibility: visible;
-    opacity: 1;
+    visibility: visible; /* Make button visible */
+    opacity: 1; /* Fully opaque */
     transform: scale(1);
-    animation: bounce 0.6s ease-out;
+    animation: bounce 0.6s ease-out; /* Bounce effect on appearance */
 }
 
 .scroll-top-btn img {
-    width: 60px;
+    width: 60px; /* Adjust image size */
     height: 60px;
     opacity: 0.8;
     transition: opacity 0.3s ease, transform 0.3s ease;
@@ -345,7 +451,7 @@ input:-webkit-autofill {
 
 .scroll-top-btn:hover img {
     opacity: 1;
-    transform: scale(1.1);
+    transform: scale(1.1); /* Slight scale when hovered */
 }
 
 .scroll-top-btn:focus {
@@ -357,27 +463,54 @@ input:-webkit-autofill {
 }
 
 .scroll-top-btn img.leave-hover:hover {
-    transform: scale(1.2);
+    transform: scale(1.2); /* Slight enlargement when hovering */
 }
 
+/* Smooth exit animation for button */
 @keyframes exitAnimation {
-  0%   { transform: scale(1) translateX(0); opacity: 1; }
+  0% { transform: scale(1) translateX(0); opacity: 1; }
   100% { transform: scale(0) translateX(200%); opacity: 0; }
 }
 
 .scroll-top-btn.hide {
     animation: exitAnimation 0.5s forwards;
-    visibility: hidden;
-    opacity: 0;
+    visibility: hidden; /* Ensure it stays hidden after animation */
+    opacity: 0; /* Make it fully transparent after animation */
 }
 
+/* Bounce effect for the button */
 @keyframes bounce {
-  0%   { transform: scale(0); }
-  50%  { transform: scale(1.1); }
+  0% { transform: scale(0); }
+  50% { transform: scale(1.1); }
   100% { transform: scale(1); }
 }
 
+/* Hide the button permanently after click */
 .hidden {
     visibility: hidden !important;
-    opacity: 0 !important;
+    opacity: 0 !important; /* Ensure it's completely hidden */
 }
+
+/* Responsive tweaks */
+@media screen and (max-width: 600px) {
+  .full {
+    max-width: 100%; /* Adjust to full width on smaller screens */
+  }
+  .intro-box {
+    margin-left: 20px;
+    max-width: calc(100% - 40px);
+    padding: 16px;
+  }
+  .profile-pic {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+/* Small accessibility improvements for color contrast (links) */
+a, .nav a, button {
+  color: #fff;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
