@@ -1,7 +1,36 @@
+/* === Global body styling with animated background === */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
 body {
   font-family: "Poppins", sans-serif;
-  background-color: rgb(22, 22, 22);
+  color: #ffffff; /* text color */
+  min-height: 100vh;
+
+  /* animated gradient background */
+  background: linear-gradient(120deg, #000000 0%, #001f3f 50%, #0b3dff 100%);
+  background-size: 300% 300%;
+  animation: gradientShift 12s ease infinite;
 }
+
+/* keyframes for the animated gradient */
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Accessibility: disable animation for reduced motion users */
+@media (prefers-reduced-motion: reduce) {
+  body {
+    animation: none;
+    background: linear-gradient(120deg, #000000, #001f3f, #0b3dff);
+  }
+}
+
+/* ---------------- Existing styles ---------------- */
 
 .aaa {
   font-family: "Raleway", sans-serif;
@@ -27,14 +56,14 @@ body {
 .intro-box {
     display: flex;
     align-items: center;
-    justify-content: flex-start; /* Aligns everything to the left */
-    gap: 20px; /* Space between text and image */
-    margin-left: 50px; /* Keeps it away from the left edge */
-    max-width: 800px; /* Adjust width as needed */
+    justify-content: flex-start;
+    gap: 20px;
+    margin-left: 50px;
+    max-width: 800px;
     padding: 20px;
-    background: rgba(0, 0, 0, 0.8); /* Slightly transparent black */
-    border-radius: 20px; /* Rounded edges */
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6); /* Adds shadow */
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 20px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6);
 }
 
 /* Intro text */
@@ -43,7 +72,7 @@ body {
     font-size: 40px;
     color: rgb(255, 255, 255);
     line-height: 1.3;
-    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5); /* Adds shadow to text */
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);
 }
 
 /* Highlighted last name */
@@ -53,46 +82,41 @@ body {
 
 /* Profile picture styling */
 .profile-pic {
-    width: 150px; /* Increased size */
+    width: 150px;
     height: 150px;
-    border-radius: 50%; /* Circular */
+    border-radius: 50%;
     object-fit: cover;
-    border: 3px solid rgb(230, 207, 120); /* Matches highlight color */
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6); /* Adds shadow to image */
+    border: 3px solid rgb(230, 207, 120);
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.6);
 }
 
-        .favicon-container img {
-            width: 100px; /* Set desired width */
-            height: 100px;
-            border-radius: 50%; /* Circular effect */
-            object-fit: cover;
-        }
+.favicon-container img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
 
 .row {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 20px; /* Adjust spacing between rows */
+  margin-bottom: 20px;
 }
 
 .tooltip {
   text-align: center;
-  margin: 0 10px; /* Adjust spacing between images */
+  margin: 0 10px;
 }
 
 .tooltip img {
-  margin: 0; /* Reset margin */
-  transition: transform 0.2s ease-in; /* Apply transition to non-hover state */
+  margin: 0;
+  transition: transform 0.2s ease-in;
 }
 
 .tooltip img:hover {
   cursor: pointer;
-  transform: scale(1.2); /* Enlarge on hover */
-}
-
-
-body {
-  background-color: rgb(22, 22, 22);
+  transform: scale(1.2);
 }
 
 .countdown {
@@ -104,7 +128,7 @@ body {
 #timer {
   display: flex;
   justify-content: center;
-  font-size: 40px; /* Adjust the font size as needed */
+  font-size: 40px;
 }
 
 #timer div {
@@ -113,9 +137,8 @@ body {
 }
 
 #timer div span {
-  font-size: 2em;
   font-weight: bold;
-  font-size: 120px; /* Adjust the font size of labels as needed */
+  font-size: 120px;
 }
 
 .label {
@@ -123,55 +146,35 @@ body {
   margin-top: 5px;
   color: rgb(255, 255, 255);
 }
+
 .container {
-  padding-right: 300px; /* Adjust the value as needed */
+  padding-right: 300px;
 }
 
-.branding {
-  padding-left: 50px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  text-decoration: none; /* Remove underline */
-}
-
+.branding,
 .brandingg {
   padding-left: 50px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  text-decoration: none; /* Remove underline */
+  text-decoration: none;
 }
 
-/* Define the keyframes for the bounceInLeft animation */
+/* BounceInLeft animation */
 @keyframes bounceInLeft {
-  0% {
-    transform: translateX(-3000px);
-    opacity: 0;
-  }
-  60% {
-    transform: translateX(25px);
-    opacity: 1;
-  }
-  75% {
-    transform: translateX(-10px);
-  }
-  90% {
-    transform: translateX(5px);
-  }
-  100% {
-    transform: translateX(0);
-  }
+  0%   { transform: translateX(-3000px); opacity: 0; }
+  60%  { transform: translateX(25px); opacity: 1; }
+  75%  { transform: translateX(-10px); }
+  90%  { transform: translateX(5px); }
+  100% { transform: translateX(0); }
 }
 
-/* Apply the animation to the #branding div */
 #branding {
   animation: bounceInLeft 1s;
 }
 
-
 nav ul {
-  list-style: none; /* Remove bullet points from the list */
+  list-style: none;
 }
 
 .header-content {
@@ -184,30 +187,18 @@ nav {
   margin-left: auto;
   margin-right: 30px;
 }
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-nav ul {
-  list-style: none; /* Remove bullet points from the list */
-}
 
 .centered-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh; /* 100% of the viewport height */
-  animation: appear 8s forwards; /* Animation named "appear" with a duration of 1 second */
+  height: 100vh;
+  animation: appear 8s forwards;
 }
+
 @keyframes appear {
-  0% {
-    opacity: 0; /* Start with opacity 0 */
-  }
-  100% {
-    opacity: 1; /* End with opacity 1 */
-  }
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 .centered-content {
@@ -216,13 +207,13 @@ nav ul {
 
 .work-link {
   font-family: "Rowdies", sans-serif;
-  color: #ff0000; /* Change color */
-  font-size: 26px; /* Increase font size */
-  text-decoration: none; /* Remove underline */
+  color: #ff0000;
+  font-size: 26px;
+  text-decoration: none;
 }
 
 .line {
-  width: 500px; /* Increase the width to make it longer */
+  width: 500px;
   height: 100px;
   border: solid 7px #fff;
   border-color: white transparent transparent transparent;
@@ -231,7 +222,7 @@ nav ul {
 }
 
 .linee {
-  width: 1000px; /* Increase the width to make it longer */
+  width: 1000px;
   height: 100px;
   border: solid 7px #fff;
   border-color: white transparent transparent transparent;
@@ -239,7 +230,7 @@ nav ul {
   transform: rotate(180deg);
 }
 
-/* Target autofill input */
+/* Autofill */
 input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0px 1000px #1e1e1e inset !important;
   -webkit-text-fill-color: #FF4500 !important;
@@ -250,11 +241,11 @@ input:-webkit-autofill {
 }
 
 .second {
-  padding: 20px; /* Increase padding */
+  padding: 20px;
 }
 
 .formRow {
-  padding-top: 20px; /* Increase top padding */
+  padding-top: 20px;
 }
 
 .form,
@@ -263,17 +254,16 @@ input:-webkit-autofill {
   padding: 12px 20px;
   margin: 8px 0;
   color: #ff0000;
-  display: block; /* Change display to block for full width */
+  display: block;
   background-color: #161616;
-  border: 1px solid #fff; /* Add a 1px solid border with black color */
+  border: 1px solid #fff;
   box-sizing: border-box;
-  width: calc(100% - 40px); /* Adjust width to account for padding */
-  outline: none; /* Remove blue outline when clicked */
+  width: calc(100% - 40px);
+  outline: none;
 }
 
 .formmm {
   resize: none;
-  height: auto;
   min-height: 100px;
 }
 
@@ -292,8 +282,8 @@ input:-webkit-autofill {
 }
 
 .full {
-  opacity: 0; /* Initially invisible */
-  animation: appear 6s forwards; /* Animation named "appear" with a duration of 1 second */
+  opacity: 0;
+  animation: appear 6s forwards;
 }
 
 .NF {
@@ -303,62 +293,51 @@ input:-webkit-autofill {
 }
 
 .icon-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
 }
 
 .icon {
-    width: 40px; 
-    transition: transform 0.3s ease; 
-    filter: grayscale(100%);
+  width: 40px;
+  transition: transform 0.3s ease;
+  filter: grayscale(100%);
 }
 
 .icon:hover {
-    transform: scale(1.2); 
-    filter: grayscale(0%); 
-}
-
-
-@keyframes appear {
-  0% {
-    opacity: 0; /* Start with opacity 0 */
-  }
-  100% {
-    opacity: 1; /* End with opacity 1 */
-  }
+  transform: scale(1.2);
+  filter: grayscale(0%);
 }
 
 @media screen and (max-width: 600px) {
   .full {
-    max-width: 100%; /* Adjust to full width on smaller screens */
+    max-width: 100%;
   }
 }
 
-
 .scroll-top-btn {
     position: fixed;
-    bottom: 30px; /* Adjust for spacing */
+    bottom: 30px;
     right: 30px;
     background-color: transparent;
     border: none;
     cursor: pointer;
-    visibility: hidden; /* Initially hidden, allows animation */
-    opacity: 0; /* Fully transparent initially */
-    z-index: 9999; /* Ensure button is on top of other content */
+    visibility: hidden;
+    opacity: 0;
+    z-index: 9999;
     transition: transform 0.4s ease, opacity 0.4s ease, box-shadow 0.3s ease;
 }
 
 .scroll-top-btn.show {
-    visibility: visible; /* Make button visible */
-    opacity: 1; /* Fully opaque */
+    visibility: visible;
+    opacity: 1;
     transform: scale(1);
-    animation: bounce 0.6s ease-out; /* Bounce effect on appearance */
+    animation: bounce 0.6s ease-out;
 }
 
 .scroll-top-btn img {
-    width: 60px; /* Adjust image size */
+    width: 60px;
     height: 60px;
     opacity: 0.8;
     transition: opacity 0.3s ease, transform 0.3s ease;
@@ -366,7 +345,7 @@ input:-webkit-autofill {
 
 .scroll-top-btn:hover img {
     opacity: 1;
-    transform: scale(1.1); /* Slight scale when hovered */
+    transform: scale(1.1);
 }
 
 .scroll-top-btn:focus {
@@ -378,32 +357,27 @@ input:-webkit-autofill {
 }
 
 .scroll-top-btn img.leave-hover:hover {
-    transform: scale(1.2); /* Slight enlargement when hovering */
+    transform: scale(1.2);
 }
 
-/* Smooth exit animation for button */
 @keyframes exitAnimation {
-  0% { transform: scale(1) translateX(0); opacity: 1; }
+  0%   { transform: scale(1) translateX(0); opacity: 1; }
   100% { transform: scale(0) translateX(200%); opacity: 0; }
 }
 
 .scroll-top-btn.hide {
     animation: exitAnimation 0.5s forwards;
-    visibility: hidden; /* Ensure it stays hidden after animation */
-    opacity: 0; /* Make it fully transparent after animation */
+    visibility: hidden;
+    opacity: 0;
 }
 
-/* Bounce effect for the button */
 @keyframes bounce {
-  0% { transform: scale(0); }
-  50% { transform: scale(1.1); }
+  0%   { transform: scale(0); }
+  50%  { transform: scale(1.1); }
   100% { transform: scale(1); }
 }
 
-/* Hide the button permanently after click */
 .hidden {
     visibility: hidden !important;
-    opacity: 0 !important; /* Ensure it's completely hidden */
+    opacity: 0 !important;
 }
-
-
