@@ -262,3 +262,40 @@
    *  End of script
    *****************************/
 })(); // IIFE
+
+// Books flip interaction (tap-to-flip on mobile + keyboard accessibility)
+document.addEventListener('DOMContentLoaded', function () {
+  const cards = document.querySelectorAll('.book-card');
+
+  cards.forEach(card => {
+    // toggle on click/tap
+    card.addEventListener('click', function (e) {
+      // ignore clicks on links if any in future
+      if (e.target.tagName.toLowerCase() === 'a') return;
+      card.classList.toggle('is-flipped');
+    });
+
+    // keyboard toggle (Enter / Space)
+    card.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        card.classList.toggle('is-flipped');
+      }
+    });
+
+    // ensure when user moves pointer away on small screens, flip resets (optional)
+    card.addEventListener('mouseleave', function () {
+      if (!('ontouchstart' in window)) return;
+      card.classList.remove('is-flipped');
+    });
+  });
+
+  // Reveal-on-scroll: mark visible (your existing reveal-on-scroll used elsewhere)
+  const observer = new IntersectionObserver((entries)=>{
+    entries.forEach(en => {
+      if (en.isIntersecting) en.target.classList.add('is-visible');
+    });
+  }, {threshold: 0.12});
+  const section = document.querySelector('.books-section');
+  if (section) observer.observe(section);
+});
