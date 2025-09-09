@@ -317,42 +317,41 @@ nav a:hover, nav a:focus { background: rgba(255,255,255,0.06); transform: transl
   body::after { filter: blur(28px) saturate(130%); }
 }
 
-/* === Books 3D flip cards === */
-.books-section { padding: 2.25rem 1.25rem; background: transparent; border: none; }
-.books-section .project-title { font-family: 'Rowdies', sans-serif; font-size: 1.6rem; color: var(--brand-accent); }
+/* ===== 3D Flip Books (final) ===== */
+.books-section { padding: 2rem 1.25rem; background: transparent; border: none; }
+.books-section .project-title { font-family: 'Rowdies', sans-serif; font-size: 1.5rem; color: var(--brand-accent); }
 
-/* row layout */
+/* layout */
 .books-row {
-  display:flex;
-  gap: 1.25rem;
-  justify-content:center;
-  align-items:flex-start;
-  flex-wrap:wrap;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: flex-start;
 }
 
-/* each card */
+/* card / perspective container */
 .book-card {
-  width: 180px;
-  height: 260px;
-  perspective: 1000px;
+  width: 185px;
+  height: 265px;
+  perspective: 1400px;
   cursor: pointer;
-  outline: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
+/* inner 3D book element (the thing that rotates) */
 .book-inner {
   position: relative;
-  width:100%;
-  height:100%;
+  width: 100%;
+  height: 100%;
   transform-style: preserve-3d;
-  transition: transform 0.6s cubic-bezier(.2,.9,.2,1);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  transform-origin: left center;
+  transition: transform 0.8s cubic-bezier(.2,.9,.2,1);
   border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.06);
-  background: rgba(0,0,0,0.35);
-  overflow: hidden;
+  overflow: visible;
 }
 
-/* flip on hover/focus (desktop) */
+/* flip on hover / focus / toggled state */
 .book-card:hover .book-inner,
 .book-card:focus-within .book-inner,
 .book-card.is-flipped .book-inner {
@@ -365,69 +364,85 @@ nav a:hover, nav a:focus { background: rgba(255,255,255,0.06); transform: transl
   inset: 0;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.45), 0 2px 6px rgba(0,0,0,0.35);
 }
 
-/* front uses the cover image */
+/* front face shows the image by default */
+.book-front { transform: rotateY(0deg); z-index: 2; }
 .book-front img {
-  width:100%;
-  height:100%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  display:block;
+  display: block;
 }
 
-/* placeholder front if no image */
-.placeholder-front {
-  background: linear-gradient(180deg, rgba(230,207,120,0.12), rgba(230,207,120,0.06));
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.placeholder-content { text-align:center; padding: 0.5rem; }
-.placeholder-content .big-title {
-  font-family: 'Rowdies', sans-serif;
-  font-size: 64px;
-  color: var(--brand-accent);
-  line-height: 0.9;
-}
-.placeholder-content .small-author {
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  color: #fff;
-  opacity: 0.9;
-  margin-top: 6px;
-}
-
-/* back face styling */
+/* back face with text; rotated so it's hidden initially */
 .book-back {
-  padding: 1rem;
-  background: rgba(0,0,0,0.8);
-  color: #fff;
   transform: rotateY(180deg);
+  background: linear-gradient(180deg, rgba(0,0,0,0.85), rgba(0,0,0,0.9));
+  color: #fff;
+  padding: 1.1rem;
   flex-direction: column;
-  gap: 0.4rem;
-  text-align:center;
+  gap: 6px;
+  text-align: center;
 }
-.book-back h3 { font-size: 1rem; margin-bottom: 0.25rem; font-family: 'Rowdies', sans-serif; color: var(--brand-accent); }
-.book-back .author { font-size: 0.85rem; opacity: 0.9; }
+.book-back h3 { font-family: 'Rowdies', sans-serif; color: var(--brand-accent); font-size: 1rem; margin:0; }
+.book-back .author { font-size: .85rem; opacity: .9; margin:0; }
 .book-back .status {
-  margin-top: 0.6rem;
-  font-size: 0.8rem;
-  padding: 4px 10px;
+  margin-top: .55rem;
+  font-size: .78rem;
+  padding: 6px 10px;
   border-radius: 999px;
   background: rgba(230,207,120,0.12);
   color: var(--brand-accent);
-  border: 1px solid rgba(230,207,120,0.13);
+  border: 1px solid rgba(230,207,120,0.12);
 }
 
-/* accessibility focus ring */
-.book-card:focus { box-shadow: 0 6px 20px rgba(0,0,0,0.7), 0 0 0 4px rgba(230,207,120,0.12); }
+/* make the book look thicker — "pages" strip on the right side */
+.book-inner::after {
+  content: "";
+  position: absolute;
+  right: -12px;
+  top: 4px;
+  width: 12px;
+  height: calc(100% - 8px);
+  background: linear-gradient(180deg, #f6f5ef 0%, #e9e7da 8%, #f6f5ef 100%);
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03);
+  transform-origin: left center;
+  z-index: 1;
+  /* subtle page lines */
+  background-image:
+    linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
+  background-size: 3px 100%;
+}
 
-/* responsive */
+/* little outer spine (left edge) for depth */
+.book-inner::before {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 6px;
+  width: 6px;
+  height: calc(100% - 12px);
+  background: linear-gradient(180deg, rgba(0,0,0,0.5), rgba(0,0,0,0.65));
+  border-radius: 2px;
+  z-index: 3;
+  transform-origin: right center;
+}
+
+/* focus styles for keyboard users */
+.book-card:focus { outline: none; }
+.book-card:focus .book-inner { box-shadow: 0 18px 40px rgba(0,0,0,0.5), 0 0 0 6px rgba(230,207,120,0.08); }
+
+/* responsive sizes */
 @media (max-width: 760px) {
-  .books-row { gap: 1rem; }
-  .book-card { width: 150px; height: 220px; }
-  .placeholder-content .big-title { font-size: 56px; }
+  .book-card { width: 150px; height: 215px; }
+  .book-inner::after { right: -10px; width: 10px; }
+  .book-inner::before { left: -5px; width: 5px; }
 }
