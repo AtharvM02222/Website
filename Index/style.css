@@ -317,11 +317,24 @@ nav a:hover, nav a:focus { background: rgba(255,255,255,0.06); transform: transl
   body::after { filter: blur(28px) saturate(130%); }
 }
 
-/* ===== 3D Flip Books (final) ===== */
-.books-section { padding: 2rem 1.25rem; background: transparent; border: none; }
-.books-section .project-title { font-family: 'Rowdies', sans-serif; font-size: 1.5rem; color: var(--brand-accent); }
+/* === 3D Flip Books (merged final) === */
+.books-section {
+  padding: 2rem 1.25rem;
+  background: transparent;
+  border: none;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 3rem 0;
+}
+.books-section .project-title {
+  font-family: 'Rowdies', sans-serif;
+  font-size: 1.5rem;
+  color: var(--brand-accent);
+}
 
-/* layout */
+/* layout row */
 .books-row {
   display: flex;
   flex-wrap: wrap;
@@ -330,28 +343,29 @@ nav a:hover, nav a:focus { background: rgba(255,255,255,0.06); transform: transl
   align-items: flex-start;
 }
 
-/* card / perspective container */
+/* outer container (book perspective) */
 .book-card {
   width: 185px;
   height: 265px;
   perspective: 1400px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  position: relative;
 }
 
-/* inner 3D book element (the thing that rotates) */
+/* inner element (the book block that flips) */
 .book-inner {
   position: relative;
   width: 100%;
   height: 100%;
   transform-style: preserve-3d;
   transform-origin: left center;
-  transition: transform 0.8s cubic-bezier(.2,.9,.2,1);
+  transition: transform 0.9s cubic-bezier(.2,.9,.2,1);
   border-radius: 8px;
   overflow: visible;
 }
 
-/* flip on hover / focus / toggled state */
+/* flip on hover/focus/toggle */
 .book-card:hover .book-inner,
 .book-card:focus-within .book-inner,
 .book-card.is-flipped .book-inner {
@@ -369,153 +383,85 @@ nav a:hover, nav a:focus { background: rgba(255,255,255,0.06); transform: transl
   justify-content: center;
   border-radius: 6px;
   overflow: hidden;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.45), 0 2px 6px rgba(0,0,0,0.35);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.55), 0 3px 8px rgba(0,0,0,0.35);
 }
 
-/* front face shows the image by default */
+/* front cover with image */
 .book-front { transform: rotateY(0deg); z-index: 2; }
 .book-front img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  transform: translateZ(12px) scale(1.01);
 }
 
-/* back face with text; rotated so it's hidden initially */
+/* back cover */
 .book-back {
   transform: rotateY(180deg);
-  background: linear-gradient(180deg, rgba(0,0,0,0.85), rgba(0,0,0,0.9));
+  background: linear-gradient(180deg, rgba(0,0,0,0.85), rgba(0,0,0,0.95));
   color: #fff;
-  padding: 1.1rem;
+  padding: 1rem;
   flex-direction: column;
   gap: 6px;
   text-align: center;
 }
 .book-back h3 { font-family: 'Rowdies', sans-serif; color: var(--brand-accent); font-size: 1rem; margin:0; }
-.book-back .author { font-size: .85rem; opacity: .9; margin:0; }
+.book-back .author { font-size:.85rem; opacity:.9; margin:0; }
 .book-back .status {
-  margin-top: .55rem;
-  font-size: .78rem;
-  padding: 6px 10px;
-  border-radius: 999px;
+  font-size:.78rem;
+  margin-top:.4rem;
+  padding:6px 10px;
+  border-radius:999px;
   background: rgba(230,207,120,0.12);
-  color: var(--brand-accent);
-  border: 1px solid rgba(230,207,120,0.12);
+  color:var(--brand-accent);
+  border:1px solid rgba(230,207,120,0.12);
 }
 
-/* make the book look thicker — "pages" strip on the right side */
+/* page block (right side) */
 .book-inner::after {
   content: "";
   position: absolute;
   right: -12px;
-  top: 4px;
+  top: 6px;
   width: 12px;
-  height: calc(100% - 8px);
-  background: linear-gradient(180deg, #f6f5ef 0%, #e9e7da 8%, #f6f5ef 100%);
+  height: calc(100% - 12px);
+  background: linear-gradient(180deg, #f6f5ef 0%, #e9e7da 40%, #f6f5ef 100%);
   border-radius: 2px;
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03);
-  transform-origin: left center;
   z-index: 1;
-  /* subtle page lines */
-  background-image:
-    linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03);
+  background-image: linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
   background-size: 3px 100%;
+  transform-origin: left center;
+  transform: translateZ(-2px);
 }
 
-/* little outer spine (left edge) for depth */
+/* spine (left edge) */
 .book-inner::before {
   content: "";
   position: absolute;
-  left: -6px;
+  left: -12px;
   top: 6px;
-  width: 6px;
+  width: 12px;
   height: calc(100% - 12px);
-  background: linear-gradient(180deg, rgba(0,0,0,0.5), rgba(0,0,0,0.65));
-  border-radius: 2px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.85));
+  border-radius: 3px;
   z-index: 3;
+  box-shadow: inset -2px 0 6px rgba(255,255,255,0.05), 0 6px 12px rgba(0,0,0,0.4);
   transform-origin: right center;
+  transform: translateZ(8px);
 }
 
-/* focus styles for keyboard users */
+/* focus styles */
 .book-card:focus { outline: none; }
-.book-card:focus .book-inner { box-shadow: 0 18px 40px rgba(0,0,0,0.5), 0 0 0 6px rgba(230,207,120,0.08); }
+.book-card:focus .book-inner {
+  box-shadow: 0 20px 48px rgba(0,0,0,0.55), 0 0 0 6px rgba(230,207,120,0.08);
+}
 
 /* responsive sizes */
 @media (max-width: 760px) {
   .book-card { width: 150px; height: 215px; }
   .book-inner::after { right: -10px; width: 10px; }
-  .book-inner::before { left: -5px; width: 5px; }
-}
-
-
-.books-section {
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin: 3rem 0;
-}
-
-.book-card {
-  width: 180px;
-  height: 260px;
-  perspective: 1200px;
-  cursor: pointer;
-  position: relative;
-}
-
-.book-inner {
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  transition: transform 1s;
-  position: relative;
-}
-
-.book-card:hover .book-inner,
-.book-card.is-flipped .book-inner {
-  transform: rotateY(180deg);
-}
-
-.book-front,
-.book-back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  border-radius: 4px;
-  overflow: hidden;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-}
-
-/* FRONT cover */
-.book-front {
-  transform: rotateY(0deg);
-}
-
-/* BACK cover */
-.book-back {
-  transform: rotateY(180deg);
-  background: #111;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
-  text-align: center;
-}
-
-/* Extra 3D “spine” effect */
-.book-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -12px;
-  width: 12px;
-  height: 100%;
-  background: linear-gradient(to right, #222, #555);
-  border-radius: 4px 0 0 4px;
-  box-shadow: inset -2px 0 4px rgba(0,0,0,0.6);
-  transform: rotateY(0deg) translateZ(-1px);
+  .book-inner::before { left: -8px; width: 8px; }
+  .book-front img { transform: translateZ(9px); }
 }
