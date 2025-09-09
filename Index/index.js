@@ -262,40 +262,46 @@
    *  End of script
    *****************************/
 })(); // IIFE
+/* Books: tap-to-flip + keyboard accessibility */
+(function(){
+  document.addEventListener('DOMContentLoaded', function () {
+    const cards = document.querySelectorAll('.book-card');
 
-// Books flip interaction (tap-to-flip on mobile + keyboard accessibility)
-document.addEventListener('DOMContentLoaded', function () {
-  const cards = document.querySelectorAll('.book-card');
-
-  cards.forEach(card => {
-    // toggle on click/tap
-    card.addEventListener('click', function (e) {
-      // ignore clicks on links if any in future
-      if (e.target.tagName.toLowerCase() === 'a') return;
-      card.classList.toggle('is-flipped');
-    });
-
-    // keyboard toggle (Enter / Space)
-    card.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
+    cards.forEach(card => {
+      // click/tap toggles flip class (for mobile)
+      card.addEventListener('click', function (e) {
+        // if user clicked an interactive element inside (none currently), ignore
+        if (e.target.tagName.toLowerCase() === 'a') return;
         card.classList.toggle('is-flipped');
-      }
+      });
+
+      // keyboard (Enter or Space)
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.classList.toggle('is-flipped');
+        } else if (e.key === 'Escape') {
+          card.classList.remove('is-flipped');
+        }
+      });
+
+      // optional: close flip when clicking outside (mobile convenience)
+      document.addEventListener('click', function (ev) {
+        if (!card.contains(ev.target)) {
+          card.classList.remove('is-flipped');
+        }
+      }, true);
     });
 
-    // ensure when user moves pointer away on small screens, flip resets (optional)
-    card.addEventListener('mouseleave', function () {
-      if (!('ontouchstart' in window)) return;
-      card.classList.remove('is-flipped');
-    });
+    // reveal-on-scroll observer for the section
+    const section = document.querySelector('.books-section');
+    if (section) {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(en => {
+          if (en.isIntersecting) section.classList.add('is-visible');
+        });
+      }, { threshold: 0.12 });
+      observer.observe(section);
+    }
   });
-
-  // Reveal-on-scroll: mark visible (your existing reveal-on-scroll used elsewhere)
-  const observer = new IntersectionObserver((entries)=>{
-    entries.forEach(en => {
-      if (en.isIntersecting) en.target.classList.add('is-visible');
-    });
-  }, {threshold: 0.12});
-  const section = document.querySelector('.books-section');
-  if (section) observer.observe(section);
-});
+})();
