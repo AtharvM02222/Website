@@ -117,34 +117,105 @@
     },4000);
   })();
 })();
+// BOOKS 3D interaction (hover/tap/keyboard + mouse parallax)
 (function(){
-  document.addEventListener('DOMContentLoaded', function(){
-    const cards = document.querySelectorAll('.book-card');
-    cards.forEach(function(card){
-      card.addEventListener('click', function(e){
-        if(e.target.tagName && e.target.tagName.toLowerCase() === 'a') return;
-        card.classList.toggle('is-flipped');
+  'use strict';
+
+  // Config
+  const TILT_STRENGTH = 12; // degrees max tilt on mouse move (reduce for subtle)
+  const ELEVATE_CLASS = 'is-flipped';
+  const FLIPPING_CLASS = 'flipping';
+
+  // Helpers
+  function getRectCenter(rect){
+    return { x: rect.left + rect.width/2, y: rect.top + rect.height/2 };
+  }
+
+  function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+
+  // Find all book cards
+  const bookCards = document.querySelectorAll('.book-card');
+
+  bookCards.forEach(card => {
+    const book3d = card.querySelector('.book-3d');
+    if(!book3d) return;
+
+    // Toggle flip (click / tap)
+    card.addEventListener('click', function(e){
+      if(e.target.closest && e.target.closest('a')) return;
+      card.classList.toggle(ELEVATE_CLASS);
+      // add temporary class to ensure z-index during transition
+      book3d.classList.add(FLIPPING_CLASS);
+      setTimeout(()=> book3d.classList.remove(FLIPPING_CLASS), 900);
+    });
+
+    // keyboard support
+    card.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        card.classList.toggle(ELEVATE_CLASS);
+        book3d.classList.add(FLIPPING_CLASS);
+        setTimeout(()=> book3d.classList.remove(FLIPPING_CLASS), 900);
+      } else if(e.key === 'Escape'){
+        card.classList.remove(ELEVATE_CLASS);
+      }
+    });
+
+    // Close book when clicking outside (use capture to ensure early)
+    document.addEventListener('click', function(ev){
+      if(!card.contains(ev.target)) {
+        card.classList.remove(ELEVATE_CLASS);
+      }
+    }, true);
+
+    // Mouse tilt effect: subtle parallax on surfaces, disabled on touch devices
+    let supportsTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    if(!supportsTouch && window.matchMedia && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      card.addEventListener('mousemove', function(e){
+        const rect = card.getBoundingClientRect();
+        const cx = rect.left + rect.width/2;
+        const cy = rect.top + rect.height/2;
+        const dx = (e.clientX - cx) / (rect.width/2); // -1 .. 1
+        const dy = (e.clientY - cy) / (rect.height/2);
+        const rx = clamp(-dy * TILT_STRENGTH, -TILT_STRENGTH, TILT_STRENGTH);
+        const ry = clamp(dx * TILT_STRENGTH, -TILT_STRENGTH, TILT_STRENGTH);
+        // apply tilt on the 3d element (only visual)
+        book3d.style.transform = `rotateX(${rx}deg) rotateY(${ry - 6}deg)`; // keep base -6deg for shelf look
+        // tiny parallax on cover images
+        const front = card.querySelector('.cover-front');
+        const back = card.querySelector('.cover-back');
+        if(front) front.style.transform = `translateZ(16px) translateX(${clamp(dx*6,-12,12)}px) translateY(${clamp(dy*6,-12,12)}px)`;
+        if(back) back.style.transform = `translateZ(10px) translateX(${clamp(dx*4,-8,8)}px) translateY(${clamp(dy*4,-8,8)}px)`;
+        // pages slight shift
+        const pages = card.querySelector('.book-pages');
+        if(pages) pages.style.transform = `translateX(${clamp(dx*6,-12,12)}px) translateZ(-2px)`;
       });
-      card.addEventListener('keydown', function(e){
-        if(e.key === 'Enter' || e.key === ' '){
-          e.preventDefault();
-          card.classList.toggle('is-flipped');
-        } else if(e.key === 'Escape'){
-          card.classList.remove('is-flipped');
+
+      card.addEventListener('mouseleave', function(){
+        // reset transforms
+        book3d.style.transform = '';
+        const front = card.querySelector('.cover-front');
+        const back = card.querySelector('.cover-back');
+        if(front) front.style.transform = '';
+        if(back) back.style.transform = '';
+        const pages = card.querySelector('.book-pages');
+        if(pages) pages.style.transform = '';
+      });
+    }
+
+    // Ensure flipped card gets a high z-index during transition (prevents overlap)
+    const observer = new MutationObserver(function(mutations){
+      mutations.forEach(m => {
+        if(m.attributeName === 'class'){
+          if(card.classList.contains(ELEVATE_CLASS)){
+            card.style.zIndex = 1200;
+          } else {
+            // delay resetting z-index to allow transition to finish
+            setTimeout(()=> { if(!card.classList.contains(ELEVATE_CLASS)) card.style.zIndex = ''; }, 900);
+          }
         }
       });
-      document.addEventListener('click', function(ev){
-        if(!card.contains(ev.target)) card.classList.remove('is-flipped');
-      }, true);
     });
-    const section = document.querySelector('.books-section');
-    if(section){
-      const observer = new IntersectionObserver(function(entries){
-        entries.forEach(function(en){
-          if(en.isIntersecting) section.classList.add('is-visible');
-        });
-      },{threshold:0.12});
-      observer.observe(section);
-    }
+    observer.observe(card, { attributes: true });
   });
 })();
