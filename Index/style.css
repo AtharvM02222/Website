@@ -317,151 +317,263 @@ nav a:hover, nav a:focus { background: rgba(255,255,255,0.06); transform: transl
   body::after { filter: blur(28px) saturate(130%); }
 }
 
-/* === 3D Flip Books (merged final) === */
-.books-section {
-  padding: 2rem 1.25rem;
-  background: transparent;
-  border: none;
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin: 3rem 0;
+/* ===============================
+   Realistic 3D Book Section CSS
+   =============================== */
+
+/* Variables */
+:root {
+  --book-width: 180px;
+  --book-height: 260px;
+  --book-spine-width: 14px;
+  --book-pages-width: 12px;
+  --book-radius: 8px;
+  --book-accent: var(--brand-accent, #e6cf78);
 }
-.books-section .project-title {
+
+/* Section heading */
+.books-heading {
+  text-align: center;
   font-family: 'Rowdies', sans-serif;
-  font-size: 1.5rem;
-  color: var(--brand-accent);
+  color: var(--book-accent);
+  margin-bottom: 1rem;
+  font-size: 1.45rem;
 }
 
-/* layout row */
-.books-row {
+/* Grid container */
+.books-grid {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
+  gap: 1.6rem;
   justify-content: center;
-  align-items: flex-start;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  padding: 1.25rem 0 2.5rem;
 }
 
-/* outer container (book perspective) */
+/* Book card container */
 .book-card {
-  width: 185px;
-  height: 265px;
-  perspective: 1400px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+  width: var(--book-width);
+  height: var(--book-height);
+  display: inline-block;
+  vertical-align: bottom;
   position: relative;
+  perspective: 1600px;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* inner element (the book block that flips) */
-.book-inner {
-  position: relative;
+/* 3D book wrapper */
+.book-3d {
   width: 100%;
   height: 100%;
+  position: relative;
   transform-style: preserve-3d;
   transform-origin: left center;
-  transition: transform 0.9s cubic-bezier(.2,.9,.2,1);
-  border-radius: 8px;
-  overflow: visible;
+  transition: transform 0.85s cubic-bezier(.2,.9,.2,1);
+  border-radius: var(--book-radius);
+  will-change: transform;
+  transform: rotateX(6deg) rotateY(-6deg);
 }
 
-/* flip on hover/focus/toggle */
-.book-card:hover .book-inner,
-.book-card:focus-within .book-inner,
-.book-card.is-flipped .book-inner {
-  transform: rotateY(180deg);
+/* Disable tilt on smaller screens */
+@media (max-width: 760px) {
+  .book-3d { transform: none; }
 }
 
-/* faces */
-.book-front, .book-back {
+/* Book surfaces */
+.book-surface {
   position: absolute;
-  inset: 0;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: calc(var(--book-radius) - 2px);
+  overflow: hidden;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  box-shadow: 0 14px 48px rgba(0,0,0,0.55),
+              0 6px 18px rgba(0,0,0,0.35);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: 0 14px 40px rgba(0,0,0,0.55), 0 3px 8px rgba(0,0,0,0.35);
+  background: #0b0b0b;
 }
 
-/* front cover with image */
-.book-front { transform: rotateY(0deg); z-index: 2; }
-.book-front img {
+/* Front surface */
+.book-front-surface {
+  transform: rotateY(0deg) translateZ(0.5px);
+  z-index: 30;
+}
+
+/* Back surface */
+.book-back-surface {
+  transform: rotateY(180deg);
+  z-index: 20;
+}
+
+/* Cover images */
+.cover-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  transform: translateZ(12px) scale(1.01);
+  user-select: none;
+  pointer-events: none;
+  -webkit-user-drag: none;
 }
+.cover-front { transform: translateZ(16px) scale(1.01); }
+.cover-back  { transform: translateZ(10px); filter: brightness(0.96); }
 
-/* back cover */
-.book-back {
-  transform: rotateY(180deg);
-  background: linear-gradient(180deg, rgba(0,0,0,0.85), rgba(0,0,0,0.95));
+/* Back overlay text */
+.back-overlay {
+  position: absolute;
+  inset: auto 8% 8% 8%;
   color: #fff;
-  padding: 1rem;
+  text-align: center;
+  pointer-events: none;
+  display: flex;
   flex-direction: column;
   gap: 6px;
-  text-align: center;
+  justify-content: center;
+  align-items: center;
 }
-.book-back h3 { font-family: 'Rowdies', sans-serif; color: var(--brand-accent); font-size: 1rem; margin:0; }
-.book-back .author { font-size:.85rem; opacity:.9; margin:0; }
-.book-back .status {
-  font-size:.78rem;
-  margin-top:.4rem;
-  padding:6px 10px;
-  border-radius:999px;
+.back-overlay h3 {
+  font-family: 'Rowdies', sans-serif;
+  margin: 0;
+  color: var(--book-accent);
+  font-size: 1rem;
+}
+.back-overlay .author {
+  margin: 0;
+  font-size: 0.88rem;
+  opacity: 0.9;
+}
+.back-overlay .status {
+  margin: 0;
+  font-size: 0.78rem;
+  padding: 6px 10px;
+  border-radius: 999px;
   background: rgba(230,207,120,0.12);
-  color:var(--brand-accent);
-  border:1px solid rgba(230,207,120,0.12);
+  color: var(--book-accent);
+  border: 1px solid rgba(230,207,120,0.12);
 }
 
-/* page block (right side) */
-.book-inner::after {
-  content: "";
+/* Pages edge */
+.book-pages {
   position: absolute;
-  right: -12px;
+  right: calc(-1 * var(--book-pages-width));
   top: 6px;
-  width: 12px;
+  width: var(--book-pages-width);
   height: calc(100% - 12px);
-  background: linear-gradient(180deg, #f6f5ef 0%, #e9e7da 40%, #f6f5ef 100%);
+  background: linear-gradient(180deg, #fbfbf8 0%, #f0efe6 30%, #fbfbf8 100%);
   border-radius: 2px;
-  z-index: 1;
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03);
+  z-index: 18;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.02);
   background-image: linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
   background-size: 3px 100%;
   transform-origin: left center;
   transform: translateZ(-2px);
+  overflow: hidden;
 }
-
-/* spine (left edge) */
-.book-inner::before {
+.book-pages::before,
+.book-pages::after {
   content: "";
   position: absolute;
-  left: -12px;
-  top: 6px;
-  width: 12px;
-  height: calc(100% - 12px);
+  left: 0;
+  width: 100%;
+  height: 6px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0));
+  top: 0;
+}
+.book-pages::after {
+  bottom: 0;
+  top: auto;
+  transform: rotate(180deg);
+}
+
+/* Spine */
+.book-spine {
+  position: absolute;
+  left: calc(-1 * var(--book-spine-width));
+  top: 7px;
+  width: var(--book-spine-width);
+  height: calc(100% - 14px);
   background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.85));
   border-radius: 3px;
-  z-index: 3;
-  box-shadow: inset -2px 0 6px rgba(255,255,255,0.05), 0 6px 12px rgba(0,0,0,0.4);
+  z-index: 40;
+  box-shadow: inset -2px 0 6px rgba(255,255,255,0.03),
+              0 8px 24px rgba(0,0,0,0.45);
   transform-origin: right center;
-  transform: translateZ(8px);
+  transform: translateZ(10px);
 }
 
-/* focus styles */
+/* Gloss highlight */
+.book-front-surface::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(255,255,255,0.02),
+                                       rgba(255,255,255,0.06) 6%,
+                                       rgba(255,255,255,0) 18%);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 25;
+}
+
+/* Inner shadow */
+.book-front-surface::after,
+.book-back-surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 40px 120px rgba(0,0,0,0.55);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Flip interactions */
+.book-card:hover .book-3d,
+.book-card.is-flipped .book-3d,
+.book-card:focus-within .book-3d {
+  transform: rotateY(180deg);
+}
+.book-card.is-flipped { z-index: 1200; }
+
+/* Page movement on flip */
+.book-card .book-pages {
+  transition: transform 0.85s cubic-bezier(.2,.9,.2,1);
+}
+.book-card:hover .book-pages,
+.book-card.is-flipped .book-pages {
+  transform: translateX(6px) translateZ(-2px);
+}
+
+/* Focus accessibility */
 .book-card:focus { outline: none; }
-.book-card:focus .book-inner {
-  box-shadow: 0 20px 48px rgba(0,0,0,0.55), 0 0 0 6px rgba(230,207,120,0.08);
+.book-card:focus .book-3d {
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  transform: none;
 }
 
-/* responsive sizes */
+/* Small screens */
 @media (max-width: 760px) {
-  .book-card { width: 150px; height: 215px; }
-  .book-inner::after { right: -10px; width: 10px; }
-  .book-inner::before { left: -8px; width: 8px; }
-  .book-front img { transform: translateZ(9px); }
+  :root {
+    --book-width: 140px;
+    --book-height: 200px;
+    --book-spine-width: 10px;
+    --book-pages-width: 9px;
+  }
+  .back-overlay h3 { font-size: 0.95rem; }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .book-3d,
+  .book-pages,
+  .book-front-surface::before,
+  .book-front-surface::after {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
 }
