@@ -225,54 +225,62 @@
             </div>
         </div>
     </section>
-<!-- ===== Books (3D flip cards) ===== -->
-<section class="books-section maxw mt-8 mb-12 card round reveal-on-scroll" aria-label="Books I've read">
+<!-- ===== Books (3D flip-book block) ===== -->
+<section id="books" class="books-section maxw mt-8 mb-12 card round reveal-on-scroll" aria-label="Books">
   <h2 class="project-title" style="margin-bottom:1rem; color:var(--brand-accent);">Books I've Read / Reading</h2>
 
   <div class="books-row">
-    <!-- ChatGPT book (Read) -->
-    <article class="book-card" tabindex="0" data-status="Read">
+    <!-- 1: The ChatGPT Millionaire (Completed) -->
+    <article class="book-card" tabindex="0" data-status="Completed" aria-label="The ChatGPT Millionaire by Neil Dagger">
       <div class="book-inner">
         <div class="book-front">
-          <!-- Save the image locally as ./img/books/chatgpt.jpg (instructions below) -->
-          <img src="./img/books/chatgpt.jpg" alt="The ChatGPT book cover">
+          <img src="./img/books/chatgpt_millionaire.jpg" alt="The ChatGPT Millionaire cover">
         </div>
         <div class="book-back">
           <h3>The ChatGPT Millionaire</h3>
           <p class="author">Neil Dagger</p>
-          <p class="status">Read</p>
+          <p class="status">Completed</p>
         </div>
       </div>
     </article>
 
-    <!-- C# book (Placeholder: L.U.C. Luke) -->
-    <article class="book-card" tabindex="0" data-status="Reading">
+    <!-- 2: Python Crash Course (2nd Ed.) -->
+    <article class="book-card" tabindex="0" data-status="Reading" aria-label="Python Crash Course by Eric Matthes">
       <div class="book-inner">
-        <div class="book-front placeholder-front">
-          <!-- placeholder front created with CSS - no external image required -->
-          <div class="placeholder-content">
-            <div class="big-title">C#</div>
-            <div class="small-author">L.U.C. Luke</div>
-          </div>
+        <div class="book-front">
+          <img src="./img/books/python_crash_course.jpg" alt="Python Crash Course cover">
         </div>
         <div class="book-back">
-          <h3>C# Programming</h3>
-          <p class="author">L.U.C. Luke</p>
+          <h3>Python Crash Course (2nd Ed.)</h3>
+          <p class="author">Eric Matthes</p>
           <p class="status">Reading</p>
         </div>
       </div>
     </article>
 
-    <!-- Python Crash Course (Reading) -->
-    <article class="book-card" tabindex="0" data-status="Reading">
+    <!-- 3: Eloquent JavaScript (4th Ed.) -->
+    <article class="book-card" tabindex="0" data-status="Reading" aria-label="Eloquent JavaScript by Marijn Haverbeke">
       <div class="book-inner">
         <div class="book-front">
-          <!-- Save the image locally as ./img/books/python_crash_course.jpg (instructions below) -->
-          <img src="./img/books/python_crash_course.jpg" alt="Python Crash Course cover">
+          <img src="./img/books/eloquent_js_4th.jpg" alt="Eloquent JavaScript cover">
         </div>
         <div class="book-back">
-          <h3>Python Crash Course</h3>
-          <p class="author">Eric Matthes</p>
+          <h3>Eloquent JavaScript (4th Ed.)</h3>
+          <p class="author">Marijn Haverbeke</p>
+          <p class="status">Reading</p>
+        </div>
+      </div>
+    </article>
+
+    <!-- 4: Learning C# by Developing Games with Unity 3D -->
+    <article class="book-card" tabindex="0" data-status="Reading" aria-label="Learning C# by Developing Games with Unity 3D by Terry Norton">
+      <div class="book-inner">
+        <div class="book-front">
+          <img src="./img/books/learning_csharp_unity.jpg" alt="Learning C# with Unity cover">
+        </div>
+        <div class="book-back">
+          <h3>Learning C# by Developing Games with Unity 3D</h3>
+          <p class="author">Terry Norton</p>
           <p class="status">Reading</p>
         </div>
       </div>
