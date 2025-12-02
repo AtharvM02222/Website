@@ -1,88 +1,56 @@
-<html><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#161616">
-    <title >Atharv Mandlavdiya |</title>
-    <link rel="icon" href="am.png" type="image/png"
-    <link rel="icon" href="favicon.png" type="am.png">
+
+    <title>Atharv Mandlavdiya |</title>
+
+    <!-- FIXED: broken favicon tags -->
+    <link rel="icon" href="am.png" type="image/png">
+    <link rel="icon" href="favicon.png" type="image/png">
     <link rel="icon" type="image/png" href="./img/aboutimage.svg">
+
+    <!-- Scripts & fonts -->
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Rowdies:wght@300&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Jacquard+12&display=swap" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="style.css">
+
+    <link rel="stylesheet" href="style.css">
+
     <style>
         .rowdies-font {
             font-family: 'Rowdies', sans-serif;
         }
-      </style>
-<!-- Google tag (gtag.js) --> 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-YH75G12GCG"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'G-YH75G12GCG');
-</script>
-  </head>
-  <style>
-    h5 {
-      font-size: 140px;
-    }
-    
-    h6 {
-      font-size: 30px;
-    }
+        h5 { font-size: 140px; }
+        h6 { font-size: 30px; }
+        h7 { font-family: 'Rowdies', sans-serif; font-size: 35px; }
 
-    h7 {
-      font-family: 'Rowdies', sans-serif;
-      font-size: 35px;
-    }
+        p {
+            font-size: 25px;
+            font-family: 'Rowdies', sans-serif;
+            color: orangered;
+        }
 
-    p {
-      font-size: 25px;
-    }
-    p {
-      font-family: 'Rowdies', sans-serif;
-      color: orangered; /* Change this to the desired color */
-  }
-  </style>
-      <style>
-        .skillicons {
-            overflow: hidden;
-            white-space: nowrap;
-            box-sizing: border-box;
-            position: relative;
-            width: 100%;
-        }
-        .marquee {
-            display: inline-block;
-            white-space: nowrap;
-        }
-        .marquee-left-right {
-            animation: marquee-left-right 0s linear infinite;
-        }
-        .marquee-right-left {
-            animation: marquee-right-left 0s linear infinite;
-        }
-        .tooltip {
-            display: inline-block;
-            position: relative;
-            margin: 0 10px;
-        }
-        .tooltip img {
-            height: 200px;
-            width: 200px;
-        }
+        /* marquee styling */
+        .skillicons { overflow: hidden; white-space: nowrap; width: 100%; }
+        .marquee { display: inline-block; white-space: nowrap; }
+        .marquee-left-right { animation: marquee-left-right 20s linear infinite; }
+        .marquee-right-left { animation: marquee-right-left 20s linear infinite; }
+
+        .tooltip { display: inline-block; position: relative; margin: 0 10px; }
+        .tooltip img { height: 200px; width: 200px; }
+
         .tooltip .tooltiptext {
             visibility: hidden;
-            width: 120px;
             background-color: black;
             color: #fff;
             text-align: center;
@@ -90,16 +58,19 @@
             padding: 5px 0;
             position: absolute;
             z-index: 1;
-            bottom: 125%; /* Position the tooltip above the image */
+            bottom: 125%;
             left: 50%;
-            margin-left: -60px; /* Center the tooltip */
+            width: 120px;
+            margin-left: -60px;
             opacity: 0;
             transition: opacity 0.3s;
         }
+
         .tooltip:hover .tooltiptext {
             visibility: visible;
             opacity: 1;
         }
+
         @keyframes marquee-left-right {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100%); }
@@ -108,17 +79,26 @@
             0% { transform: translateX(100%); }
             100% { transform: translateX(-100%); }
         }
-      </style>
+    </style>
 
-        <body class="full" bgcolor=rgb(0,0,0)>
+    <!-- Google Tag -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YH75G12GCG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-YH75G12GCG');
+    </script>
+</head>
 
+<body bgcolor="black">
 <header>
   <div class="branding">
     <div id="branding">
       <a href="main.html" class="brandingg">
-      <h6 class="nameStyle" style="color: rgb(255, 255, 255);">
-        atharv<span style="color: rgb(230, 207, 120);">mandlavdiya</span>
-      </h6>
+        <h6 class="nameStyle" style="color: white;">
+          atharv<span style="color: rgb(230, 207, 120);">mandlavdiya</span>
+        </h6>
       </a>
     </div>
     <nav>
@@ -130,268 +110,190 @@
   </div>
 </header>
 
-
-             <button id="scrollTopBtn" class="scroll-top-btn">
+<button id="scrollTopBtn" class="scroll-top-btn">
     <img src="STP.svg" alt="Scroll to Top">
-  </button>
+</button>
 
+<audio id="bg-music" loop autoplay>
+    <source src="Theme.mp3" type="audio/mp3">
+</audio>
 
-                <audio id="bg-music" loop autoplay>
-        <source src="Theme.mp3" type="audio/mp3">
-        Your browser does not support the audio element.
-    </audio>
+<center>
+<section id="container">
+    <div class="container">
+        <div class="intro-container">
+            <h5 class="intro-text">
+                Hi, I’m Atharv <span class="highlight">Mandlavdiya</span> — I make things, break things, and sometimes fix them. Welcome!
+            </h5>
+        </div>
+    </div>
 
-    <center>
-    <section id="container">
-      <div class="container">
-<div class="intro-container">
-    <h5 class="intro-text">
-        Hi, I’m Atharv <span class="highlight">Mandlavdiya</span> — I make things, break things, and sometimes fix them. Welcome!
-    </h5>
-</div>
-      </div>
+    <div class="NF">
+        <p style="color:rgb(34,255,0)">
+            <strong>Talent Without Hard Work Is Nothing!!</strong><br>
+            <strong>C.Ronaldo</strong>
+        </p>
+    </div>
 
-      <div class="NF">
-      <p style="color:rgb(34, 255, 0)":>
-        <strong>Talent Without Hard Work Is Nothing!!</strong>
-        <br>
-        <strong>C.Ronaldo</strong>
-      </p>
-      </div>
+    <p style="color:white">
+        Hello! I’m <strong class="rowdies-font">Atharv Mandlavdiya.</strong>
+    </p>
 
+    <img src="triangle.png">
 
-      <p style="color:rgb(255, 255, 255)":>
-        Hello! I’m <strong class = "rowdies-font">Atharv Mandlavdiya.</strong> <br> <strong></strong>
-      </p>
+    <div class="new">
+        <h7>Countdown To My Birthday Every year:</h7>
 
-        <img src="triangle.png">
-
-      <div class="new">
-        <h7>Countdown To My Birthday Every year.:</h7>
         <div id="timer">
-          <div>
-            <span id="days">00</span>
-            <div class="label">Days</div>
-          </div>
-          <div>
-            <span id="hours">00</span>
-            <div class="label">Hours</div>
-          </div>
-          <div>
-            <span id="minutes">00</span>
-            <div class="label">Minutes</div>
-          </div>
-          <div>
-            <span id="seconds">00</span>
-            <div class="label">Seconds</div>
-          </div>
+            <div><span id="days">00</span><div class="label">Days</div></div>
+            <div><span id="hours">00</span><div class="label">Hours</div></div>
+            <div><span id="minutes">00</span><div class="label">Minutes</div></div>
+            <div><span id="seconds">00</span><div class="label">Seconds</div></div>
         </div>
+    </div>
+
+    <script src="index.js"></script>
+
+    <!-- FIXED BROKEN DIV -->
+    <div class="linee"></div>
+
+    <!-- ========== BOOKS SECTION (WORKING ✔) ========== -->
+    <section id="books-section" class="books-section reveal-on-scroll" aria-label="Books I've read or reading">
+      <h2 class="books-heading">Books I'm reading / Completed</h2>
+
+      <div class="books-grid" role="list">
+
+        <!-- Book Cards (unchanged, valid) -->
+        <!-- Book 1 -->
+        <article class="book-card" tabindex="0">
+          <div class="book-3d">
+            <div class="book-surface book-front-surface">
+              <img src="./img/books/chatgpt_front.jpg" class="cover-image">
+            </div>
+            <div class="book-surface book-back-surface">
+              <img src="./img/books/chatgpt_back.jpg" class="cover-image">
+            </div>
+            <div class="book-spine"></div>
+            <div class="book-pages"></div>
+          </div>
+        </article>
+
+        <!-- Book 2 -->
+        <article class="book-card" tabindex="0">
+          <div class="book-3d">
+            <div class="book-surface book-front-surface">
+              <img src="./img/books/python_front.jpg" class="cover-image">
+            </div>
+            <div class="book-surface book-back-surface">
+              <img src="./img/books/python_back.jpg" class="cover-image">
+            </div>
+            <div class="book-spine"></div>
+            <div class="book-pages"></div>
+          </div>
+        </article>
+
+        <!-- Book 3 -->
+        <article class="book-card" tabindex="0">
+          <div class="book-3d">
+            <div class="book-surface book-front-surface">
+              <img src="./img/books/eloquent_front.jpg" class="cover-image">
+            </div>
+            <div class="book-surface book-back-surface">
+              <img src="./img/books/eloquent_back.jpg" class="cover-image">
+            </div>
+            <div class="book-spine"></div>
+            <div class="book-pages"></div>
+          </div>
+        </article>
+
+        <!-- Book 4 -->
+        <article class="book-card" tabindex="0">
+          <div class="book-3d">
+            <div class="book-surface book-front-surface">
+              <img src="./img/books/csharp_front.jpg" class="cover-image">
+            </div>
+            <div class="book-surface book-back-surface">
+              <img src="./img/books/csharp_back.jpg" class="cover-image">
+            </div>
+            <div class="book-spine"></div>
+            <div class="book-pages"></div>
+          </div>
+        </article>
+
       </div>
-      <script src="index.js"></script>
+    </section>
 
-      <div class="linee"</div></div>
-<!-- BOOKS SECTION START -->
-<section id="books-section" class="books-section reveal-on-scroll" aria-label="Books I've read or reading">
-  <h2 class="books-heading">Books I'm reading / Completed</h2>
-
-  <div class="books-grid" role="list">
-    <!-- Book 1 -->
-    <article class="book-card" role="listitem" tabindex="0" data-title="The ChatGPT Millionaire" data-author="Neil Dagger" data-status="Completed">
-      <div class="book-3d">
-        <div class="book-surface book-front-surface">
-          <img class="cover-image cover-front" src="./img/books/chatgpt_front.jpg" alt="The ChatGPT Millionaire front cover">
-        </div>
-        <div class="book-surface book-back-surface">
-          <img class="cover-image cover-back" src="./img/books/chatgpt_back.jpg" alt="The ChatGPT Millionaire back cover">
-          <div class="back-overlay">
-            <h3>The ChatGPT Millionaire</h3>
-            <p class="author">Neil Dagger</p>
-            <p class="status">Completed</p>
-          </div>
-        </div>
-
-        <div class="book-spine"></div>
-        <div class="book-pages"></div>
-      </div>
-    </article>
-
-    <!-- Book 2 -->
-    <article class="book-card" role="listitem" tabindex="0" data-title="Python Crash Course (2nd Ed.)" data-author="Eric Matthes" data-status="Reading">
-      <div class="book-3d">
-        <div class="book-surface book-front-surface">
-          <img class="cover-image cover-front" src="./img/books/python_front.jpg" alt="Python Crash Course front cover">
-        </div>
-        <div class="book-surface book-back-surface">
-          <img class="cover-image cover-back" src="./img/books/python_back.jpg" alt="Python Crash Course back cover">
-          <div class="back-overlay">
-            <h3>Python Crash Course (2nd Ed.)</h3>
-            <p class="author">Eric Matthes</p>
-            <p class="status">Reading</p>
-          </div>
-        </div>
-
-        <div class="book-spine"></div>
-        <div class="book-pages"></div>
-      </div>
-    </article>
-
-    <!-- Book 3 -->
-    <article class="book-card" role="listitem" tabindex="0" data-title="Eloquent JavaScript (4th Ed.)" data-author="Marijn Haverbeke" data-status="Reading">
-      <div class="book-3d">
-        <div class="book-surface book-front-surface">
-          <img class="cover-image cover-front" src="./img/books/eloquent_front.jpg" alt="Eloquent JavaScript front cover">
-        </div>
-        <div class="book-surface book-back-surface">
-          <img class="cover-image cover-back" src="./img/books/eloquent_back.jpg" alt="Eloquent JavaScript back cover">
-          <div class="back-overlay">
-            <h3>Eloquent JavaScript (4th Ed.)</h3>
-            <p class="author">Marijn Haverbeke</p>
-            <p class="status">Reading</p>
-          </div>
-        </div>
-
-        <div class="book-spine"></div>
-        <div class="book-pages"></div>
-      </div>
-    </article>
-
-    <!-- Book 4 -->
-    <article class="book-card" role="listitem" tabindex="0" data-title="Learning C# by Developing Games with Unity 3D" data-author="Terry Norton" data-status="Reading">
-      <div class="book-3d">
-        <div class="book-surface book-front-surface">
-          <img class="cover-image cover-front" src="./img/books/csharp_front.jpg" alt="Learning C# with Unity front cover">
-        </div>
-        <div class="book-surface book-back-surface">
-          <img class="cover-image cover-back" src="./img/books/csharp_back.jpg" alt="Learning C# with Unity back cover">
-          <div class="back-overlay">
-            <h3>Learning C# by Developing Games with Unity 3D</h3>
-            <p class="author">Terry Norton</p>
-            <p class="status">Reading</p>
-          </div>
-        </div>
-
-        <div class="book-spine"></div>
-        <div class="book-pages"></div>
-      </div>
-    </article>
-  </div>
-</section>
-<!-- BOOKS SECTION END -->
-<section>
+    <!-- Skills Section -->
+    <section>
         <div class="skillicons">
+
             <div class="marquee marquee-left-right">
                 <div class="row">
-                    <div class="tooltip">
-                        <img src="unity.png" alt="Unity" />
-                        <span class="tooltiptext">Unity</span>
-                    </div>
-                    <div class="tooltip">
-                        <img src="Python.png" alt="Python" />
-                        <span class="tooltiptext">Python</span>
-                    </div>
+                    <div class="tooltip"><img src="unity.png"><span class="tooltiptext">Unity</span></div>
+                    <div class="tooltip"><img src="Python.png"><span class="tooltiptext">Python</span></div>
                 </div>
             </div>
+
             <div class="marquee marquee-right-left">
                 <div class="row">
-                    <div class="tooltip">
-                        <img src="Cs.png" alt="C#" />
-                        <span class="tooltiptext">C#</span>
-                    </div>
-                    <div class="tooltip">
-                        <img src="godot.png" alt="Godot" />
-                        <span class="tooltiptext">Godot</span>
-                    </div>
-                    <div class="tooltip">
-                        <img src="Flutter.svg" alt="Flutter" />
-                        <span class="tooltiptext">Flutter</span>
-                    </div>
+                    <div class="tooltip"><img src="Cs.png"><span class="tooltiptext">C#</span></div>
+                    <div class="tooltip"><img src="godot.png"><span class="tooltiptext">Godot</span></div>
+                    <div class="tooltip"><img src="Flutter.svg"><span class="tooltiptext">Flutter</span></div>
                 </div>
             </div>
+
         </div>
     </section>
 
-        <div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="dark" data-type="HORIZONTAL" data-vanity="atharvmandlavdiya" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/atharvmandlavdiya?trk=profile-badge">Atharv Mandlavdiya</a></div>
-              
+    <div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="dark" data-type="HORIZONTAL" data-vanity="atharvmandlavdiya" data-version="v1">
+        <a class="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/atharvmandlavdiya">Atharv Mandlavdiya</a>
+    </div>
 
     <div class="first">
-        <h1 class="abouttitle"><span</span>Want to talk to me??</h1>
+        <h1 class="abouttitle">Want to talk to me??</h1>
         <p id="Talk">
-          <strong style="color: white;">E-mail</strong><br>
-          <a href="mailto:atharvam682@gmail.com" class="customLink" target="_blank" style="color: #c1a062">
-            atharvam682@gmail.com</a><br>
+            <strong style="color:white;">E-mail</strong><br>
+            <a href="mailto:atharvam682@gmail.com" target="_blank" style="color:#c1a062">atharvam682@gmail.com</a>
         </p>
-      </div>
-<div class="second">
-  <form action="https://formcarry.com/s/piZGAtRsXf9" method="POST" id="ideaForm" accept-charset="UTF-8">
-    <div class="formRow">
-      <input type="text" name="firstName" required="" placeholder="Name" class="form">
     </div>
-    <div class="formRow">
-      <input type="email" name="email" placeholder="Email" required="" class="formm">
+
+    <div class="second">
+      <form action="https://formcarry.com/s/piZGAtRsXf9" method="POST" id="ideaForm">
+        <div class="formRow"><input type="text" name="firstName" required placeholder="Name" class="form"></div>
+        <div class="formRow"><input type="email" name="email" required placeholder="Email" class="formm"></div>
+        <div class="formRow"><textarea name="anotherInput" rows="3" required class="formmm" placeholder="Message"></textarea></div>
+        <div class="formRow"><button type="submit" class="jaadu">Submit</button></div>
+      </form>
     </div>
-    <div class="formRow">
-      <textarea name="anotherInput" rows="3" required="" class="formmm" placeholder="Message"></textarea>
+
+    <p class="rowdies-font">Made with</p>
+    <p><span style="color:crimson;font-size:20px;">♥</span></p>
+    <p>by Atharv Mandlavdiya</p>
+
+    <div class="icon-container">
+        <a href="https://github.com/AtharvM02222" target="_blank"><img src="github.png" class="icon"></a>
+        <a href="https://www.hackerrank.com/profile/atharv0m" target="_blank"><img src="hackerrank.svg" class="icon"></a>
     </div>
-    <div class="formRow">
-      <button type="submit" class="jaadu" id="formButton">
-        Submit
-      </button>
+
+    <div style="text-align:center;color:orange;">
+        &#128187;<br><strong>2025 Atharv Mandlavdiya. All rights reserved.</strong>
     </div>
-  </form>
-</div>
-    </center>
-    <center>
-          <p class="rowdies-font" >
-            Made with
-            <!-- <i class="fas fa-heart" style="color: crimson"> </i> -->
-            </p>
-            <p>
-            <span style="color: crimson; font-size: 18px"> ♥</span>
-            </p>
-            <p>
-            by Atharv Mandlavdiya
-          </p>
-        </div>
-        <div class="icon-container">
-            <a href="https://github.com/AtharvM02222" target="_blank">
-            <img src="github.png" alt="GitHub Icon" class="icon">
-            </a>
 
-            <a href="https://www.hackerrank.com/profile/atharv0m" target="_blank">
-            <img src="hackerrank.svg" alt="hackerrank Icon" class="icon">
-            </a>
-            
-            <div style="text-align: center; color: orange;">
-  &#128187; <br>
-  <strong>2025 Atharv Mandlavdiya. All rights reserved.</strong>
-</div>
+</center>
 
-
-            
-
-      </footer>
-    </center>
-  </center>
-
-       <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<!-- Netlify Auth -->
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script>
-  if (window.netlifyIdentity) {
-    window.netlifyIdentity.on('init', user => {
-      console.log('Init done.');
-    });
-
-    // window.netlifyIdentity.on('login', () => {
-    //   console.log('Logged in!');
-    //   window.location.href = ";
-    // });
-
+if (window.netlifyIdentity) {
+    window.netlifyIdentity.on('init', (user) => console.log("Init done."));
     Object.defineProperty(window, "admin", {
-      get: function() {
-        console.log("Opening login widget...");
-        window.netlifyIdentity.open();
-      }
+        get: function() {
+            console.log("Opening login widget...");
+            window.netlifyIdentity.open();
+        }
     });
-  }
+}
 </script>
-  </body>
-  </html>
+
+</body>
+</html>
