@@ -1,28 +1,59 @@
 (function(){
   'use strict';
-  const BIRTH = new Date(2011,5,8,0,0,0);
+
+  // Your real birthday: 8 June 2011, 9:08 PM
+  const BIRTH = new Date(2011,5,8,21,8,0);
+
   function updateBirthdayCountdown(){
-    const el = document.getElementById('birthday-countdown') || document.getElementById('birthday-count') || document.querySelector('.birthday-countdown');
+    const el =
+      document.getElementById('birthday-countdown') ||
+      document.getElementById('birthday-count') ||
+      document.querySelector('.birthday-countdown');
+
     if(!el) return;
+
     const now = new Date();
-    let next = new Date(now.getFullYear(), BIRTH.getMonth(), BIRTH.getDate(), BIRTH.getHours(), BIRTH.getMinutes(), BIRTH.getSeconds());
+
+    // Next birthday this year
+    let next = new Date(
+      now.getFullYear(),
+      BIRTH.getMonth(),
+      BIRTH.getDate(),
+      BIRTH.getHours(),
+      BIRTH.getMinutes(),
+      BIRTH.getSeconds()
+    );
+
+    // If passed, set next year
     if(next <= now) next.setFullYear(next.getFullYear() + 1);
+
     let diff = next - now;
+
     if(diff <= 0){
       el.textContent = "🎉 It's your birthday! 🎂";
       return;
     }
+
     const days = Math.floor(diff / 86400000);
-    diff -= days * 86400000;
+    diff %= 86400000;
+
     const hours = Math.floor(diff / 3600000);
-    diff -= hours * 3600000;
+    diff %= 3600000;
+
     const minutes = Math.floor(diff / 60000);
-    diff -= minutes * 60000;
+    diff %= 60000;
+
     const seconds = Math.floor(diff / 1000);
-    el.textContent = days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+
+    el.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
   }
+
   updateBirthdayCountdown();
-  setInterval(updateBirthdayCountdown,1000);
+  setInterval(updateBirthdayCountdown, 1000);
+})();
+
+
+
   (function(){
     const btn = document.querySelector('.scroll-top-btn');
     if(!btn) return;
@@ -116,8 +147,7 @@
       body.style.background = 'linear-gradient(135deg, ' + colors[current] + ', ' + colors[next] + ')';
     },4000);
   })();
-})();
-// BOOKS 3D interaction (hover/tap/keyboard + mouse parallax)
+ // BOOKS 3D interaction (hover/tap/keyboard + mouse parallax)
 (function(){
   'use strict';
 
