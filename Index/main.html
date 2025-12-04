@@ -1,294 +1,447 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#161616">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#161616">
+  <title>Atharv Mandlavdiya |</title>
 
-    <title>Atharv Mandlavdiya |</title>
+  <!-- favicons (kept) -->
+  <link rel="icon" href="am.png" type="image/png">
+  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="icon" type="image/png" href="./img/aboutimage.svg">
 
-    <!-- FIXED: broken favicon tags -->
-    <link rel="icon" href="am.png" type="image/png">
-    <link rel="icon" href="favicon.png" type="image/png">
-    <link rel="icon" type="image/png" href="./img/aboutimage.svg">
+  <!-- fonts & icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&family=Rowdies:wght@300&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
 
-    <!-- Scripts & fonts -->
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+  <!-- LinkedIn profile badge script -->
+  <script src="https://platform.linkedin.com/badges/js/profile.js" async defer></script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Rowdies:wght@300&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Jacquard+12&display=swap" rel="stylesheet">
+  <style>
+    /* ====== Reset & base ====== */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;width:100%;font-family:"Poppins",sans-serif;color:#fff;background:#0b1b33;overflow-x:hidden}
 
-    <link rel="stylesheet" href="style.css">
+    :root{
+      --brand-accent:#e6cf78;
+      --muted:#9aa7b2;
+      --accent:#007acc;
+      --card-bg: rgba(0,0,0,0.45);
+      --card-br: 12px;
+      --maxw:1100px;
+    }
 
-    <style>
-        .rowdies-font {
-            font-family: 'Rowdies', sans-serif;
-        }
+    /* ===== Background waves (behind everything) ===== */
+    body::before, body::after{
+      content:"";position:fixed;inset:0;pointer-events:none;z-index:-3;mix-blend-mode:screen;opacity:0.9;
+    }
+    body::before{
+      background:
+        radial-gradient(60% 60% at 20% 30%, rgba(11,61,255,0.95), rgba(0,28,64,0.85) 35%, rgba(0,0,0,0.95) 75%),
+        linear-gradient(120deg, rgba(0,0,0,1) 0%, rgba(0,25,60,0.4) 40%, rgba(11,61,255,0.6) 100%);
+      background-size:200% 200%;
+      animation: waveMoveA 24s linear infinite;
+      filter:blur(20px) saturate(110%);
+    }
+    body::after{
+      background:
+        radial-gradient(40% 40% at 80% 70%, rgba(0,8,20,0.88), rgba(1,20,50,0.6) 30%, rgba(3,44,120,0.6) 65%),
+        linear-gradient(60deg, rgba(0,0,0,0.85), rgba(0,30,80,0.35), rgba(11,61,255,0.45));
+      background-size:250% 250%;
+      animation: waveMoveB 14s linear infinite;
+      filter:blur(18px) saturate(120%);
+      z-index:-2;
+    }
+    @keyframes waveMoveA{0%{background-position:0% 50%}25%{background-position:35% 40%}50%{background-position:70% 60%}75%{background-position:35% 70%}100%{background-position:0% 50%}}
+    @keyframes waveMoveB{0%{background-position:50% 0%}25%{background-position:30% 40%}50%{background-position:60% 60%}75%{background-position:80% 30%}100%{background-position:50% 0%}}
 
-        h5 { font-size: 140px; }
-        h6 { font-size: 30px; }
-        h7 { font-family: 'Rowdies', sans-serif; font-size: 35px; }
+    /* ===== Page container & header ===== */
+    .page { max-width:var(--maxw); margin:36px auto; padding:20px; }
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-left:6px}
+    .brandingg { text-decoration:none; color:inherit; display:flex; align-items:center; gap:10px; }
+    .nameStyle { font-weight:700; font-family:"Raleway",sans-serif; margin:0; font-size:1.1rem; color:#fff;}
+    .nameStyle span{ color:var(--brand-accent); font-weight:700; }
+    nav ul{list-style:none;display:flex;gap:18px;align-items:center}
+    nav a{color:inherit;text-decoration:none;font-family:"Rowdies",sans-serif;font-size:1.05rem;padding:.25rem .6rem;border-radius:8px}
+    nav a:hover{background:rgba(255,255,255,0.04);transform:translateY(-2px)}
 
-        p {
-            font-size: 25px;
-            font-family: 'Rowdies', sans-serif;
-            color: orangered;
-        }
+    /* ===== Top hero / intro ===== */
+    .site-hero{ display:grid; grid-template-columns: 1fr 320px; gap:28px; align-items:center; min-height:58vh; padding:28px 0;}
+    @media(max-width:900px){ .site-hero{grid-template-columns:1fr; padding:18px 0 } }
 
-        /* marquee styling */
-        .skillicons { overflow: hidden; white-space: nowrap; width: 100%; }
-        .marquee { display: inline-block; white-space: nowrap; }
-        .marquee-left-right { animation: marquee-left-right 20s linear infinite; }
-        .marquee-right-left { animation: marquee-right-left 20s linear infinite; }
+    .intro-box{
+      display:flex;gap:18px;align-items:center;padding:24px;background:rgba(0,0,0,0.55);border-radius:18px;backdrop-filter: blur(8px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+    }
+    .intro-text{ font-family:'Rowdies',sans-serif;font-size:clamp(20px,4vw,40px);line-height:1.2;color:#fff}
+    .highlight{ color:var(--brand-accent) }
 
-        .tooltip { display: inline-block; position: relative; margin: 0 10px; }
-        .tooltip img { height: 200px; width: 200px; }
+    .me-card{ width:100%; max-width:320px; border-radius:14px; overflow:hidden; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:12px}
+    .profile-pic{ width:100%; border-radius:12px; display:block; object-fit:cover; }
 
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            background-color: black;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px 0;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            width: 120px;
-            margin-left: -60px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
+    /* ===== Timer / countdown (uses your #timer) ===== */
+    .countdown{ margin-top:18px }
+    #timer{ display:flex; justify-content:center; gap:18px; align-items:center; flex-wrap:wrap; }
+    #timer div{ text-align:center; }
+    #timer span{ display:block; font-size: clamp(40px, 8vw, 92px); font-weight:700; line-height:1; color:#fff; }
+    .label{ color:var(--muted); font-size:1rem; margin-top:6px }
 
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
+    /* ===== Books grid, 3D books (kept & improved) ===== */
+    .books-section{ margin-top:34px; padding:10px 0; }
+    .books-heading{ text-align:center; font-family:'Rowdies',sans-serif; color:var(--brand-accent); font-size:1.4rem; margin-bottom:12px; }
+    .books-grid{ display:flex; gap:1.6rem; justify-content:center; flex-wrap:wrap; align-items:flex-end; padding:8px 6px; }
+    .book-card{ width:180px; height:260px; position:relative; perspective:1600px; outline:none; }
+    .book-3d{ width:100%; height:100%; transform-style:preserve-3d; transform-origin:left center; transition: transform .8s cubic-bezier(.2,.9,.2,1); border-radius:8px; transform: rotateX(6deg) rotateY(-6deg); }
+    .book-surface{ position:absolute; inset:0; border-radius:6px; overflow:hidden; backface-visibility:hidden; box-shadow:0 18px 46px rgba(0,0,0,0.55); background:#0b0b0b; display:flex; align-items:center; justify-content:center }
+    .book-front-surface{ transform: rotateY(0deg) translateZ(0.5px); z-index:30 }
+    .book-back-surface{ transform: rotateY(180deg); z-index:20 }
+    .cover-image{ width:100%; height:100%; object-fit:cover; user-select:none; pointer-events:none }
+    .book-pages{ position:absolute; right:-12px; top:6px; width:12px; height:calc(100% - 12px); background:linear-gradient(180deg,#fbfbf8,#f0efe6); z-index:18; border-radius:2px; transform: translateZ(-2px) }
+    .book-spine{ position:absolute; left:-14px; top:7px; width:14px; height:calc(100% - 14px); background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.85)); border-radius:3px; z-index:40; transform: translateZ(10px) }
+    .book-card:hover .book-3d, .book-card.is-flipped .book-3d { transform: rotateY(180deg) }
+    @media(max-width:760px){ .book-card{ width:140px; height:200px } .book-3d{ transform:none } }
 
-        @keyframes marquee-left-right {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-        @keyframes marquee-right-left {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-    </style>
+    /* ===== Skills grid (reduced image sizes & responsive) ===== */
+    #skills{ margin-top:32px; padding:18px 0; }
+    .skills-grid{ display:grid; grid-template-columns: repeat(auto-fit,minmax(80px,1fr)); gap:12px; align-items:center; justify-items:center; width:100% }
+    .skill{ background:rgba(255,255,255,0.02); padding:12px;border-radius:8px; text-align:center; min-height:86px; display:flex;flex-direction:column;align-items:center;justify-content:center }
+    .skill i{ font-size:2.4rem; transition:transform .18s; color:#fff }
+    .skill small{ font-size:0.85rem; color:var(--muted); margin-top:6px }
+    .skill:hover i{ transform:scale(1.15); color:var(--accent) }
 
-    <!-- Google Tag -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YH75G12GCG"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){ dataLayer.push(arguments); }
-      gtag('js', new Date());
-      gtag('config', 'G-YH75G12GCG');
-    </script>
+    /* ===== Tooltip style used earlier (reduced image sizes) ===== */
+    .tooltip{ position:relative; display:inline-block }
+    .tooltip img{ width:64px; height:64px; display:block; object-fit:contain; border-radius:8px }
+    .tooltip .tooltiptext{ visibility:hidden; opacity:0; position:absolute; bottom:120%; left:50%; transform:translateX(-50%); background:#000;padding:6px 8px;border-radius:6px;color:#fff;transition:opacity .2s; white-space:nowrap; font-size:0.9rem }
+    .tooltip:hover .tooltiptext{ visibility:visible; opacity:1 }
+
+    /* ===== Contact & form ===== */
+    .first, .second{ margin-top:28px; text-align:center }
+    .formRow{ margin-top:12px }
+    .form, .formm, .formmm{ width:100%; max-width:600px; padding:12px 14px; background:#161616; border:1px solid rgba(255,255,255,0.06); color:#fff; margin:6px auto; display:block; border-radius:8px }
+    .formmm{ min-height:100px; resize:vertical }
+    .jaadu{ background:var(--brand-accent); color:#111; padding:12px 18px; border-radius:10px; border:none; cursor:pointer; font-weight:700 }
+
+    /* ===== Icon container & footer ===== */
+    .icon-container{ display:flex; gap:12px; justify-content:center; align-items:center; margin-top:20px }
+    .icon{ width:40px; filter:grayscale(100%); transition:transform .25s, filter .25s }
+    .icon:hover{ transform:scale(1.15); filter:none }
+
+    footer{ text-align:center; color:var(--muted); margin-top:28px; font-size:0.95rem }
+
+    /* ===== Scroll to top button ===== */
+    .scroll-top-btn{ position:fixed; right:28px; bottom:28px; border:none; background:transparent; z-index:9999; cursor:pointer; visibility:hidden; opacity:0; transition:opacity .25s, transform .25s }
+    .scroll-top-btn.show{ visibility:visible; opacity:1 }
+    .scroll-top-btn img{ width:64px; height:64px }
+
+    /* small screens */
+    @media(max-width:600px){
+      .me-card{ order:-1; margin-bottom:12px }
+      nav ul{ gap:10px }
+      #timer span{ font-size: clamp(28px, 16vw, 56px) }
+    }
+
+    /* accessibility focus */
+    :focus-visible{ outline:2px dashed rgba(230,207,120,0.9); outline-offset:4px }
+  </style>
 </head>
+<body class="js-bg">
 
-<body bgcolor="black">
-<header>
-  <div class="branding">
-    <div id="branding">
+  <div class="page">
+    <header>
       <a href="main.html" class="brandingg">
-        <h6 class="nameStyle" style="color: white;">
-          atharv<span style="color: rgb(230, 207, 120);">mandlavdiya</span>
-        </h6>
+        <h6 class="nameStyle">atharv<span>mandlavdiya</span></h6>
       </a>
-    </div>
-    <nav>
-      <ul>
-        <li><a href="work.html" class="work-link">Work</a></li>
-        <li><a href="about.html" class="work-link">About</a></li>
-      </ul>
-    </nav>
-  </div>
-</header>
+      <nav>
+        <ul>
+          <li><a href="work.html" class="work-link">Work</a></li>
+          <li><a href="about.html" class="work-link">About</a></li>
+        </ul>
+      </nav>
+    </header>
 
-<button id="scrollTopBtn" class="scroll-top-btn">
-    <img src="STP.svg" alt="Scroll to Top">
-</button>
+    <main class="site-hero" role="main">
 
-<audio id="bg-music" loop autoplay>
-    <source src="Theme.mp3" type="audio/mp3">
-</audio>
+      <section>
+        <div class="intro-box">
+          <img src="/assets/me.jpg" alt="Atharv" class="profile-pic" onerror="this.src='https://via.placeholder.com/320x320?text=Atharv'">
+          <div>
+            <div class="intro-text">
+              Hi, I’m <span class="highlight">Atharv Mandlavdiya</span> — I make things, break things, and sometimes fix them. Welcome!
+            </div>
 
-<center>
-<section id="container">
-    <div class="container">
-        <div class="intro-container">
-            <h5 class="intro-text">
-                Hi, I’m Atharv <span class="highlight">Mandlavdiya</span> — I make things, break things, and sometimes fix them. Welcome!
-            </h5>
+            <p style="color:var(--muted);margin-top:10px">Student • Developer • Robotics & Embedded • Web • Blockchain • Cybersecurity</p>
+
+            <!-- Timer -->
+            <div class="countdown" aria-label="Countdown">
+              <div id="timer" class="reveal-on-scroll">
+                <div><span id="days">00</span><div class="label">Days</div></div>
+                <div><span id="hours">00</span><div class="label">Hours</div></div>
+                <div><span id="minutes">00</span><div class="label">Minutes</div></div>
+                <div><span id="seconds">00</span><div class="label">Seconds</div></div>
+              </div>
+            </div>
+
+            <!-- small meta -->
+            <div style="margin-top:14px;display:flex;gap:12px;flex-wrap:wrap">
+              <div style="background:rgba(255,255,255,0.02);padding:8px 12px;border-radius:10px"><strong>Email</strong><div style="color:var(--brand-accent)">atharvam682@gmail.com</div></div>
+              <div style="background:rgba(255,255,255,0.02);padding:8px 12px;border-radius:10px"><strong>Profiles</strong>
+                <div style="margin-top:6px"><a href="https://github.com/AtharvM02222" target="_blank" style="color:var(--link)">GitHub</a> • <a href="https://www.hackerrank.com/profile/Atharv0M" target="_blank" style="color:var(--link)">HackerRank</a></div>
+              </div>
+            </div>
+          </div>
         </div>
-    </div>
 
-    <div class="NF">
-        <p style="color:rgb(34,255,0)">
-            <strong>Talent Without Hard Work Is Nothing!!</strong><br>
-            <strong>C.Ronaldo</strong>
-        </p>
-    </div>
+        <!-- Books 3D -->
+        <section class="books-section">
+          <h2 class="books-heading">Books I'm reading / Completed</h2>
+          <div class="books-grid">
+            <!-- Book 1 -->
+            <article class="book-card" tabindex="0" aria-label="Book: ChatGPT">
+              <div class="book-3d">
+                <div class="book-surface book-front-surface cover-front"><img src="./img/books/chatgpt_front.jpg" class="cover-image cover-front" alt="ChatGPT book"></div>
+                <div class="book-surface book-back-surface cover-back"><img src="./img/books/chatgpt_back.jpg" class="cover-image cover-back" alt=""></div>
+                <div class="book-spine"></div>
+                <div class="book-pages"></div>
+              </div>
+            </article>
 
-    <p style="color:white">
-        Hello! I’m <strong class="rowdies-font">Atharv Mandlavdiya.</strong>
-    </p>
+            <!-- Book 2 -->
+            <article class="book-card" tabindex="0" aria-label="Book: Python">
+              <div class="book-3d">
+                <div class="book-surface book-front-surface cover-front"><img src="./img/books/python_front.jpg" class="cover-image cover-front" alt="Python book"></div>
+                <div class="book-surface book-back-surface cover-back"><img src="./img/books/python_back.jpg" class="cover-image cover-back" alt=""></div>
+                <div class="book-spine"></div>
+                <div class="book-pages"></div>
+              </div>
+            </article>
 
-    <img src="triangle.png">
+            <!-- Book 3 -->
+            <article class="book-card" tabindex="0" aria-label="Book: Eloquent JS">
+              <div class="book-3d">
+                <div class="book-surface book-front-surface cover-front"><img src="./img/books/eloquent_front.jpg" class="cover-image cover-front" alt="Eloquent JS"></div>
+                <div class="book-surface book-back-surface cover-back"><img src="./img/books/eloquent_back.jpg" class="cover-image cover-back" alt=""></div>
+                <div class="book-spine"></div>
+                <div class="book-pages"></div>
+              </div>
+            </article>
 
-    <div class="new">
-        <h7>Countdown To My Birthday Every year:</h7>
+            <!-- Book 4 -->
+            <article class="book-card" tabindex="0" aria-label="Book: C#">
+              <div class="book-3d">
+                <div class="book-surface book-front-surface cover-front"><img src="./img/books/csharp_front.jpg" class="cover-image cover-front" alt="C# book"></div>
+                <div class="book-surface book-back-surface cover-back"><img src="./img/books/csharp_back.jpg" class="cover-image cover-back" alt=""></div>
+                <div class="book-spine"></div>
+                <div class="book-pages"></div>
+              </div>
+            </article>
+          </div>
+        </section>
 
-        <div id="timer">
-            <div><span id="days">00</span><div class="label">Days</div></div>
-            <div><span id="hours">00</span><div class="label">Hours</div></div>
-            <div><span id="minutes">00</span><div class="label">Minutes</div></div>
-            <div><span id="seconds">00</span><div class="label">Seconds</div></div>
+        <!-- Skills -->
+        <section id="skills" aria-label="Skills">
+          <div class="skills-grid">
+            <div class="skill" title="Python"><i class="devicon-python-plain colored" aria-hidden="true"></i><small>Python</small></div>
+            <div class="skill" title="C#"><i class="devicon-csharp-plain colored" aria-hidden="true"></i><small>C#</small></div>
+            <div class="skill" title="Unity"><i class="devicon-unity-original colored" aria-hidden="true"></i><small>Unity</small></div>
+            <div class="skill" title="Docker"><i class="devicon-docker-plain colored" aria-hidden="true"></i><small>Docker</small></div>
+            <div class="skill" title="Linux"><i class="devicon-linux-plain colored" aria-hidden="true"></i><small>Linux</small></div>
+            <div class="skill" title="HTML5"><i class="devicon-html5-plain colored" aria-hidden="true"></i><small>HTML5</small></div>
+            <div class="skill" title="CSS3"><i class="devicon-css3-plain colored" aria-hidden="true"></i><small>CSS3</small></div>
+            <div class="skill" title="JavaScript"><i class="devicon-javascript-plain colored" aria-hidden="true"></i><small>JavaScript</small></div>
+            <div class="skill" title="MySQL"><i class="devicon-mysql-plain colored" aria-hidden="true"></i><small>MySQL</small></div>
+            <div class="skill" title="MongoDB"><i class="devicon-mongodb-plain colored" aria-hidden="true"></i><small>MongoDB</small></div>
+          </div>
+        </section>
+
+        <!-- LinkedIn badge (keeps your markup) -->
+        <div style="margin-top:18px;display:flex;justify-content:center">
+          <div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="dark" data-type="HORIZONTAL" data-vanity="atharvmandlavdiya" data-version="v1">
+            <a class="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/atharvmandlavdiya">Atharv Mandlavdiya</a>
+          </div>
         </div>
-    </div>
 
-    <script src="index.js"></script>
+      </section>
 
-    <!-- FIXED BROKEN DIV -->
-    <div class="linee"></div>
+      <!-- right column: avatar + audio controls -->
+      <aside class="me-card" aria-hidden="false">
+        <img src="/assets/me.jpg" alt="Atharv" class="profile-pic" onerror="this.src='https://via.placeholder.com/320x320?text=Atharv'">
+        <div style="margin-top:12px;display:flex;gap:10px;justify-content:center">
+          <audio id="bg-music" loop muted>
+            <source src="Theme.mp3" type="audio/mp3">
+            Your browser does not support audio.
+          </audio>
+          <button type="button" class="link-btn" data-audio-toggle="bg-music" aria-pressed="false">Play / Pause Theme</button>
+          <a class="link-btn" href="mailto:atharvam682@gmail.com">Email</a>
+        </div>
 
-    <!-- ========== BOOKS SECTION (WORKING ✔) ========== -->
-    <section id="books-section" class="books-section reveal-on-scroll" aria-label="Books I've read or reading">
-      <h2 class="books-heading">Books I'm reading / Completed</h2>
+        <div style="margin-top:12px; text-align:center; color:var(--muted); font-size:0.95rem">
+          <div>Want to talk to me?</div>
+          <a href="mailto:atharvam682@gmail.com" style="color:var(--brand-accent)">atharvam682@gmail.com</a>
+        </div>
+      </aside>
+    </main>
 
-      <div class="books-grid" role="list">
-
-        <!-- Book Cards (unchanged, valid) -->
-        <!-- Book 1 -->
-        <article class="book-card" tabindex="0">
-          <div class="book-3d">
-            <div class="book-surface book-front-surface">
-              <img src="./img/books/chatgpt_front.jpg" class="cover-image">
-            </div>
-            <div class="book-surface book-back-surface">
-              <img src="./img/books/chatgpt_back.jpg" class="cover-image">
-            </div>
-            <div class="book-spine"></div>
-            <div class="book-pages"></div>
-          </div>
-        </article>
-
-        <!-- Book 2 -->
-        <article class="book-card" tabindex="0">
-          <div class="book-3d">
-            <div class="book-surface book-front-surface">
-              <img src="./img/books/python_front.jpg" class="cover-image">
-            </div>
-            <div class="book-surface book-back-surface">
-              <img src="./img/books/python_back.jpg" class="cover-image">
-            </div>
-            <div class="book-spine"></div>
-            <div class="book-pages"></div>
-          </div>
-        </article>
-
-        <!-- Book 3 -->
-        <article class="book-card" tabindex="0">
-          <div class="book-3d">
-            <div class="book-surface book-front-surface">
-              <img src="./img/books/eloquent_front.jpg" class="cover-image">
-            </div>
-            <div class="book-surface book-back-surface">
-              <img src="./img/books/eloquent_back.jpg" class="cover-image">
-            </div>
-            <div class="book-spine"></div>
-            <div class="book-pages"></div>
-          </div>
-        </article>
-
-        <!-- Book 4 -->
-        <article class="book-card" tabindex="0">
-          <div class="book-3d">
-            <div class="book-surface book-front-surface">
-              <img src="./img/books/csharp_front.jpg" class="cover-image">
-            </div>
-            <div class="book-surface book-back-surface">
-              <img src="./img/books/csharp_back.jpg" class="cover-image">
-            </div>
-            <div class="book-spine"></div>
-            <div class="book-pages"></div>
-          </div>
-        </article>
-
-      </div>
+    <!-- Contact form -->
+    <section style="margin-top:22px; text-align:center">
+      <form action="https://formcarry.com/s/piZGAtRsXf9" method="POST" id="ideaForm" style="display:flex;flex-direction:column;align-items:center">
+        <input class="form" name="firstName" placeholder="Name" required>
+        <input class="form" name="email" type="email" placeholder="Email" required>
+        <textarea class="formmm" name="anotherInput" placeholder="Message" required></textarea>
+        <button class="jaadu" type="submit">Submit</button>
+      </form>
     </section>
 
-<!-- Skills Section -->
-<section id="skills">
-  <div class="skills-grid">
-    <div class="skill" title="Python"><i class="devicon-python-plain colored"></i></div>
-    <div class="skill" title="C#"><i class="devicon-csharp-plain colored"></i></div>
-    <div class="skill" title="Unity"><i class="devicon-unity-original colored"></i></div>
-    <div class="skill" title="Docker"><i class="devicon-docker-plain colored"></i></div>
-    <div class="skill" title="Linux"><i class="devicon-linux-plain colored"></i></div>
-    <div class="skill" title="HTML5"><i class="devicon-html5-plain colored"></i></div>
-    <div class="skill" title="CSS3"><i class="devicon-css3-plain colored"></i></div>
-    <div class="skill" title="JavaScript"><i class="devicon-javascript-plain colored"></i></div>
-    <div class="skill" title="MySQL"><i class="devicon-mysql-plain colored"></i></div>
-    <div class="skill" title="MongoDB"><i class="devicon-mongodb-plain colored"></i></div>
+    <div class="icon-container" aria-hidden="false">
+      <a href="https://github.com/AtharvM02222" target="_blank" aria-label="GitHub"><img class="icon" src="github.png" alt="GitHub" onerror="this.style.display='none'"></a>
+      <a href="https://www.hackerrank.com/profile/Atharv0M" target="_blank" aria-label="HackerRank"><img class="icon" src="hackerrank.svg" alt="HackerRank" onerror="this.style.display='none'"></a>
+    </div>
+
+    <footer>
+      <div style="color:var(--muted);margin-top:18px">💻 2025 Atharv Mandlavdiya. All rights reserved.</div>
+    </footer>
   </div>
-</section>
 
+  <!-- Scroll to top -->
+  <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top"><img src="STP.svg" alt="to top" onerror="this.style.display='none'"></button>
 
-    <div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="dark" data-type="HORIZONTAL" data-vanity="atharvmandlavdiya" data-version="v1">
-        <a class="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/atharvmandlavdiya">Atharv Mandlavdiya</a>
-    </div>
+  <!-- ===== Scripts (consolidated & fixed) ===== -->
+  <script>
+  (function(){
+    'use strict';
 
-    <div class="first">
-        <h1 class="abouttitle">Want to talk to me??</h1>
-        <p id="Talk">
-            <strong style="color:white;">E-mail</strong><br>
-            <a href="mailto:atharvam682@gmail.com" target="_blank" style="color:#c1a062">atharvam682@gmail.com</a>
-        </p>
-    </div>
+    /* ====== Countdown (updates the visible #timer elements) ======
+       Real birthday: 8 June 2011, 21:08 (months are 0-index in Date constructor)
+    */
+    const BIRTH = new Date(2011, 5, 8, 21, 8, 0);
+    function tickCountdown() {
+      const now = new Date();
+      // build next birthday in current year
+      let next = new Date(now.getFullYear(), BIRTH.getMonth(), BIRTH.getDate(), BIRTH.getHours(), BIRTH.getMinutes(), BIRTH.getSeconds());
+      if (next <= now) next.setFullYear(next.getFullYear() + 1);
+      let diff = next - now;
+      const days = Math.floor(diff / 86400000); diff %= 86400000;
+      const hours = Math.floor(diff / 3600000); diff %= 3600000;
+      const minutes = Math.floor(diff / 60000); diff %= 60000;
+      const seconds = Math.floor(diff / 1000);
 
-    <div class="second">
-      <form action="https://formcarry.com/s/piZGAtRsXf9" method="POST" id="ideaForm">
-        <div class="formRow"><input type="text" name="firstName" required placeholder="Name" class="form"></div>
-        <div class="formRow"><input type="email" name="email" required placeholder="Email" class="formm"></div>
-        <div class="formRow"><textarea name="anotherInput" rows="3" required class="formmm" placeholder="Message"></textarea></div>
-        <div class="formRow"><button type="submit" class="jaadu">Submit</button></div>
-      </form>
-    </div>
+      const set = (id, value) => { const el = document.getElementById(id); if(el) el.textContent = String(value).padStart(2,'0'); };
+      set('days', days); set('hours', hours); set('minutes', minutes); set('seconds', seconds);
+    }
+    tickCountdown();
+    setInterval(tickCountdown, 1000);
 
-    <p class="rowdies-font">Made with</p>
-    <p><span style="color:crimson;font-size:20px;">♥</span></p>
-    <p>by Atharv Mandlavdiya</p>
+    /* ===== Scroll-to-top button behavior ===== */
+    const scrollBtn = document.getElementById('scrollTopBtn');
+    if(scrollBtn){
+      function onScroll(){
+        if(window.scrollY > 300){ scrollBtn.classList.add('show'); } else { scrollBtn.classList.remove('show'); }
+      }
+      window.addEventListener('scroll', onScroll, {passive:true});
+      scrollBtn.addEventListener('click', function(e){ e.preventDefault(); window.scrollTo({top:0, behavior:'smooth'}); });
+    }
 
-    <div class="icon-container">
-        <a href="https://github.com/AtharvM02222" target="_blank"><img src="github.png" class="icon"></a>
-        <a href="https://www.hackerrank.com/profile/atharv0m" target="_blank"><img src="hackerrank.svg" class="icon"></a>
-    </div>
+    /* ===== Simple reveal-on-scroll for .reveal-on-scroll ===== */
+    const revealEls = document.querySelectorAll('.reveal-on-scroll');
+    if(revealEls.length){
+      const io = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){ entry.target.classList.add('is-visible'); obs.unobserve(entry.target); }
+        });
+      }, {threshold: 0.12});
+      revealEls.forEach(el => io.observe(el));
+    }
 
-    <div style="text-align:center;color:orange;">
-        &#128187;<br><strong>2025 Atharv Mandlavdiya. All rights reserved.</strong>
-    </div>
+    /* ===== Header compact toggle (if you add .header-content) ===== */
+    const headerContent = document.querySelector('.header-content');
+    if(headerContent){
+      window.addEventListener('scroll', function(){ headerContent.classList.toggle('nav-compact', window.scrollY > 80); }, {passive:true});
+    }
 
-</center>
-
-<!-- Netlify Auth -->
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-<script>
-if (window.netlifyIdentity) {
-    window.netlifyIdentity.on('init', (user) => console.log("Init done."));
-    Object.defineProperty(window, "admin", {
-        get: function() {
-            console.log("Opening login widget...");
-            window.netlifyIdentity.open();
-        }
+    /* ===== Audio play/pause toggle button (accessible) ===== */
+    document.addEventListener('click', function(e){
+      const btn = e.target.closest('[data-audio-toggle]');
+      if(!btn) return;
+      const audioId = btn.getAttribute('data-audio-toggle');
+      const audio = document.getElementById(audioId);
+      if(!audio) return;
+      if(audio.paused){ audio.muted = false; audio.play().catch(()=>{}); btn.setAttribute('aria-pressed','true'); }
+      else { audio.pause(); btn.setAttribute('aria-pressed','false'); }
     });
-}
-</script>
 
+    /* ===== Book 3D interactions (tilt + flip + keyboard) ===== */
+    (function book3D(){
+      const bookCards = document.querySelectorAll('.book-card');
+      if(!bookCards.length) return;
+      const TILT = 10; // max degrees
+      const BASE = 'rotateX(6deg) rotateY(-6deg)';
+
+      bookCards.forEach(card => {
+        const book3d = card.querySelector('.book-3d');
+        if(!book3d) return;
+
+        // Click toggles flip
+        card.addEventListener('click', function(ev){
+          if(ev.target.closest && ev.target.closest('a')) return;
+          card.classList.toggle('is-flipped');
+          // keep transform during transition
+          book3d.classList.add('flipping');
+          setTimeout(()=> book3d.classList.remove('flipping'), 900);
+        });
+
+        // keyboard support
+        card.addEventListener('keydown', function(e){
+          if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); card.classList.toggle('is-flipped'); book3d.classList.add('flipping'); setTimeout(()=> book3d.classList.remove('flipping'),900); }
+          if(e.key === 'Escape'){ card.classList.remove('is-flipped'); }
+        });
+
+        // mouse tilt (disabled on touch)
+        const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+        if(!isTouch && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+          card.addEventListener('mousemove', function(e){
+            const r = card.getBoundingClientRect();
+            const cx = r.left + r.width/2, cy = r.top + r.height/2;
+            const dx = (e.clientX - cx) / (r.width/2); const dy = (e.clientY - cy) / (r.height/2);
+            const rx = Math.max(-TILT, Math.min(TILT, -dy * TILT));
+            const ry = Math.max(-TILT, Math.min(TILT, dx * TILT));
+            book3d.style.transform = `rotateX(${rx}deg) rotateY(${ry - 6}deg)`;
+            const front = card.querySelector('.cover-front'); if(front) front.style.transform = `translateZ(16px) translateX(${Math.max(-12,Math.min(12,dx*8))}px) translateY(${Math.max(-12,Math.min(12,dy*8))}px)`;
+            const pages = card.querySelector('.book-pages'); if(pages) pages.style.transform = `translateX(${Math.max(-12,Math.min(12,dx*6))}px) translateZ(-2px)`;
+          });
+          card.addEventListener('mouseleave', function(){ book3d.style.transform = BASE; const front = card.querySelector('.cover-front'); if(front) front.style.transform=''; const pages = card.querySelector('.book-pages'); if(pages) pages.style.transform=''; });
+        }
+
+        // ensure z-index while flipped
+        const mo = new MutationObserver((mut)=> {
+          if(card.classList.contains('is-flipped')) card.style.zIndex = 1200;
+          else setTimeout(()=> { if(!card.classList.contains('is-flipped')) card.style.zIndex = ''; }, 900);
+        });
+        mo.observe(card, {attributes:true});
+      });
+    })();
+
+    /* ===== Anchor smooth scroll for internal links (works if links use #id) ===== */
+    document.addEventListener('click', function(e){
+      const a = e.target.closest && e.target.closest('a[href^="#"]');
+      if(!a) return;
+      const id = a.getAttribute('href').slice(1);
+      if(!id) return;
+      const target = document.getElementById(id);
+      if(!target) return;
+      e.preventDefault();
+      target.scrollIntoView({behavior:'smooth', block:'start'});
+      history.replaceState(null, '', `#${id}`);
+    });
+
+    /* Respect reduced motion */
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    (function applyReduced(){ if(mq.matches) document.documentElement.style.scrollBehavior = 'auto'; else document.documentElement.style.scrollBehavior = 'smooth'; })();
+    if(mq.addEventListener) mq.addEventListener('change', function(){ if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.style.scrollBehavior='auto'; else document.documentElement.style.scrollBehavior='smooth'; });
+
+  })();
+  </script>
 </body>
 </html>
