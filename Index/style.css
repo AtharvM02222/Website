@@ -111,7 +111,6 @@ body::after {
 }
 
 /* =========================
-   Your original styles (kept & integrated)
    ========================= */
 
 .aaa { font-family: "Raleway", sans-serif; color: rgb(255,255,255); }
@@ -131,12 +130,29 @@ body::after {
 
 .profile-pic { width:150px; height:150px; border-radius:50%; object-fit:cover; border:3px solid rgb(230,207,120); box-shadow:5px 5px 15px rgba(0,0,0,0.6); }
 
-.favicon-container img { width:100px; height:100px; border-radius:50%; object-fit:cover; }
-
-.row { display:flex; justify-content:center; align-items:center; margin-bottom:20px; }
-.tooltip { text-align:center; margin:0 10px; }
-.tooltip img { margin:0; transition: transform 0.2s ease-in; }
-.tooltip img:hover { cursor:pointer; transform:scale(1.2); }
+#skills {
+    padding: 2rem 1rem;
+    background-color: #f9f9f9;
+  }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 1.5rem;
+    justify-items: center;
+    align-items: center;
+  }
+  .skill i {
+    font-size: 3rem;
+    transition: transform 0.2s ease-in-out;
+    color: #333;
+  }
+  .skill:hover i {
+    transform: scale(1.2);
+    color: #007acc; /* change this to your preferred hover color */
+  }
+  .skill {
+    text-align: center;
+  }
 
 /* countdown & timer */
 .countdown { margin-top:50px; color:#fff; font-family:"Rowdies", sans-serif; }
@@ -235,7 +251,6 @@ a, .nav a, button { color:#fff; text-decoration:none; transition:opacity .15s ea
 :focus-visible { outline: 2px dashed rgba(230,207,120,0.85); outline-offset:3px; }
 
 /* =================================
-   UPGRADE: Utilities, hero layout, projects, timeline
    ================================= */
 
 .mt-4{ margin-top: var(--space-4); } .mt-6{ margin-top: var(--space-6); } .mt-8{ margin-top: var(--space-8); } .mt-12{ margin-top: var(--space-12); }
@@ -318,7 +333,6 @@ nav a:hover, nav a:focus { background: rgba(255,255,255,0.06); transform: transl
 }
 
 /* ===============================
-   Realistic 3D Book Section CSS
    =============================== */
 
 /* Variables */
