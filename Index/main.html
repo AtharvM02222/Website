@@ -20,10 +20,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Jacquard+12&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
 
-  <!-- your main stylesheet -->
+  <!-- stylesheet -->
   <link rel="stylesheet" href="style.css">
 
-  <!-- small inline styles that were originally present (kept but simplified) -->
+
   <style>
     .rowdies-font { font-family: 'Rowdies', sans-serif; }
     h5 { font-size: 140px; }
@@ -32,7 +32,7 @@
 
     p { font-size: 25px; font-family: 'Rowdies', sans-serif; color: orangered; }
 
-    /* marquee keyframes (kept here to ensure same timing as before) */
+
     @keyframes marquee-left-right { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
     @keyframes marquee-right-left { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
   </style>
@@ -67,14 +67,12 @@
     </div>
   </header>
 
-  <!-- Scroll-to-top (keeps your markup; functionality in index.js) -->
+  <!-- Scroll-to-top () -->
   <button id="scrollTopBtn" class="scroll-top-btn" aria-label="Scroll to top">
     <img src="STP.svg" alt="Scroll to Top">
   </button>
 
-  <!-- Background music: muted so autoplay works on modern browsers.
-       Users can unmute by clicking play controls if you add one later.
-       (I kept the tag exactly where it was but added muted to avoid autoplay blocking.) -->
+  <!-- () -->
   <audio id="bg-music" loop autoplay>
     <source src="Theme.mp3" type="audio/mp3">
   </audio>
@@ -106,7 +104,7 @@
         <div class="new">
           <h7>Countdown To My Birthday Every year:</h7>
 
-          <!-- kept your existing timer markup (we fixed JS to update these) -->
+
           <div id="timer" aria-live="polite">
             <div><span id="days">00</span><div class="label">Days</div></div>
             <div><span id="hours">00</span><div class="label">Hours</div></div>
@@ -115,12 +113,12 @@
           </div>
         </div>
 
-        <!-- keep original index.js file (we will replace it below) -->
+
         <script src="index.js" defer></script>
 
         <div class="linee" aria-hidden="true"></div>
 
-        <!-- Books section (kept your original structure, only minor improvements in CSS/JS) -->
+        <!-- ========== BOOKS SECTION () ========= -->
         <section id="books-section" class="books-section reveal-on-scroll" aria-label="Books I've read or reading">
           <h2 class="books-heading">Books I'm reading / Completed</h2>
 
@@ -183,7 +181,7 @@
           </div>
         </section>
 
-        <!-- ========== SKILLS SECTION (mixed: your marquee style + devicon SVGs, 150px) ========= -->
+        <!-- ========== SKILLS SECTION (150px) ========= -->
         <section id="skills" aria-label="Skills">
           <div class="skillicons" aria-hidden="false">
 
@@ -254,7 +252,7 @@
     </center>
   </main>
 
-  <!-- Netlify Auth (kept) -->
+  <!-- Netlify Auth () -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script>
     if (window.netlifyIdentity) {
