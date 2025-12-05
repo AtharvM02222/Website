@@ -110,7 +110,6 @@ body::after {
 }
 
 /* ===========================================================
-   Small layout & typography (kept your look)
    =========================================================== */
 .aaa { font-family: "Raleway", sans-serif; color: rgb(255,255,255); }
 .new { font-family: "Jacquard 12", system-ui; font-weight: 400; font-style: normal; color: rgb(255,255,255); }
@@ -130,7 +129,6 @@ body::after {
 .profile-pic { width:150px; height:150px; border-radius:50%; object-fit:cover; border:3px solid rgb(230,207,120); box-shadow:5px 5px 15px rgba(0,0,0,0.6); }
 
 /* =========================
-   Skills — mixed marquee + SVG icons
    ========================= */
 #skills { padding: 2rem 1rem; background-color: transparent; }
 .skills-grid { display:none; } /* keep for backup if you want the grid later */
@@ -183,7 +181,6 @@ body::after {
 }
 
 /* =========================
-   Countdown & timer
    ========================= */
 .countdown { margin-top:50px; color:#fff; font-family:"Rowdies", sans-serif; }
 #timer { display:flex; justify-content:center; font-size:40px; gap: var(--space-6); flex-wrap:wrap; align-items:center; }
@@ -256,5 +253,5 @@ nav a:hover, nav a:focus { background: rgba(255,255,255,0.06); transform: transl
 /* accessibility */
 :focus-visible { outline: 2px dashed rgba(230,207,120,0.85); outline-offset:3px; }
 
-/* books 3D CSS kept below (unchanged, preserved from your original CSS) */
-/* ... (book styles preserved, they are included in your original file - unchanged) */
+/* ===========================================================
+   =========================================================== */
