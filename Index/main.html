@@ -75,7 +75,7 @@
   <!-- Background music: muted so autoplay works on modern browsers.
        Users can unmute by clicking play controls if you add one later.
        (I kept the tag exactly where it was but added muted to avoid autoplay blocking.) -->
-  <audio id="bg-music" loop autoplay muted>
+  <audio id="bg-music" loop autoplay>
     <source src="Theme.mp3" type="audio/mp3">
   </audio>
 
@@ -213,11 +213,9 @@
           </div>
         </section>
 
-        <!-- LinkedIn badge (kept) -->
-        <div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="dark" data-type="HORIZONTAL" data-vanity="atharvmandlavdiya" data-version="v1">
-          <a class="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/atharvmandlavdiya">Atharv Mandlavdiya</a>
-        </div>
 
+
+        <div class="linee" aria-hidden="true"></div>
         <div class="first">
           <h1 class="abouttitle">Want to talk to me??</h1>
           <p id="Talk">
@@ -234,6 +232,11 @@
             <div class="formRow"><button type="submit" class="jaadu">Submit</button></div>
           </form>
         </div>
+
+
+        <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
+        <div class="badge-base LI-profile-badge" data-locale="en_US" data-size="large" data-theme="dark" data-type="HORIZONTAL" data-vanity="atharvmandlavdiya" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://in.linkedin.com/in/atharvmandlavdiya?trk=profile-badge">Atharv Mandlavdiya</a></div>
+              
 
         <p class="rowdies-font">Made with</p>
         <p><span style="color:crimson;font-size:20px;">♥</span></p>
