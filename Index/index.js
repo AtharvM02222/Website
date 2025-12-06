@@ -256,3 +256,35 @@ document.addEventListener('click', function(e){
     observer.observe(card, { attributes: true });
   });
 })();
+
+// Load GitHub Achievements dynamically
+async function loadAchievements() {
+    const username = "AtharvM02222";
+    const container = document.getElementById("achievements-container");
+
+    try {
+        const res = await fetch(`https://api.github.com/users/${username}/achievements`);
+        const achievements = await res.json();
+
+        achievements.forEach(a => {
+            let card = `
+                <div class="achievement-card">
+                    <img src="${a.icon_url}" class="achievement-img" alt="${a.name}">
+                    <h3 class="achievement-title">${a.name}</h3>
+                </div>
+            `;
+            container.innerHTML += card;
+        });
+
+        if (achievements.length === 0) {
+            container.innerHTML = `<p style="color:white;font-family:Poppins;">No achievements found.</p>`;
+        }
+
+    } catch (error) {
+        console.error("Achievements loading error:", error);
+        container.innerHTML = `<p style="color:white;font-family:Poppins;">Unable to load achievements.</p>`;
+    }
+}
+
+loadAchievements();
+
