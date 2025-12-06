@@ -1,0 +1,16 @@
+name: Auto Deploy to Netlify
+
+on:
+  push:
+    branches:
+      - production
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Netlify Deploy
+        run: |
+          curl -X POST -d {} https://api.netlify.com/build_hooks/6933fd983ed0192077b599cc
