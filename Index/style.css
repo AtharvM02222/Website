@@ -257,52 +257,52 @@ nav a:hover, nav a:focus { background: rgba(255,255,255,0.06); transform: transl
    =========================================================== */
 
 /* GitHub Achievements Section */
-#github-achievements-section {
-    padding: 50px 0;
+#achievements {
+    padding: 40px 0;
     text-align: center;
 }
 
-#github-achievements-section h2 {
-    color: white;
+#achievements h2 {
     font-family: 'Poppins', sans-serif;
+    color: white;
     font-size: 32px;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
-/* Container */
-#achievements-container {
+.achievements-row {
     display: flex;
     justify-content: center;
-    flex-wrap: wrap;
     gap: 30px;
-    padding: 0 20px;
+    flex-wrap: wrap;
 }
 
-/* Cards */
 .achievement-card {
-    width: 260px;
-    padding: 25px 20px;
-    background: rgba(22, 27, 34, 0.7); /* subtle dark glass */
+    background: rgba(22, 27, 34, 0.7);
+    padding: 20px;
     border-radius: 20px;
+    width: 250px;
+    border: 2px solid rgba(255,255,255,0.05);
     text-align: center;
-    border: 2px solid rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(6px);
-    transition: transform .35s ease, box-shadow .35s ease, border .35s ease;
-    box-shadow: 0 0 0 rgba(0, 255, 255, 0);
+    transition: 0.3s ease;
+    backdrop-filter: blur(5px);
 }
 
-/* Hover Glow */
 .achievement-card:hover {
-    transform: translateY(-10px) scale(1.03);
-    border: 2px solid #00f0ff;
-    box-shadow: 0 0 18px #00eaff, 0 0 30px #0099ff inset;
+    transform: translateY(-8px) scale(1.03);
+    border: 2px solid #00eaff;
+    box-shadow: 0 0 20px #00eaff, 0 0 25px #0077ff inset;
 }
 
-/* Achievement Image */
-.achievement-img {
-    width: 120px;
-    margin-bottom: 15px;
-    animation: float 3s infinite ease-in-out;
+.achievement-card img {
+    width: 110px;
+    animation: float 3s ease-in-out infinite;
+}
+
+.achievement-card h3 {
+    color: white;
+    margin-top: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
 }
 
 /* Floating animation */
@@ -312,10 +312,32 @@ nav a:hover, nav a:focus { background: rgba(255,255,255,0.06); transform: transl
     100% { transform: translateY(0px); }
 }
 
-/* Title */
-.achievement-title {
-    color: white;
-    font-size: 20px;
-    margin-top: 10px;
+#github-stats {
+    padding: 50px 0;
+    text-align: center;
+}
+
+#github-stats h2 {
     font-family: 'Poppins', sans-serif;
+    color: white;
+    font-size: 32px;
+    margin-bottom: 30px;
+}
+
+.stats-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.stats-card {
+    width: 420px;
+    border-radius: 20px;
+    transition: 0.3s ease;
+}
+
+.stats-card:hover {
+    transform: translateY(-8px);
+    filter: brightness(1.15);
 }
