@@ -1,5 +1,0 @@
-[[redirects]]
-  from = "/cloud"
-  to   = "/cloud.html"
-  status = 200
-  force = true
