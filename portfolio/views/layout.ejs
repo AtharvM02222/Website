@@ -4,7 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= typeof title !== 'undefined' ? title : 'Portfolio' %></title>
-    <link rel="stylesheet" href="/stylesheets/main.css" />
+    <link rel="stylesheet" href="/css/am.css" />
+    <link rel="stylesheet" href="/css/home.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
@@ -13,7 +14,9 @@
   </head>
   <body>
     <ninja-keys class="dark"></ninja-keys>
-    <%- body %>
-    <script src="/javascript/nav.js"></script>
+    <main class="brand">
+      <%- body %>
+    </main>
+    <script src="/scripts/nav.js"></script>
   </body>
 </html>

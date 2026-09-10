@@ -1,0 +1,22 @@
+body {
+    margin: 0;
+    background: #ffffff;
+    color: #ffffff;
+}
+
+.brand {
+    position: fixed;
+    inset: .7vh;
+    box-sizing: border-box;
+    height: 98vh;
+    padding: 0 1vw;
+    background: #0D0D0D;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.brand::-webkit-scrollbar {
+    display: none;
+}
