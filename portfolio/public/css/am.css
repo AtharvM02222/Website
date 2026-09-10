@@ -8,13 +8,18 @@ body {
     position: fixed;
     inset: .7vh;
     box-sizing: border-box;
+    
     height: 98vh;
     padding: 0 1vw;
+    
     background: #0D0D0D;
+    
     overflow-x: hidden;
     overflow-y: auto;
     scrollbar-width: none;
     -ms-overflow-style: none;
+
+    border-radius: 2vh;
 }
 
 .brand::-webkit-scrollbar {
