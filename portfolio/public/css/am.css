@@ -25,3 +25,15 @@ body {
 .brand::-webkit-scrollbar {
     display: none;
 }
+
+#cpk{
+    position: fixed;
+    right: 1.5vw;
+    bottom: 3vh;
+    z-index: 2727;
+    margin: 0;
+    font-size: 1.5vh;
+    color: #EBEFFD;
+    writing-mode: vertical-rl;
+    animation-duration: 1.5s;
+}
